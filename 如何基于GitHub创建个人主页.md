@@ -4,7 +4,7 @@
 
 2.在项目设置中自定义域名，如图所示
 
-![无标题](C:\Users\Legend\Desktop\无标题.png)
+(C:\Users\Legend\Desktop\无标题.png)
 
 3.创建成功后，点击settings，找到GitHub Pages，选择一个GitHub官方主题
 
