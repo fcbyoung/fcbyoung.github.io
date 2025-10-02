@@ -71,6 +71,106 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-一篇文章讲清楚OSPF路由协议的七步邻接关系建立步骤" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/10/02/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%B2%E6%B8%85%E6%A5%9AOSPF%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E4%B8%83%E6%AD%A5%E9%82%BB%E6%8E%A5%E5%85%B3%E7%B3%BB%E5%BB%BA%E7%AB%8B%E6%AD%A5%E9%AA%A4/" class="article-date">
+  <time class="dt-published" datetime="2025-10-02T15:40:54.000Z" itemprop="datePublished">2025-10-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/10/02/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%B2%E6%B8%85%E6%A5%9AOSPF%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E4%B8%83%E6%AD%A5%E9%82%BB%E6%8E%A5%E5%85%B3%E7%B3%BB%E5%BB%BA%E7%AB%8B%E6%AD%A5%E9%AA%A4/">一篇文章讲清楚OSPF路由协议的七步邻接关系建立步骤</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>整个建立过程可以划分为以下几个关键状态，其流程如下图所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">flowchart TD</span><br><span class="line">    A[Down状态&lt;br&gt;初始状态] --&gt; B[Init状态&lt;br&gt;收到Hello包]</span><br><span class="line">    B --&gt; C[2-Way状态&lt;br&gt;在Hello包中看到自己的RID]</span><br><span class="line">    C --&gt; D[ExStart状态&lt;br&gt;主从协商]</span><br><span class="line">    D --&gt; E[Exchange状态&lt;br&gt;交换DBD摘要]</span><br><span class="line">    E --&gt; F[Loading状态&lt;br&gt;请求并加载LSA]</span><br><span class="line">    F --&gt; G[Full状态&lt;br&gt;完全邻接]</span><br></pre></td></tr></table></figure>
+
+<p>现在，我们来详细解释每一个状态：</p>
+<ol>
+<li><strong>Down (失效状态)</strong><ul>
+<li><strong>描述</strong>: 这是邻接关系的初始状态。表示没有从邻居收到任何信息（Hello包）。</li>
+<li><strong>动作</strong>: 本地路由器会周期性地向外发送Hello包，尝试发现邻居。</li>
+</ul>
+</li>
+<li><strong>Init (初始状态)</strong><ul>
+<li><strong>描述</strong>: 本地路由器<strong>收到了对端发来的Hello包</strong>，但Hello包中<strong>没有包含自己的Router ID (RID)</strong>。这意味着对方还没有收到我的Hello包，或者我的参数不符合它的要求。</li>
+<li><strong>动作</strong>: 继续交互Hello包。</li>
+</ul>
+</li>
+<li><strong>2-Way (双向通信状态)</strong><ul>
+<li><strong>描述</strong>: 这是<strong>建立邻接关系的关键前提</strong>。本地路由器在收到的Hello包中，看到了<strong>自己的Router ID</strong>。这表明双向通信已经建立。</li>
+<li><strong>决策点</strong>:<ul>
+<li>在<strong>广播多路访问网络（如以太网）</strong> 中，DR（指定路由器）和BDR（备份指定路由器）将在此状态后与其他路由器继续建立邻接（FULL），而非DR&#x2F;BDR路由器之间会停留在此状态。</li>
+<li>在<strong>点对点网络</strong>中，所有邻居都会继续向下一个状态发展。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>ExStart (预启动状态)</strong><ul>
+<li><strong>描述</strong>: 这是<strong>邻接关系（而不仅仅是邻居关系）的真正开始</strong>。双方使用<strong>空的DBD（数据库描述）包</strong>来<strong>协商主从关系</strong>。</li>
+<li><strong>目的</strong>: 确定在接下来的数据交换过程中，由谁作为“主”设备来控制交换过程。RID更大的一方将成为主设备。</li>
+</ul>
+</li>
+<li><strong>Exchange (交换状态)</strong><ul>
+<li><strong>描述</strong>: 主从关系协商完毕后，双方进入此状态。开始互相发送<strong>包含LSDB（链路状态数据库）摘要信息的DBD包</strong>。</li>
+<li><strong>目的</strong>: 通过交换“目录”，互相了解对方有哪些LSA（链路状态通告）是自己没有的。</li>
+</ul>
+</li>
+<li><strong>Loading (加载状态)</strong><ul>
+<li><strong>描述</strong>: 在收到对端的DBD后，本地路由器会将自身的LSDB与收到的摘要进行对比。</li>
+<li><strong>动作</strong>:<ul>
+<li>如果发现自己缺少某条LSA，就会向对方发送<strong>LSR（链路状态请求）</strong>。</li>
+<li>对方会回复<strong>LSU（链路状态更新）</strong> 来传递完整的LSA信息。</li>
+<li>本地路由器收到LSU后，会发送<strong>LSAck（链路状态确认）</strong> 进行确认。</li>
+</ul>
+</li>
+<li>图中的 <code>LSR</code>, <code>LSU</code>, <code>LSAck</code> 报文就是在此状态交互的。</li>
+</ul>
+</li>
+<li><strong>Full (完全邻接状态)</strong><ul>
+<li><strong>描述</strong>: 这是邻接关系建立的<strong>最终稳定状态</strong>。此时，双方路由器的<strong>LSDB已经完全同步</strong>。</li>
+<li><strong>意义</strong>: 达到此状态后，路由器才能基于完全同步的LSDB，使用SPF算法独立计算出一致且无环的路由表。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="示意图中报文类型说明"><a href="#示意图中报文类型说明" class="headerlink" title="示意图中报文类型说明"></a>示意图中报文类型说明</h3><ul>
+<li><strong>Hello</strong>: 用于发现和维持邻居关系。</li>
+<li><strong>DD (Database Description Packet)</strong>: 用于描述自己的LSDB摘要，在ExStart和Exchange状态交换。</li>
+<li><strong>LSR (Link State Request Packet)</strong>: 用于请求完整的LSA。</li>
+<li><strong>LSU (Link State Update Packet)</strong>: 用于发送完整的LSA。</li>
+<li><strong>LSAck (Link State Acknowledgment Packet)</strong>: 用于确认收到LSU。</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>OSPF邻接关系的建立是一个严谨的“状态机”过程，从Down到Full，每一步都有特定的任务和报文交互。你的示意图完美地展示了这个完整的生命周期。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/10/02/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%B2%E6%B8%85%E6%A5%9AOSPF%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E4%B8%83%E6%AD%A5%E9%82%BB%E6%8E%A5%E5%85%B3%E7%B3%BB%E5%BB%BA%E7%AB%8B%E6%AD%A5%E9%AA%A4/" data-id="cuidGIKZfgfQHL0GZdi4UtIJy" data-title="一篇文章讲清楚OSPF路由协议的七步邻接关系建立步骤" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-OSPF路由协议基本概念" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2025/10/02/OSPF%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" class="article-date">
@@ -326,7 +426,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/github-hexo/" style="font-size: 10px;">github hexo</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">计算机网络</a>
+      <a href="/tags/github-hexo/" style="font-size: 10px;">github hexo</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 20px;">计算机网络</a>
     </div>
   </div>
 
@@ -346,6 +446,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2025/10/02/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%B2%E6%B8%85%E6%A5%9AOSPF%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E4%B8%83%E6%AD%A5%E9%82%BB%E6%8E%A5%E5%85%B3%E7%B3%BB%E5%BB%BA%E7%AB%8B%E6%AD%A5%E9%AA%A4/">一篇文章讲清楚OSPF路由协议的七步邻接关系建立步骤</a>
+          </li>
         
           <li>
             <a href="/2025/10/02/OSPF%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">OSPF路由协议基本概念</a>
