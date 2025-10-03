@@ -71,6 +71,151 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-BGP-简单理解IBGP与EBGP" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/10/04/BGP-%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3IBGP%E4%B8%8EEBGP/" class="article-date">
+  <time class="dt-published" datetime="2025-10-03T23:45:30.000Z" itemprop="datePublished">2025-10-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/10/04/BGP-%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3IBGP%E4%B8%8EEBGP/">[BGP]简单理解IBGP与EBGP</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>这是一个非常核心的网络问题，尤其是对于从事大规模网络运维和设计的人员。我们来详细、清晰地解析一下IBGP和EBGP。</p>
+<h3 id="核心概念一句话概括"><a href="#核心概念一句话概括" class="headerlink" title="核心概念一句话概括"></a>核心概念一句话概括</h3><ul>
+<li><strong>EBGP：</strong> 运行于<strong>不同</strong>自治系统之间的BGP。可以理解为 <strong>“对外”</strong> 的协议。</li>
+<li><strong>IBGP：</strong> 运行于<strong>同一</strong>自治系统内部的BGP路由器之间。可以理解为 <strong>“对内”</strong> 的协议。</li>
+</ul>
+<p>为了理解它们，首先必须明白什么是<strong>自治系统（AS）</strong>。一个AS通常是一个独立的网络管理域，比如一家大型公司、一个运营商或一个大学校园。它由一个统一的机构管理，并拥有统一的路由策略。每个AS都有一个全球唯一的编号，称为AS号。</p>
+<hr>
+<h3 id="相同点"><a href="#相同点" class="headerlink" title="相同点"></a>相同点</h3><p>既然都叫BGP，它们必然共享BGP协议的基本特性：</p>
+<ol>
+<li><strong>协议本身相同</strong>：它们都使用<strong>BGP协议</strong>（通常是版本4），使用相同的报文类型（Open, Update, Keepalive, Notification），并建立在可靠的TCP连接之上（端口179）。</li>
+<li><strong>核心功能相同</strong>：它们的主要功能都是<strong>交换和维护网络可达性信息</strong>（即路由信息）。这些信息以“前缀+路径属性”的形式传递。</li>
+<li><strong>使用路径属性</strong>：它们都使用BGP路径属性（如AS_PATH, NEXT_HOP, LOCAL_PREF, MED等）来记录路径信息和实施路由策略。</li>
+</ol>
+<hr>
+<h3 id="不同点（这是关键）"><a href="#不同点（这是关键）" class="headerlink" title="不同点（这是关键）"></a>不同点（这是关键）</h3><p>IBGP和EBGP的设计目标完全不同（一个对内，一个对外），这导致了它们在行为上有着根本性的区别。下表清晰地列出了它们的主要不同点：</p>
+<table>
+<thead>
+<tr>
+<th align="left">特性</th>
+<th align="left">EBGP</th>
+<th align="left">IBGP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>运行位置</strong></td>
+<td align="left"><strong>不同</strong>自治系统（AS）之间</td>
+<td align="left"><strong>同一</strong>自治系统（AS）内部</td>
+</tr>
+<tr>
+<td align="left"><strong>默认管理距离</strong></td>
+<td align="left"><strong>20</strong>（更优先）</td>
+<td align="left"><strong>200</strong>（优先级较低）</td>
+</tr>
+<tr>
+<td align="left"><strong>下一跳行为</strong></td>
+<td align="left">默认将下一跳修改为<strong>自己的出口IP</strong></td>
+<td align="left"><strong>默认不修改下一跳</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>AS_PATH处理</strong></td>
+<td align="left">将自己所在的AS号<strong>前置</strong>到AS_PATH中</td>
+<td align="left"><strong>不修改</strong>AS_PATH属性</td>
+</tr>
+<tr>
+<td align="left"><strong>环路防止机制</strong></td>
+<td align="left">查看AS_PATH，如果收到路由的AS_PATH中<strong>包含自己的AS号</strong>，则拒绝该路由。</td>
+<td align="left"><strong>BGP水平分割规则</strong>：从IBGP对等体学到的路由，<strong>不会</strong>再传递给其他IBGP对等体。</td>
+</tr>
+<tr>
+<td align="left"><strong>全连接要求</strong></td>
+<td align="left">通常不需要全连接，根据物理拓扑或策略建立即可。</td>
+<td align="left"><strong>通常需要逻辑上的全连接</strong>（或使用路由反射器&#x2F;联盟来解决），以避免因水平分割导致路由黑洞。</td>
+</tr>
+<tr>
+<td align="left"><strong>主要目的</strong></td>
+<td align="left">在AS之间传递路由，实施<strong>域间路由策略</strong>。</td>
+<td align="left">在AS内部<strong>同步</strong>从EBGP学到的路由，确保AS内部所有BGP路由器拥有一致的出口路由信息。</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="详细解释关键不同点"><a href="#详细解释关键不同点" class="headerlink" title="详细解释关键不同点"></a>详细解释关键不同点</h3><h4 id="1-默认管理距离"><a href="#1-默认管理距离" class="headerlink" title="1. 默认管理距离"></a>1. 默认管理距离</h4><ul>
+<li><strong>EBGP: 20</strong></li>
+<li><strong>IBGP: 200</strong></li>
+<li><strong>解释</strong>：当一台路由器从不同路由协议（如OSPF、EIGRP）或BGP的不同类型（EBGP&#x2F;IBGP）学到通往同一目的地的路由时，管理距离用于决定哪个路由源更可信。<strong>数值越小越优先</strong>。EBGP的20意味着它比大多数IGP（如OSPF的110）和IBGP都更可信。这很直观：从外部直接学来的路由通常比内部传递的路由更“原始”、更可靠。</li>
+</ul>
+<h4 id="2-下一跳行为"><a href="#2-下一跳行为" class="headerlink" title="2. 下一跳行为"></a>2. 下一跳行为</h4><ul>
+<li><strong>EBGP</strong>：当路由器通过EBGP向另一个AS宣告一条路由时，它会<strong>将下一跳属性修改为自己的出口接口IP地址</strong>。这是告诉对方：“要来这个网络，请把数据包发给我这个地址。”</li>
+<li><strong>IBGP</strong>：为了防止AS内部的路由器因为不知道如何到达下一跳而丢弃数据包，IBGP在传递从EBGP学来的路由时，<strong>默认保留原始的下一跳IP地址不变</strong>。这就要求<strong>AS内部的所有路由器（即使不运行BGP）都必须通过IGP（如OSPF、IS-IS）知道如何到达这个下一跳地址</strong>。这通常通过在网络中发布这个下一跳IP地址的路由来实现。</li>
+</ul>
+<h4 id="3-环路防止机制"><a href="#3-环路防止机制" class="headerlink" title="3. 环路防止机制"></a>3. 环路防止机制</h4><ul>
+<li><strong>EBGP</strong>：非常简单直接。如果一台BGP路由器在收到路由的AS_PATH属性中看到了自己所在的AS号，它就认为这是一个环路，并丢弃该路由。</li>
+<li><strong>IBGP</strong>：<strong>BGP水平分割规则</strong>。这是一条关键规则：<strong>从一个IBGP对等体学到的路由，绝不会被传递给另一个IBGP对等体</strong>。这样做的原因是，IBGP不像IGP那样有自己的拓扑信息，它无法像OSPF一样通过SPF算法防环。如果没有这个规则，路由将在IBGP全连接网中无限循环。</li>
+</ul>
+<h4 id="4-全连接要求"><a href="#4-全连接要求" class="headerlink" title="4. 全连接要求"></a>4. 全连接要求</h4><ul>
+<li>由于上述的<strong>IBGP水平分割规则</strong>，如果AS内有多台BGP路由器，它们之间必须建立<strong>全连接的IBGP对等体关系</strong>（逻辑上的全网状），否则路由将无法传递到所有BGP路由器。</li>
+<li><strong>解决方案</strong>：为了解决全网状连接扩展性差的问题，引入了两种技术：<ul>
+<li><strong>路由反射器（RR）</strong>：指定一台或几台路由器作为RR，其他路由器作为RR客户端。客户端只与RR建立IBGP连接。RR可以反射路由，从而打破水平分割规则。</li>
+<li><strong>BGP联盟（Confederation）</strong>：将一个大的AS划分成几个小的私有AS，在私有AS之间运行“联盟内部的EBGP”，这个eBGP行为类似IBGP（如不修改AS_PATH等）。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="一个生动的比喻"><a href="#一个生动的比喻" class="headerlink" title="一个生动的比喻"></a>一个生动的比喻</h3><p>把整个网络世界想象成一个由不同国家（AS）组成的世界。</p>
+<ul>
+<li><p><strong>EBGP</strong> 就像是<strong>国家之间的外交官</strong>。</p>
+<ul>
+<li>他们负责与其他国家（AS）交换信息（路由）。</li>
+<li>他们非常谨慎，每经过一个国家就在护照（AS_PATH）上盖一个章，如果发现护照上已经有自己国家的章，就拒绝入境（防环）。</li>
+<li>他们明确告诉对方：“要找我们国家，请先联系我这个大使馆（修改下一跳）。”</li>
+</ul>
+</li>
+<li><p><strong>IBGP</strong> 就像是<strong>一个国家内部的政府通信系统</strong>。</p>
+<ul>
+<li>他们负责将外交官（EBGP）带回来的信息，准确地同步给国家内部所有关键部门（AS内部的所有BGP路由器）。</li>
+<li>为了防止内部消息混乱和谣言传播，他们规定：一个部门从另一个部门听来的消息，不能再传给第三个部门（水平分割）。这就要求所有部门必须直接与中央或其他所有部门建立直接联系（全连接），或者设立一个新闻中心（路由反射器）来统一发布消息。</li>
+<li>他们告诉各部门：“要去那个外国，请直接联系最初接待我们外交官的那个大使馆（不修改下一跳），至于怎么去那个大使馆，你们看国内交通图（IGP）自己解决。”</li>
+</ul>
+</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>理解IBGP和EBGP的关键在于牢记它们所处的<strong>信任边界</strong>不同。</p>
+<ul>
+<li><strong>EBGP</strong>处理的是<strong>不可信</strong>的域间关系，因此它的规则（修改下一跳、添加AS_PATH）都非常<strong>严格和谨慎</strong>，旨在明确路径、防止环路和实施策略。</li>
+<li><strong>IBGP</strong>处理的是<strong>可信</strong>的域内关系，因此它的设计目标是<strong>高效、无环地在内部同步外部路由信息</strong>，它的特殊规则（水平分割、不修改下一跳）都是为了在缺乏拓扑信息的背景下，安全地实现这一目标。</li>
+</ul>
+<p>在实际网络中，一个典型的BGP路由器通常同时运行EBGP和IBGP：它通过EBGP与外部AS的对等体交换路由，然后通过IBGP将这些路由传递给AS内部的其他BGP路由器。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/10/04/BGP-%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3IBGP%E4%B8%8EEBGP/" data-id="cuid-1Jt3lNpkI44Ak-Tw-6Nv" data-title="[BGP]简单理解IBGP与EBGP" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%EF%BC%8CBGP/" rel="tag">计算机网络，BGP</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-一篇文章讲清楚OSPF路由协议的七步邻接关系建立步骤" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2025/10/02/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%B2%E6%B8%85%E6%A5%9AOSPF%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E4%B8%83%E6%AD%A5%E9%82%BB%E6%8E%A5%E5%85%B3%E7%B3%BB%E5%BB%BA%E7%AB%8B%E6%AD%A5%E9%AA%A4/" class="article-date">
@@ -416,7 +561,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/github-hexo/" rel="tag">github hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/github-hexo/" rel="tag">github hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%EF%BC%8CBGP/" rel="tag">计算机网络，BGP</a></li></ul>
     </div>
   </div>
 
@@ -426,7 +571,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/github-hexo/" style="font-size: 10px;">github hexo</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 20px;">计算机网络</a>
+      <a href="/tags/github-hexo/" style="font-size: 10px;">github hexo</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 20px;">计算机网络</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%EF%BC%8CBGP/" style="font-size: 10px;">计算机网络，BGP</a>
     </div>
   </div>
 
@@ -448,6 +593,10 @@
       <ul>
         
           <li>
+            <a href="/2025/10/04/BGP-%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3IBGP%E4%B8%8EEBGP/">[BGP]简单理解IBGP与EBGP</a>
+          </li>
+        
+          <li>
             <a href="/2025/10/02/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%B2%E6%B8%85%E6%A5%9AOSPF%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E4%B8%83%E6%AD%A5%E9%82%BB%E6%8E%A5%E5%85%B3%E7%B3%BB%E5%BB%BA%E7%AB%8B%E6%AD%A5%E9%AA%A4/">一篇文章讲清楚OSPF路由协议的七步邻接关系建立步骤</a>
           </li>
         
@@ -461,10 +610,6 @@
         
           <li>
             <a href="/2025/09/22/%E5%A6%82%E4%BD%95%E5%9F%BA%E4%BA%8Egithub%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">如何基于github搭建个人博客</a>
-          </li>
-        
-          <li>
-            <a href="/2025/09/22/hello-world/">Hello World</a>
           </li>
         
       </ul>
