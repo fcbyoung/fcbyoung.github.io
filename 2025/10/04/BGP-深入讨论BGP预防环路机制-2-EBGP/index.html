@@ -14,10 +14,12 @@
 <meta property="og:description" content="当一台BGP路由器将一条路由通告给一个EBGP对等体是，它必须把自己的AS好添加到该路由AS_Path列表最前面。 BGP路由器在收到一条路由时，会检查其AS_Path属性：若在该列表中发现自己的AS号，则说明这条路由到过本AS，将会形成环路。路由器会直接丢弃该路由。 接下来深入讨论一个问题：EBGP可以和IBGP一样搞水平分割吗？ 直接的回答是：可以，但EBGP防环机制的核心和主要手段并不是传统">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2025-10-04T01:11:50.000Z">
-<meta property="article:modified_time" content="2025-10-04T01:17:55.894Z">
+<meta property="article:modified_time" content="2025-10-04T01:33:04.439Z">
 <meta property="article:author" content="John Doe">
-<meta property="article:tag" content="BGP，路由协议">
+<meta property="article:tag" content="BGP">
+<meta property="article:tag" content="网络工程师">
 <meta property="article:tag" content="计算机网络">
+<meta property="article:tag" content="路由协议">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
@@ -205,7 +207,7 @@
       
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BGP%EF%BC%8C%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" rel="tag">BGP，路由协议</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" rel="tag">网络工程师</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" rel="tag">路由协议</a></li></ul>
 
     </footer>
   </div>
@@ -245,7 +247,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BGP%EF%BC%8C%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" rel="tag">BGP，路由协议</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github-hexo/" rel="tag">github hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" rel="tag">路由协议</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github-hexo/" rel="tag">github hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" rel="tag">网络工程师</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" rel="tag">路由协议</a></li></ul>
     </div>
   </div>
 
@@ -255,7 +257,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/BGP/" style="font-size: 15px;">BGP</a> <a href="/tags/BGP%EF%BC%8C%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" style="font-size: 10px;">BGP，路由协议</a> <a href="/tags/github-hexo/" style="font-size: 10px;">github hexo</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 20px;">计算机网络</a> <a href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" style="font-size: 15px;">路由协议</a>
+      <a href="/tags/BGP/" style="font-size: 20px;">BGP</a> <a href="/tags/github-hexo/" style="font-size: 10px;">github hexo</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" style="font-size: 20px;">网络工程师</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 20px;">计算机网络</a> <a href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" style="font-size: 20px;">路由协议</a>
     </div>
   </div>
 
