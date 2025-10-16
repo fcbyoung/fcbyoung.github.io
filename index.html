@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-浅析静态路由与直连路由" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/10/16/%E6%B5%85%E6%9E%90%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E7%9B%B4%E8%BF%9E%E8%B7%AF%E7%94%B1/" class="article-date">
+  <time class="dt-published" datetime="2025-10-16T15:22:31.000Z" itemprop="datePublished">2025-10-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/10/16/%E6%B5%85%E6%9E%90%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E7%9B%B4%E8%BF%9E%E8%B7%AF%E7%94%B1/">浅析静态路由与直连路由</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>一.关于直连路由</p>
+<p>路由器访问直连网段时使用直连路由。直连路由的接口配置了IP地址并且处于up状态，<br>直连路由会自动产生，不需要任何配置。</p>
+<p>二.静态路由</p>
+<p>静态路由一般用于小型网络规模，不能根据网络的变更进行动态路由学习。配置形式<br>一般为：<em>目标网段 目标网段掩码 下一跳地址（本地出接口）</em></p>
+<p>三.缺省路由</p>
+<p>缺省路由是静态路由的一种特殊形态，一般用在内网三层设备需要访问互联网。配置<br>形式一般为：<em>0.0.0.0 0.0.0.0 下一跳地址（本地出接口）</em></p>
+<p>多说一句，个人其实一般习惯把缺省路由叫做默认路由，以便于理解。</p>
+<p>关于“缺省”这个专有名词的翻译，之前还特意和AI讨论过这方面问题，关于“缺省”是否可以同义替换为“默认”这个词。以下是AI对此的分析：</p>
+<ol>
+<li><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">### 一、为什么是“缺省”？—— 词源探秘</span><br><span class="line"></span><br><span class="line">“缺省”是一个典型的**意译词**，它翻译自英文术语 **“Default”**。</span><br><span class="line"></span><br><span class="line">要理解这个古怪的翻译，我们需要拆解一下“Default”在英文中的核心含义：</span><br><span class="line"></span><br><span class="line">- **De-**： 一个前缀，有“否定”、“离开”、“向下”的意思。</span><br><span class="line">- **-fault**： 来自拉丁语 *fallere*，意思是“欺骗、失败、辜负期望”。（和“fault”错误同源）</span><br><span class="line"></span><br><span class="line">所以，“Default”的本质是：</span><br><span class="line">**“由于（用户）未能做出（某个选择或提供某个信息），而由系统自动采用的一个预先设定好的（退而求其次的）选项或行为。”**</span><br><span class="line"></span><br><span class="line">中文译者当年在翻译时，抓住了这个“未能”和“缺失”的核心，将其拆解为：</span><br><span class="line"></span><br><span class="line">- **缺**： 缺失、缺乏、缺少。对应“未能提供”。</span><br><span class="line">- **省**： 省略、省去。对应“（用户）省略了操作”或“（系统）省去了判断”。</span><br><span class="line"></span><br><span class="line">因此，“缺省”直译过来就是 **“因缺失而省略”** 或 **“在用户缺位/未指定时，系统省去询问环节而采用的方案”** 。虽然逻辑上能自洽，但确实非常拗口，不符合日常语言习惯。相比之下，“默认”（默默地承认/认定）这个词就形象和自然得多。</span><br><span class="line"></span><br><span class="line">**结论：** 在绝大多数情况下，**“缺省” = “默认”**。你可以放心地在脑海里进行替换。</span><br><span class="line"></span><br><span class="line">------</span><br><span class="line"></span><br><span class="line">### 二、除了“缺省路由”，还有哪些地方会用到“缺省”？</span><br><span class="line"></span><br><span class="line">“缺省”这个概念在计算机科学中无处不在，只要有一个地方需要预设一个“保底”的、或“当用户不指定时”就启用的值或行为，就会用到它。以下是一些常见的例子：</span><br><span class="line"></span><br><span class="line">#### 1. 缺省路由</span><br><span class="line"></span><br><span class="line">这你已经提到了。它是路由表中的最后一条“保底”规则，当所有其他路由规则都不匹配目标IP地址时，数据包就会被发送到缺省路由所指向的**下一跳地址**（通常是网关路由器）。可以理解为“不知道去哪的数据包都往这儿送”。</span><br><span class="line"></span><br><span class="line">#### 2. 缺省网关</span><br><span class="line"></span><br><span class="line">这个概念和缺省路由紧密相关。**缺省网关**就是一个设备的**缺省路由所指的那个IP地址**。在你的电脑上，网络设置里填写的“默认网关”就是你这台电脑的缺省网关。你的电脑要访问互联网，所有非本地的流量都会先发给这个网关。</span><br><span class="line"></span><br><span class="line">#### 3. 缺省值</span><br><span class="line"></span><br><span class="line">这是最广泛的应用。指在用户没有显式提供值时，程序或系统自动使用的那个预设值。</span><br><span class="line"></span><br><span class="line">- **编程中**： 函数参数可以设置缺省值。例如 `function greet(name = &quot;Guest&quot;)`，如果你调用 `greet()` 不传参数，`name` 的缺省值就是 `&quot;Guest&quot;`。</span><br><span class="line">- **数据库中**： 可以为表的字段设置缺省值。例如一个 `users` 表的 `create_date` 字段，可以设置缺省值为 `CURRENT_TIMESTAMP`，这样当插入新数据没指定时间时，数据库会自动填入当前时间。</span><br><span class="line">- **软件设置中**： 软件的“恢复默认设置”功能，就是将所有配置重置为出厂时的**缺省值**。</span><br><span class="line"></span><br><span class="line">#### 4. 缺省配置 / 配置文件</span><br><span class="line"></span><br><span class="line">许多软件在启动时会加载一个 `default.conf` 或 `config.default.yml` 之类的**缺省配置文件**。如果用户没有创建自己的配置文件，或者自己的配置里缺少某些选项，系统就会使用这些缺省配置中的值。</span><br><span class="line"></span><br><span class="line">#### 5. 缺省构造函数</span><br><span class="line"></span><br><span class="line">在面向对象编程（如C++、Java、C#）中，指一个不需要提供任何参数的构造函数。当程序员没有为类编写任何构造函数时，编译器会自动生成一个缺省构造函数。</span><br><span class="line"></span><br><span class="line">#### 6. 缺省参数</span><br><span class="line"></span><br><span class="line">在函数调用或API请求中，如果某些参数是可选的，当调用者省略它们时，这些参数就会使用预先定义好的**缺省参数**。</span><br><span class="line"></span><br><span class="line">#### 7. 法律和金融领域的延伸</span><br><span class="line"></span><br><span class="line">甚至在计算机领域之外，“default”这个词也广泛使用，并同样被（生硬地）翻译为“缺省”。</span><br><span class="line"></span><br><span class="line">- **缺省判决**： 法律术语。指在庭审中，一方（通常是被告）未能出庭或未能答辩，法官据此作出的对其不利的判决。</span><br><span class="line">- **债务缺省**： 金融术语。指债务人未能履行偿还债务的合同义务，即“违约”。（这里的“缺省”和“违约”是同一个英文词“Default”）。</span><br><span class="line"></span><br><span class="line">### 总结与建议</span><br><span class="line"></span><br><span class="line">1. **直接理解**： 今后在任何计算机文献中看到“缺省”，请毫不犹豫地在心里将其替换为“默认”。你的理解是完全正确的。</span><br><span class="line">2. **知其所以然**： 了解“缺省”来自“Default”，并且其本意是“因用户缺失/省略操作而由系统采用的方案”，这能帮助你更深刻地理解这个概念，而不仅仅是死记硬背一个词。</span><br><span class="line">3. **沟通时灵活运用**： 在书面文档或正式场合，使用“缺省”是规范且专业的。但在日常口头交流中，说“默认路由”、“默认网关”所有人都能听懂，且更自然。这类似于很多人会把“URI”直接说成“网址”，虽然不精确但沟通效率高。</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/10/16/%E6%B5%85%E6%9E%90%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E7%9B%B4%E8%BF%9E%E8%B7%AF%E7%94%B1/" data-id="cuidBsvi7ty895CKX3wH15EE2" data-title="浅析静态路由与直连路由" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" rel="tag">网络工程师</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-hello-world" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/10/16/hello-world/" class="article-date">
+  <time class="dt-published" datetime="2025-10-16T15:15:08.778Z" itemprop="datePublished">2025-10-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/10/16/hello-world/">Hello World</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/10/16/hello-world/" data-id="cuidFTgcr-gVYPt8mlzcxXS1d" data-title="Hello World" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-IS-IS-IS-IS路由协议基本概念" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/10/13/IS-IS-IS-IS%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" class="article-date">
+  <time class="dt-published" datetime="2025-10-13T09:05:58.000Z" itemprop="datePublished">2025-10-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/10/13/IS-IS-IS-IS%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">[IS-IS]IS-IS路由协议基本概念</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>IS-IS链路状态路由协议，采用Dijkstra（迪杰斯特拉）算法，路由优先级15。</p>
+<p>IS-IS的地址结构由IDP（初始域）和DSP（域指定）组成，但是通常直接使用NET地址作为协议地址（NET地址包括区域ID、系统ID、固定字段）。</p>
+<p>IS-IS使用cost作为路由度量， 一条IS-IS路径的cost等于本路由器到达目标网段。沿途的所有路由传递方向入接口的cost总和，cost值越小，路径越优。与OSPF不同的是，IS-IS接口的cost在缺省情况下并不与接口带宽相关（在实际部署时，IS-IS也支持根据带宽调整cost值），无论接口带宽多大，缺省时cost为10。</p>
+<p>支持路由过滤，路由聚合，修改cost，默认路由下发，路由认证等路由优化功能。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/10/13/IS-IS-IS-IS%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" data-id="cuidpGFjfvpuyyskjVwiyK9vc" data-title="[IS-IS]IS-IS路由协议基本概念" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IS-IS/" rel="tag">IS-IS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" rel="tag">网络工程师</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" rel="tag">路由协议</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-RIP-RIP路由协议基本概念" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/10/13/RIP-RIP%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" class="article-date">
+  <time class="dt-published" datetime="2025-10-13T09:02:48.000Z" itemprop="datePublished">2025-10-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/10/13/RIP-RIP%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">[RIP]RIP路由协议基本概念</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>RIP距离矢量路由协议，使用的路由算法是Bellman-Ford（贝尔曼-福特），以经过三层节点个数（跳数）为衡量路径最优的标准，经过节点最多不能超过15跳，16跳为目标不可达。</p>
+<p>路由采用周期更新机制。</p>
+<p>报文封装在传输层，基于UDP的520端口发送消息。</p>
+<p>每个路由器只会学到邻居路由器的信息，不知道整个网络的拓扑结构。每次路由更新最多承载25条路由。</p>
+<p>支持路由过滤，路由聚合（RIPv1不支持），修改跳数值，默认路由下发，路由认证等路由优化功能。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/10/13/RIP-RIP%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" data-id="cuidupDWMZDZgIhFrAF0_yXoH" data-title="[RIP]RIP路由协议基本概念" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RIP/" rel="tag">RIP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" rel="tag">网络工程师</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" rel="tag">路由协议</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-OSPF-一篇文章讲清楚OSPF路由协议的七步邻接关系建立步骤" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/10/11/OSPF-%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%B2%E6%B8%85%E6%A5%9AOSPF%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E4%B8%83%E6%AD%A5%E9%82%BB%E6%8E%A5%E5%85%B3%E7%B3%BB%E5%BB%BA%E7%AB%8B%E6%AD%A5%E9%AA%A4/" class="article-date">
+  <time class="dt-published" datetime="2025-10-11T08:34:48.000Z" itemprop="datePublished">2025-10-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/10/11/OSPF-%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%B2%E6%B8%85%E6%A5%9AOSPF%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E4%B8%83%E6%AD%A5%E9%82%BB%E6%8E%A5%E5%85%B3%E7%B3%BB%E5%BB%BA%E7%AB%8B%E6%AD%A5%E9%AA%A4/">[OSPF]一篇文章讲清楚OSPF路由协议的七步邻接关系建立步骤</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>整个建立过程可以划分为以下几个关键状态，其流程如下图所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">flowchart TD</span><br><span class="line">    A[Down状态&lt;br&gt;初始状态] --&gt; B[Init状态&lt;br&gt;收到Hello包]</span><br><span class="line">    B --&gt; C[2-Way状态&lt;br&gt;在Hello包中看到自己的RID]</span><br><span class="line">    C --&gt; D[ExStart状态&lt;br&gt;主从协商]</span><br><span class="line">    D --&gt; E[Exchange状态&lt;br&gt;交换DBD摘要]</span><br><span class="line">    E --&gt; F[Loading状态&lt;br&gt;请求并加载LSA]</span><br><span class="line">    F --&gt; G[Full状态&lt;br&gt;完全邻接]</span><br></pre></td></tr></table></figure>
+
+<p>现在，我们来详细解释每一个状态：</p>
+<ol>
+<li><strong>Down (失效状态)</strong><ul>
+<li><strong>描述</strong>: 这是邻接关系的初始状态。表示没有从邻居收到任何信息（Hello包）。</li>
+<li><strong>动作</strong>: 本地路由器会周期性地向外发送Hello包，尝试发现邻居。</li>
+</ul>
+</li>
+<li><strong>Init (初始状态)</strong><ul>
+<li><strong>描述</strong>: 本地路由器<strong>收到了对端发来的Hello包</strong>，但Hello包中<strong>没有包含自己的Router ID (RID)</strong>。这意味着对方还没有收到我的Hello包，或者我的参数不符合它的要求。</li>
+<li><strong>动作</strong>: 继续交互Hello包。</li>
+</ul>
+</li>
+<li><strong>2-Way (双向通信状态)</strong><ul>
+<li><strong>描述</strong>: 这是<strong>建立邻接关系的关键前提</strong>。本地路由器在收到的Hello包中，看到了<strong>自己的Router ID</strong>。这表明双向通信已经建立。</li>
+<li><strong>决策点</strong>:<ul>
+<li>在<strong>广播多路访问网络（如以太网）</strong> 中，DR（指定路由器）和BDR（备份指定路由器）将在此状态后与其他路由器继续建立邻接（FULL），而非DR&#x2F;BDR路由器之间会停留在此状态。</li>
+<li>在<strong>点对点网络</strong>中，所有邻居都会继续向下一个状态发展。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>ExStart (预启动状态)</strong><ul>
+<li><strong>描述</strong>: 这是<strong>邻接关系（而不仅仅是邻居关系）的真正开始</strong>。双方使用<strong>空的DBD（数据库描述）包</strong>来<strong>协商主从关系</strong>。</li>
+<li><strong>目的</strong>: 确定在接下来的数据交换过程中，由谁作为“主”设备来控制交换过程。RID更大的一方将成为主设备。</li>
+</ul>
+</li>
+<li><strong>Exchange (交换状态)</strong><ul>
+<li><strong>描述</strong>: 主从关系协商完毕后，双方进入此状态。开始互相发送<strong>包含LSDB（链路状态数据库）摘要信息的DBD包</strong>。</li>
+<li><strong>目的</strong>: 通过交换“目录”，互相了解对方有哪些LSA（链路状态通告）是自己没有的。</li>
+</ul>
+</li>
+<li><strong>Loading (加载状态)</strong><ul>
+<li><strong>描述</strong>: 在收到对端的DBD后，本地路由器会将自身的LSDB与收到的摘要进行对比。</li>
+<li><strong>动作</strong>:<ul>
+<li>如果发现自己缺少某条LSA，就会向对方发送<strong>LSR（链路状态请求）</strong>。</li>
+<li>对方会回复<strong>LSU（链路状态更新）</strong> 来传递完整的LSA信息。</li>
+<li>本地路由器收到LSU后，会发送<strong>LSAck（链路状态确认）</strong> 进行确认。</li>
+</ul>
+</li>
+<li>图中的 <code>LSR</code>, <code>LSU</code>, <code>LSAck</code> 报文就是在此状态交互的。</li>
+</ul>
+</li>
+<li><strong>Full (完全邻接状态)</strong><ul>
+<li><strong>描述</strong>: 这是邻接关系建立的<strong>最终稳定状态</strong>。此时，双方路由器的<strong>LSDB已经完全同步</strong>。</li>
+<li><strong>意义</strong>: 达到此状态后，路由器才能基于完全同步的LSDB，使用SPF算法独立计算出一致且无环的路由表。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="示意图中报文类型说明"><a href="#示意图中报文类型说明" class="headerlink" title="示意图中报文类型说明"></a>示意图中报文类型说明</h3><ul>
+<li><strong>Hello</strong>: 用于发现和维持邻居关系。</li>
+<li><strong>DD (Database Description Packet)</strong>: 用于描述自己的LSDB摘要，在ExStart和Exchange状态交换。</li>
+<li><strong>LSR (Link State Request Packet)</strong>: 用于请求完整的LSA。</li>
+<li><strong>LSU (Link State Update Packet)</strong>: 用于发送完整的LSA。</li>
+<li><strong>LSAck (Link State Acknowledgment Packet)</strong>: 用于确认收到LSU。</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>OSPF邻接关系的建立是一个严谨的“状态机”过程，从Down到Full，每一步都有特定的任务和报文交互。你的示意图完美地展示了这个完整的生命周期。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/10/11/OSPF-%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%B2%E6%B8%85%E6%A5%9AOSPF%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E4%B8%83%E6%AD%A5%E9%82%BB%E6%8E%A5%E5%85%B3%E7%B3%BB%E5%BB%BA%E7%AB%8B%E6%AD%A5%E9%AA%A4/" data-id="cuid9JCjC1Kzz7GGG8MhM-V8y" data-title="[OSPF]一篇文章讲清楚OSPF路由协议的七步邻接关系建立步骤" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OSPF/" rel="tag">OSPF</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" rel="tag">网络工程师</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" rel="tag">路由协议</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-OSPF-OSPF路由协议基本概念" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/10/11/OSPF-OSPF%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" class="article-date">
+  <time class="dt-published" datetime="2025-10-11T08:32:35.000Z" itemprop="datePublished">2025-10-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/10/11/OSPF-OSPF%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">[OSPF]OSPF路由协议基本概念</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>OSPF链路状态路由协议，采用DIjkstra算法，协议本身不存在环路。报文封装在IP层，协议号89，使用组播224.0.0.5和224.0.0.6建立连接。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/10/11/OSPF-OSPF%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" data-id="cuidbJ-3Jwh64dmMG_wIOHoSS" data-title="[OSPF]OSPF路由协议基本概念" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OSPF/" rel="tag">OSPF</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" rel="tag">网络工程师</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" rel="tag">路由协议</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-BGP-深入讨论BGP预防环路机制-3-BGP联盟" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/10/04/BGP-%E6%B7%B1%E5%85%A5%E8%AE%A8%E8%AE%BABGP%E9%A2%84%E9%98%B2%E7%8E%AF%E8%B7%AF%E6%9C%BA%E5%88%B6-3-BGP%E8%81%94%E7%9B%9F/" class="article-date">
+  <time class="dt-published" datetime="2025-10-04T01:18:40.000Z" itemprop="datePublished">2025-10-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/10/04/BGP-%E6%B7%B1%E5%85%A5%E8%AE%A8%E8%AE%BABGP%E9%A2%84%E9%98%B2%E7%8E%AF%E8%B7%AF%E6%9C%BA%E5%88%B6-3-BGP%E8%81%94%E7%9B%9F/">[BGP]深入讨论BGP预防环路机制(3) BGP联盟</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>好的，这是一个非常核心的BGP进阶概念。我们来详细拆解一下这句话：“BGP通过AS内部使用联盟，以此防止环路”。</p>
+<p>为了理解它，我们需要分三步走：</p>
+<ol>
+<li><strong>BGP的防环路基础机制</strong></li>
+<li><strong>在单个AS内部（iBGP）遇到的问题</strong></li>
+<li><strong>联盟如何解决这个问题并防止环路</strong></li>
+</ol>
+<hr>
+<h3 id="1-BGP的防环路基础机制：AS-PATH"><a href="#1-BGP的防环路基础机制：AS-PATH" class="headerlink" title="1. BGP的防环路基础机制：AS_PATH"></a>1. BGP的防环路基础机制：AS_PATH</h3><p>BGP是一种“路径矢量”路由协议，它防环路的核心机制是 <strong>AS_PATH</strong> 属性。</p>
+<ul>
+<li><strong>工作原理</strong>：当BGP路由器向外部的AS通告一条路由时，会把自己的<strong>AS号</strong> 添加到AS_PATH列表的最前面。</li>
+<li><strong>环路检测</strong>：当一台BGP路由器收到一条路由更新时，它会检查AS_PATH列表。<strong>如果在这个列表中发现了自己的AS号，它就认为这条路由产生了环路，从而丢弃该路由。</strong></li>
+</ul>
+<p><strong>举个例子：</strong><br>假设AS 100 -&gt; AS 200 -&gt; AS 300。<br>当路由从AS 100传到AS 200时，AS_PATH是 <code>100</code>。<br>当AS 200再传给AS 300时，AS_PATH变成 <code>200 100</code>。<br>如果AS 300试图把这条路由再传回给AS 200，AS 200会在AS_PATH <code>300 200 100</code> 中看到自己的AS号 <code>200</code>，于是它会拒绝接受这条路由，防止了环路。</p>
+<hr>
+<h3 id="2-在单个AS内部（iBGP）遇到的问题"><a href="#2-在单个AS内部（iBGP）遇到的问题" class="headerlink" title="2. 在单个AS内部（iBGP）遇到的问题"></a>2. 在单个AS内部（iBGP）遇到的问题</h3><p>在一个AS内部，路由器之间使用<strong>iBGP</strong> 来交换BGP路由信息。iBGP有一个非常重要的规则，叫做：</p>
+<p><strong>“从一台iBGP对等体学到的路由，永远不会传递给另一台iBGP对等体。”</strong></p>
+<p>这被称为 <strong>BGP Split-Horizon</strong>。</p>
+<p><strong>为什么要有这个规则？</strong><br>因为在AS内部，<strong>没有AS号被添加到AS_PATH中</strong>！回想一下防环路机制，它是基于AS_PATH来检测的。如果在同一个AS内，路由器之间互相传递路由，AS_PATH不会改变，BGP就无法通过AS_PATH来检测环路。为了防止在AS内部产生路由环路，所以干脆定下这个“死规矩”：iBGP邻居之间传一次就够了，不许二次传播。</p>
+<p><strong>这个规则带来的问题：</strong><br>为了保证AS内所有BGP路由器都能学到完整的路由信息，<strong>所有运行iBGP的路由器之间必须形成全互联的邻居关系</strong>。这在一个大型AS中会带来巨大的管理和性能开销（比如有N台路由器，就需要建立 N*(N-1)&#x2F;2 个iBGP会话）。</p>
+<hr>
+<h3 id="3-联盟如何解决这个问题并防止环路"><a href="#3-联盟如何解决这个问题并防止环路" class="headerlink" title="3. 联盟如何解决这个问题并防止环路"></a>3. 联盟如何解决这个问题并防止环路</h3><p><strong>联盟（BGP Confederations）</strong> 就是为了解决上述“iBGP全互联”问题而设计的一种方法。</p>
+<p><strong>它的核心思想是：</strong> <strong>“化整为零”</strong>。把一个大的AS（我们称之为<strong>联盟AS</strong>）划分成多个小的、更容易管理的AS（我们称之为<strong>子AS</strong> 或 <strong>成员AS</strong>）。</p>
+<p><strong>具体做法：</strong></p>
+<ol>
+<li><strong>划分</strong>：将原来的大AS 65000，划分为几个子AS，例如 AS 65001, AS 65002, AS 65003。</li>
+<li><strong>对外表现</strong>：对于<strong>联盟外部</strong>的BGP对等体来说，整个联盟仍然被看作<strong>一个单一的AS 65000</strong>。它们完全不知道内部被划分了。</li>
+<li><strong>内部运行</strong>：在<strong>联盟内部</strong>，这些子AS之间使用一种特殊的<strong>eBGP</strong> 来交换路由信息。注意，它不是标准的eBGP，而是经过修改的，我们称之为 ** Confederation eBGP**。</li>
+</ol>
+<h4 id="联盟如何防止环路？"><a href="#联盟如何防止环路？" class="headerlink" title="联盟如何防止环路？"></a><strong>联盟如何防止环路？</strong></h4><p>这里就是最关键的部分了。联盟通过引入两个概念来防止环路：</p>
+<p><strong>a) AS_CONFED_SEQUENCE</strong></p>
+<p>这是一个类似于AS_PATH的BGP路径属性，但它只在联盟内部使用。</p>
+<ul>
+<li>当路由在一个子AS（如AS 65001）内传播时，AS_PATH不会改变。</li>
+<li>但当路由从一个子AS（AS 65001）传到另一个子AS（AS 65002）时，<strong>发出路由的子AS号（65001）会被添加到 AS_CONFED_SEQUENCE 这个属性中</strong>。</li>
+</ul>
+<p><strong>b) 联盟内部的环路检测</strong><br>在联盟内部，路由器会同时检查 <strong>AS_PATH</strong> 和 <strong>AS_CONFED_SEQUENCE</strong>。</p>
+<ul>
+<li>如果在一台属于AS 65002的路由器收到的路由更新中，在 <strong>AS_CONFED_SEQUENCE</strong> 里看到了自己的子AS号 <code>65002</code>，它就会认为这条路由在联盟内部产生了环路，从而将其丢弃。</li>
+</ul>
+<p><strong>这样一来，联盟就在大的AS内部，重新创建了一个类似于外部AS之间的防环路机制。</strong></p>
+<h4 id="工作流程与好处"><a href="#工作流程与好处" class="headerlink" title="工作流程与好处"></a><strong>工作流程与好处</strong></h4><ul>
+<li><strong>流程</strong>：<ul>
+<li>子AS内部：使用iBGP，遵循iBGP的规则。</li>
+<li>子AS之间：使用 Confederation eBGP。它允许像标准eBGP一样传递路由，从而<strong>打破了iBGP全互联的要求</strong>。你只需要在每个子AS的边界路由器之间建立eBGP对等体关系即可。</li>
+</ul>
+</li>
+<li><strong>好处</strong>：<ol>
+<li><strong>解决了全互联问题</strong>：大大减少了需要建立的iBGP会话数量。</li>
+<li><strong>防止了AS内部环路</strong>：通过AS_CONFED_SEQUENCE属性，在联盟内部实现了可靠的环路检测。</li>
+<li><strong>策略灵活性</strong>：可以在子AS之间应用类似于eBGP的路由策略，提供了更精细的控制。</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li><strong>根本问题</strong>：iBGP因为AS_PATH在AS内不变，无法防环路，所以只能用“全互联”这个笨办法来规避环路，但这在大型网络中不可行。</li>
+<li><strong>联盟的解决方案</strong>：将大AS“伪装”成多个小AS的联合体。</li>
+<li><strong>防环路机制</strong>：在内部的小AS（子AS）之间通信时，使用一个<strong>新的、只在联盟内部有效的路径属性 <code>AS_CONFED_SEQUENCE</code></strong> 来记录路径。路由器通过检查这个属性来判断是否在联盟内部形成了环路。</li>
+</ul>
+<p><strong>一个简单的比喻：</strong><br>把一个有1000人的大公司（大AS）重组，分成10个部门（子AS）。</p>
+<ul>
+<li><strong>以前</strong>：为了保证信息一致，要求这1000人两两之间都要直接沟通（全互联），这根本做不到。</li>
+<li><strong>现在</strong>：部门内部（iBGP）自由沟通。部门之间（Confed eBGP）只派代表（边界路由器）沟通，并且每次跨部门传递消息时，都会在内部备忘录（AS_CONFED_SEQUENCE）上盖章，如果一份文件转了一圈又回到本部门，一看备忘录就知道是循环了，直接扔掉。而对于公司外部的人来说，他们仍然只认为这是一个公司（联盟AS）。</li>
+</ul>
+<p>那是不是可以说，BGP联盟仅适用于IBGP，而在EBGP上不可行？</p>
+<p>这是一个非常好的问题，它触及了BGP联盟设计的核心。</p>
+<p>首先给出结论：这个说法完全正确，并且非常精准。我们可以这样来理解：</p>
+<p><strong>BGP联盟本质上是一种用于“优化和改造大型AS内部iBGP网络”的技术。它不是为了在eBGP上使用，而是为了解决纯iBGP环境下的问题而诞生的。</strong></p>
+<p>下面我来详细解释为什么：</p>
+<hr>
+<h3 id="1-根本目的：解决iBGP的难题"><a href="#1-根本目的：解决iBGP的难题" class="headerlink" title="1. 根本目的：解决iBGP的难题"></a>1. 根本目的：解决iBGP的难题</h3><p>正如我们之前讨论的，iBGP有两大核心问题：</p>
+<ul>
+<li><strong>防环路机制缺失</strong>：在AS内部传递时，AS_PATH不变，无法用AS_PATH防环。</li>
+<li><strong>全互联要求</strong>：导致管理复杂度和资源消耗巨大。</li>
+</ul>
+<p><strong>联盟就是为了直接解决这两个iBGP特有的问题而设计的。</strong> 如果一个AS很小，根本不需要iBGP全互联，那么联盟也就没有存在的必要。</p>
+<hr>
+<h3 id="2-实现方式：在AS内部“模拟”eBGP"><a href="#2-实现方式：在AS内部“模拟”eBGP" class="headerlink" title="2. 实现方式：在AS内部“模拟”eBGP"></a>2. 实现方式：在AS内部“模拟”eBGP</h3><p>联盟的实现手法非常巧妙：<strong>它在一个真实的AS内部，创建了多个逻辑上的“子AS”，然后在它们之间运行一种特殊的、经过修改的eBGP。</strong></p>
+<p>这里的关键点是：</p>
+<ul>
+<li><strong>对“外”</strong>：对于联盟之外的、真正的eBGP对等体来说，它们看到的仍然是一个<strong>单一的、完整的AS号</strong>。它们完全不知道这个AS内部被划分成了多个子AS。在与外部通信时，联盟AS的行为和一个普通AS没有任何区别。</li>
+<li><strong>对“内”</strong>：在联盟内部，子AS之间的行为<strong>类似于eBGP</strong>（比如可以正常传递路由，而不需要全互联），但又<strong>不是标准的eBGP</strong>（比如下一跳属性、LOCAL_PREF等属性在子AS间依然保持，不像标准eBGP那样默认重置）。</li>
+</ul>
+<p>所以，<strong>联盟技术是将eBGP的某些机制“内化”为了一个解决iBGP问题的工具。</strong></p>
+<hr>
+<h3 id="3-为什么说它“在eBGP上不可行”？"><a href="#3-为什么说它“在eBGP上不可行”？" class="headerlink" title="3. 为什么说它“在eBGP上不可行”？"></a>3. 为什么说它“在eBGP上不可行”？</h3><p>这个说法可以从两个层面理解：</p>
+<p><strong>a) 从设计初衷和应用场景来看：</strong><br>联盟的设计目标就不是为了用于两个<strong>真正独立的、不同所属的AS</strong> 之间的eBGP连接。比如，你不可能告诉你的运营商：“我们在我们两个AS之间的eBGP链路上启用联盟吧。” 这是没有意义的，因为eBGP本身已经通过AS_PATH完美地解决了环路问题，并且不需要全互联。</p>
+<p><strong>b) 从技术细节来看：</strong><br>如果试图在两个真正的eBGP对等体之间使用联盟，会遇到根本性的矛盾：</p>
+<ul>
+<li><strong>AS号表示</strong>：联盟使用的子AS号通常属于私有AS号范围（64512-65534）。在真正的eBGP会话中，这些私有AS号是不应该被通告给对方的。</li>
+<li><strong>路径属性</strong>：联盟内部使用的<code>AS_CONFED_SEQUENCE</code>路径属性，在传递给真正的eBGP对等体之前<strong>必须被移除</strong>。如果将它泄露给外部AS，会导致路由问题，因为外部AS无法理解这个属性。</li>
+<li><strong>失去意义</strong>：eBGP本身工作得很好，引入联盟机制不会带来任何好处，反而会破坏标准的防环路和工作机制。</li>
+</ul>
+<hr>
+<h3 id="总结与类比"><a href="#总结与类比" class="headerlink" title="总结与类比"></a>总结与类比</h3><p>让我们用一个比喻来巩固理解：</p>
+<ul>
+<li><strong>一个大型公司</strong> &#x3D; 一个大的AS（例如AS 65000）</li>
+<li><strong>公司内部的部门（如市场部、技术部）</strong> &#x3D; 子AS（AS 65001， AS 65002）</li>
+<li><strong>公司与外部公司沟通</strong> &#x3D; eBGP</li>
+<li><strong>公司内部的全员大会</strong> &#x3D; iBGP全互联（效率低下）</li>
+<li><strong>联盟</strong> &#x3D; 公司重组，设立部门经理。部门内部自由沟通（子AS内的iBGP），部门经理之间开会沟通（子AS间的Confederation eBGP）。对外，公司仍然是一个整体。</li>
+</ul>
+<p><strong>结论：</strong></p>
+<p><strong>BGP联盟是一种专门为解决大型iBGP网络中的全互联和防环路问题而设计的技术。它通过在一个真实的AS内部引入类似eBGP的逻辑关系来实现这一目标，但它本身并不应用于两个独立AS之间的eBGP会话。</strong> 它是“用于iBGP的eBGP-like机制”，而不是“用于eBGP的技术”。</p>
+<p>最后，让我们再对IBGP中的全互联，反射路由器RR，以及BGP联盟三大预防环路机制进行详细对比。</p>
+<hr>
+<h3 id="对比总览"><a href="#对比总览" class="headerlink" title="对比总览"></a>对比总览</h3><table>
+<thead>
+<tr>
+<th align="left">特性维度</th>
+<th align="left">全互联</th>
+<th align="left">路由反射器</th>
+<th align="left">联盟</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>核心思想</strong></td>
+<td align="left">最直接的方法，遵守基础规则</td>
+<td align="left"><strong>打破“不传递”规则</strong>：指定特定路由器（RR）来反射路由</td>
+<td align="left"><strong>化整为零</strong>：将大AS划分为小AS，内部使用“特殊eBGP”</td>
+</tr>
+<tr>
+<td align="left"><strong>扩展性</strong></td>
+<td align="left"><strong>极差</strong><br>会话数呈O(N²)增长</td>
+<td align="left"><strong>优秀</strong><br>会话数呈O(N)线性增长</td>
+<td align="left"><strong>良好</strong><br>减少了全互联范围，但比RR稍复杂</td>
+</tr>
+<tr>
+<td align="left"><strong>配置与管理复杂度</strong></td>
+<td align="left"><strong>低</strong>（概念简单）<br><strong>高</strong>（实际维护会话多）</td>
+<td align="left"><strong>中等</strong><br>需要精心设计RR和客户机的拓扑</td>
+<td align="left"><strong>高</strong><br>需要规划子AS，配置边界路由器</td>
+</tr>
+<tr>
+<td align="left"><strong>防环机制</strong></td>
+<td align="left"><strong>BGP Split-Horizon</strong><br>（从iBGP学到的路由不传给其他iBGP对等体）</td>
+<td align="left"><strong>Cluster_List</strong> 和 <strong>Originator_ID</strong> 属性</td>
+<td align="left"><strong>AS_CONFED_SEQUENCE</strong> 属性</td>
+</tr>
+<tr>
+<td align="left"><strong>路径可见性</strong></td>
+<td align="left">AS_PATH保持原始状态，清晰明了</td>
+<td align="left">AS_PATH保持原始状态</td>
+<td align="left">对外隐藏内部子AS结构，AS_PATH中只显示联盟AS号</td>
+</tr>
+<tr>
+<td align="left"><strong>策略控制的灵活性</strong></td>
+<td align="left">策略在所有路由器上对等应用</td>
+<td align="left"><strong>集中化策略</strong><br>可在RR上应用策略，影响其所有客户机</td>
+<td align="left"><strong>分布式策略</strong><br>可在子AS边界应用类似eBGP的策略，更精细</td>
+</tr>
+<tr>
+<td align="left"><strong>网络稳定性与故障域</strong></td>
+<td align="left"><strong>无单点故障</strong><br>一个会话断开不影响其他会话</td>
+<td align="left"><strong>有单点故障风险</strong><br>一个RR故障会影响其所有客户机（可通过冗余缓解）</td>
+<td align="left"><strong>故障域隔离</strong><br>一个子AS的问题更容易被隔离在内部</td>
+</tr>
+<tr>
+<td align="left"><strong>迁移难度</strong></td>
+<td align="left">N&#x2F;A（基准）</td>
+<td align="left"><strong>相对容易</strong><br>可以逐步部署，将部分路由器设为RR的客户机</td>
+<td align="left"><strong>相对困难</strong><br>通常需要规划停机时间，重新划分AS并配置边界</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="深入分析各自特点"><a href="#深入分析各自特点" class="headerlink" title="深入分析各自特点"></a>深入分析各自特点</h3><h4 id="1-全互联"><a href="#1-全互联" class="headerlink" title="1. 全互联"></a>1. 全互联</h4><ul>
+<li><strong>优点</strong>：<ul>
+<li><strong>简单可靠</strong>：概念上最简单，符合BGP最基础的设计。</li>
+<li><strong>无单点故障</strong>：没有中心节点，任何一个iBGP会话的中断只会影响直接相连的两个路由器。</li>
+</ul>
+</li>
+<li><strong>缺点</strong>：<ul>
+<li><strong>无法扩展</strong>：这是其致命弱点。当路由器数量超过几十台时，会话数量会变得难以管理，消耗大量内存和CPU资源。</li>
+</ul>
+</li>
+<li><strong>适用场景</strong>：<ul>
+<li>小型网络或实验室环境。</li>
+<li>作为衡量其他方案优劣的基准。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-路由反射器"><a href="#2-路由反射器" class="headerlink" title="2. 路由反射器"></a>2. 路由反射器</h4><ul>
+<li><strong>优点</strong>：<ul>
+<li><strong>极佳的扩展性</strong>：大幅减少了iBGP会话数量。是当前大型网络中最主流的解决方案。</li>
+<li><strong>易于部署和迁移</strong>：可以从现有全互联网络中逐步引入RR，无需大规模重构网络。</li>
+<li><strong>保持逻辑拓扑</strong>：整个AS在逻辑上仍然是一个统一的实体，对外部网络没有影响。</li>
+</ul>
+</li>
+<li><strong>缺点</strong>：<ul>
+<li><strong>可能引入单点故障</strong>：如果RR发生故障，其下所有客户机将无法学习到完整的BGP路由。解决方案是部署多个冗余的RR。</li>
+<li><strong>潜在的子最优路径</strong>：RR会向所有客户机反射最佳路径，但客户机到该路径的下一跳可能不是最优的，需要依赖IGP的收敛或开启“下一跳自我”功能。</li>
+<li><strong>配置复杂性</strong>：需要精心设计RR的层级（如分层RR）和Cluster，配置不当容易引起环路。</li>
+</ul>
+</li>
+<li><strong>适用场景</strong>：<ul>
+<li><strong>绝大多数中大型企业和服务提供商网络</strong>。是目前事实上的标准。</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-联盟"><a href="#3-联盟" class="headerlink" title="3. 联盟"></a>3. 联盟</h4><ul>
+<li><strong>优点</strong>：<ul>
+<li><strong>天然的故障域隔离</strong>：将一个大的网络问题分解到多个子AS中，便于管理和故障排查。</li>
+<li><strong>策略灵活性强</strong>：在子AS边界，可以像使用eBGP一样应用丰富的路由策略（如MED、AS_PATH预挂等），提供了比RR更精细的控制粒度。</li>
+<li><strong>无单点故障</strong>：类似于全互联，在子AS内部是全互联或RR，但子AS之间是网状连接，没有中心化的反射器。</li>
+</ul>
+</li>
+<li><strong>缺点</strong>：<ul>
+<li><strong>配置和管理最复杂</strong>：需要规划子AS的划分、分配私有AS号，并配置所有子AS边界路由器。</li>
+<li><strong>迁移困难</strong>：从现有网络迁移到联盟架构通常需要详细的计划和可能的业务中断。</li>
+<li><strong>调试复杂度增加</strong>：在排查问题时，需要同时关注AS_PATH和AS_CONFED_SEQUENCE。</li>
+</ul>
+</li>
+<li><strong>适用场景</strong>：<ul>
+<li>规模极其庞大、结构复杂且由多个独立管理区域组成的网络（例如超大型运营商、经历了多次合并的网络）。</li>
+<li>对策略控制有极高要求的特殊场景。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="组合使用"><a href="#组合使用" class="headerlink" title="组合使用"></a>组合使用</h3><p>在实际网络中，这三种方案并非互斥，经常被<strong>组合使用</strong>以发挥最大效益。</p>
+<p><strong>最常见的组合是：路由反射器 + 联盟</strong></p>
+<ul>
+<li>在一个超大型的联盟AS内，每个子AS的内部可能仍然很大。</li>
+<li>此时，可以在<strong>每个子AS内部使用路由反射器</strong>来进一步减少iBGP会话数量。</li>
+<li>这样既获得了联盟的故障隔离和策略灵活性，又享受了RR在子AS内部的扩展性优势。</li>
+</ul>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><ul>
+<li><strong>全互联</strong>是“教科书式”的基准，但不可用于生产大型网络。</li>
+<li><strong>路由反射器</strong>是当今的“主流选择”，在扩展性和易用性之间取得了最佳平衡。</li>
+<li><strong>联盟</strong>是“高级武器”，提供了最强的控制力和隔离性，但代价是极高的复杂性。</li>
+</ul>
+<p>选择哪种方案取决于您的网络规模、增长预期、运维团队的技术能力和对网络控制力的具体要求。对于绝大多数网络而言，<strong>路由反射器</strong>都是首选方案。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/10/04/BGP-%E6%B7%B1%E5%85%A5%E8%AE%A8%E8%AE%BABGP%E9%A2%84%E9%98%B2%E7%8E%AF%E8%B7%AF%E6%9C%BA%E5%88%B6-3-BGP%E8%81%94%E7%9B%9F/" data-id="cuidkL-fu2dKa7tgkITYYZVb7" data-title="[BGP]深入讨论BGP预防环路机制(3) BGP联盟" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" rel="tag">网络工程师</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" rel="tag">路由协议</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-BGP-深入讨论BGP预防环路机制-2-EBGP" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/10/04/BGP-%E6%B7%B1%E5%85%A5%E8%AE%A8%E8%AE%BABGP%E9%A2%84%E9%98%B2%E7%8E%AF%E8%B7%AF%E6%9C%BA%E5%88%B6-2-EBGP/" class="article-date">
+  <time class="dt-published" datetime="2025-10-04T01:11:50.000Z" itemprop="datePublished">2025-10-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/10/04/BGP-%E6%B7%B1%E5%85%A5%E8%AE%A8%E8%AE%BABGP%E9%A2%84%E9%98%B2%E7%8E%AF%E8%B7%AF%E6%9C%BA%E5%88%B6-2-EBGP/">[BGP]深入讨论BGP预防环路机制(2) EBGP</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>当一台BGP路由器将一条路由通告给一个EBGP对等体是，它必须把自己的AS好添加到该路由AS_Path列表最前面。</p>
+<p>BGP路由器在收到一条路由时，会检查其AS_Path属性：若在该列表中发现自己的AS号，则说明这条路由到过本AS，将会形成环路。路由器会直接丢弃该路由。</p>
+<p>接下来深入讨论一个问题：EBGP可以和IBGP一样搞水平分割吗？</p>
+<p>直接的回答是：<strong>可以，但EBGP防环机制的核心和主要手段并不是传统意义上的“水平分割”，而是其特有的AS_PATH路径属性。</strong></p>
+<p>下面我们来详细解释：</p>
+<h3 id="1-传统“水平分割”与EBGP"><a href="#1-传统“水平分割”与EBGP" class="headerlink" title="1. 传统“水平分割”与EBGP"></a>1. 传统“水平分割”与EBGP</h3><ul>
+<li><strong>传统水平分割</strong>：在像RIP这样的距离矢量协议中，水平分割的规则是：“<strong>从一个接口学到的路由，不会再从同一个接口发出去</strong>”。这有效地防止了相邻路由器之间的环路。</li>
+<li><strong>EBGP的情况</strong>：EBGP对等体之间通常只有一条直连的物理链路或TCP连接。从这个角度看，EBGP会话本身就隐含了“水平分割”的特性——它不会把从某个EBGP对等体学来的路由，再发回给同一个对等体。因为那样做没有意义，对方本来就是这条路由的源头或中转站。</li>
+</ul>
+<p><strong>所以，从这个狭义的角度说，EBGP在直连的对等体之间，确实有类似水平分割的行为。</strong></p>
+<h3 id="2-EBGP防环的核心机制：AS-PATH属性"><a href="#2-EBGP防环的核心机制：AS-PATH属性" class="headerlink" title="2. EBGP防环的核心机制：AS_PATH属性"></a>2. EBGP防环的核心机制：AS_PATH属性</h3><p>然而，EBGP面对的网络环境远比两个直连路由器复杂。环路可能发生在多个AS之间，而不仅仅是两个直连路由器之间。这时，传统的“水平分割”就完全不够用了。</p>
+<p><strong>EBGP防环的基石是 <code>AS_PATH</code> 属性。</strong></p>
+<p>它的规则非常简单而有效：<br><strong>当一台BGP路由器将一条路由通告给一个EBGP对等体时，它必须把自己的AS号添加到该路由的AS_PATH列表的最前面。</strong></p>
+<p><strong>BGP路由器在收到一条路由时，会检查其AS_PATH属性：</strong></p>
+<ul>
+<li><strong>如果在该列表中发现了自己的AS号，说明这条路由曾经经过本AS，形成了环路。</strong> 路由器会直接丢弃这条路由，认为它无效。</li>
+</ul>
+<p><strong>举例说明：</strong><br>假设有这样一个路径：AS 100 -&gt; AS 200 -&gt; AS 300</p>
+<ol>
+<li>AS 100将路由 <code>10.0.0.0/8</code> 通告给AS 200。此时AS_PATH为 <code>[100]</code>。</li>
+<li>AS 200收到后，将路由通告给AS 300。在发送前，它把自己的AS号200加进去，AS_PATH变为 <code>[200, 100]</code>。</li>
+<li>AS 300收到路由，AS_PATH是 <code>[200, 100]</code>。</li>
+<li><strong>现在，如果AS 300错误地试图将这条路由再发回给AS 200</strong>，它在发送前会添加自己的AS号，AS_PATH变为 <code>[300, 200, 100]</code>。</li>
+<li>当AS 200收到这条路由时，它检查AS_PATH，发现其中包含自己的AS号 <code>200</code>。于是AS 200立刻判定这条路由形成了环路，并将其丢弃。</li>
+</ol>
+<p>这个机制完美地解决了在不同自治系统之间可能出现的任何环路问题。</p>
+<h3 id="3-IBGP的防环与“水平分割”"><a href="#3-IBGP的防环与“水平分割”" class="headerlink" title="3. IBGP的防环与“水平分割”"></a>3. IBGP的防环与“水平分割”</h3><p>作为对比，我们可以看一下IBGP的情况，这能更好地理解“水平分割”的概念。</p>
+<p>在同一个AS内部，IBGP对等体之间也会传递路由。为了防止在AS内部产生环路，IBGP使用了一条非常重要的规则，这条规则<strong>非常类似于“水平分割”</strong>：</p>
+<p><strong>从一个IBGP对等体学到的路由，不会传递给其他IBGP对等体。</strong></p>
+<p>这意味着，在AS内部，IBGP路由器之间必须建立<strong>全互联</strong>的邻居关系，或者使用路由反射器&#x2F;联盟来规避这个规则。这正是为了防止在缺乏像AS_PATH这样的跨AS防环机制的情况下，路由在AS内部无休止地传递。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><table>
+<thead>
+<tr>
+<th align="left">协议&#x2F;场景</th>
+<th align="left">主要防环机制</th>
+<th align="left">是否使用传统“水平分割”</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>RIP</strong></td>
+<td align="left">水平分割、毒性逆转、最大跳数</td>
+<td align="left"><strong>是</strong>，核心机制之一</td>
+</tr>
+<tr>
+<td align="left"><strong>EBGP</strong></td>
+<td align="left"><strong>AS_PATH属性</strong></td>
+<td align="left">在直连对等体间有类似行为，但<strong>不是主要机制</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>IBGP</strong></td>
+<td align="left"><strong>IBGP水平分割规则</strong>（不从IBGP学到的路由传给另一个IBGP）</td>
+<td align="left"><strong>是</strong>，这是其核心防环规则，但特指IBGP邻居间</td>
+</tr>
+</tbody></table>
+<p><strong>结论：</strong><br>EBGP可以通过其会话特性在直连对等体间实现类似水平分割的效果，但其真正强大和核心的防环机制是 <strong>AS_PATH属性</strong>。而“水平分割”这一概念在BGP协议中，更明确地体现在 <strong>IBGP的防环规则</strong> 上。</p>
+<p>换种说法，<strong>EBGP因为常用于广域网，所以在这里建立全互联，进而建立水平分割并不现实。</strong></p>
+<p>这正是网络协议设计中的一个经典权衡：<strong>理论上的理想方案 vs. 现实中的工程可行性。</strong></p>
+<p>我们可以从以下几个角度来深入理解为什么在EBGP场景下“建立全互联”不现实，从而导致它必须依赖 <code>AS_PATH</code> 而不是“IBGP式”的水平分割：</p>
+<h3 id="1-规模与可扩展性"><a href="#1-规模与可扩展性" class="headerlink" title="1. 规模与可扩展性"></a>1. 规模与可扩展性</h3><ul>
+<li><strong>IBGP在一个AS内</strong>：一个自治系统（AS）内的路由器数量是有限的，可能是几十台、几百台。建立全互联的IBGP会话（会话数量公式：n*(n-1)&#x2F;2）虽然也有挑战，但通过路由反射器等技术可以管理。</li>
+<li><strong>EBGP在互联网上</strong>：互联网由数万个AS构成。如果要求所有AS之间都建立全互联的EBGP会话，那将是一个天文数字，无论在配置复杂度、TCP连接数量还是路由表维护上，都是完全不可能实现的。互联网的架构本身就是基于<strong>层级和互联</strong>的，而不是一个扁平的全互联网络。</li>
+</ul>
+<h3 id="2-管理与策略控制"><a href="#2-管理与策略控制" class="headerlink" title="2. 管理与策略控制"></a>2. 管理与策略控制</h3><ul>
+<li><strong>商业关系</strong>：AS之间存在复杂的商业关系（如供应商、客户、对等体）。一个AS需要根据商业合同，精确地控制它将哪些路由通告给哪个邻居。如果建立全互联，这种精细化的策略控制将无法实现。<code>AS_PATH</code> 属性本身就是一个强大的策略工具，网络工程师可以根据AS路径长度、经过的AS等信息来决定优选哪条路径。</li>
+<li><strong>管理域</strong>：每个AS都是一个独立的管理域。让一个AS的管理员去和互联网上所有其他AS的管理员协调建立BGP会话，在组织和安全上都是不可行的。</li>
+</ul>
+<h3 id="3-地理与拓扑"><a href="#3-地理与拓扑" class="headerlink" title="3. 地理与拓扑"></a>3. 地理与拓扑</h3><ul>
+<li><strong>物理距离</strong>：一个AS可能位于北京，而它的对等体可能位于伦敦或纽约。它们之间的通信需要经过多个中间网络。从物理和逻辑拓扑上看，它们根本不是“直连”的，也就不存在一个单一的“接口”来应用传统的水平分割规则。<code>AS_PATH</code> 记录了整个路径，完美地适应了这种多跳、跨地域的复杂环境。</li>
+</ul>
+<h3 id="总结对比"><a href="#总结对比" class="headerlink" title="总结对比"></a>总结对比</h3><p>让我们把这两种场景并置，就能清晰地看到设计哲学的差异：</p>
+<table>
+<thead>
+<tr>
+<th align="left">场景</th>
+<th align="left"><strong>IBGP - 在一个AS内部</strong></th>
+<th align="left"><strong>EBGP - 在整个互联网上</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>范围</strong></td>
+<td align="left">单一管理域，规模有限</td>
+<td align="left">全球范围，数万个独立管理域</td>
+</tr>
+<tr>
+<td align="left"><strong>连接性</strong></td>
+<td align="left"><strong>追求&#x2F;模拟全互联</strong>（通过物理全互联或路由反射器）</td>
+<td align="left"><strong>必然是多跳、部分互联</strong>的网状结构</td>
+</tr>
+<tr>
+<td align="left"><strong>防环机制</strong></td>
+<td align="left"><strong>IBGP水平分割规则</strong>（因为拓扑可以模拟成全互联）</td>
+<td align="left"><strong>AS_PATH属性</strong>（因为拓扑是网状，无法全互联）</td>
+</tr>
+<tr>
+<td align="left"><strong>核心思想</strong></td>
+<td align="left"><strong>“我不知道这条路有没有环，所以我干脆不把它传回给可能知道它的人。”</strong> （基于会话的过滤）</td>
+<td align="left"><strong>“让我看看这条路的历史记录，如果上面有我自己的脚印，那我就绕回来了。”</strong> （基于路径记录的检验）</td>
+</tr>
+</tbody></table>
+<p>所以，可以做如下总结：<strong>正是因为EBGP应用于广域网这种规模巨大、无法全互联的环境，才催生了 <code>AS_PATH</code> 这种更聪明、更可扩展的防环机制，而放弃了依赖全互联拓扑的传统“水平分割”思想。</strong> 这是一个为了适应现实世界复杂度而进行的卓越工程设计。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/10/04/BGP-%E6%B7%B1%E5%85%A5%E8%AE%A8%E8%AE%BABGP%E9%A2%84%E9%98%B2%E7%8E%AF%E8%B7%AF%E6%9C%BA%E5%88%B6-2-EBGP/" data-id="cuidxzljYBH9-9RKNYVlY-haq" data-title="[BGP]深入讨论BGP预防环路机制(2) EBGP" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" rel="tag">网络工程师</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" rel="tag">路由协议</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-BGP-深入讨论BGP预防环路机制-1-IBGP" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/10/04/BGP-%E6%B7%B1%E5%85%A5%E8%AE%A8%E8%AE%BABGP%E9%A2%84%E9%98%B2%E7%8E%AF%E8%B7%AF%E6%9C%BA%E5%88%B6-1-IBGP/" class="article-date">
+  <time class="dt-published" datetime="2025-10-04T00:55:44.000Z" itemprop="datePublished">2025-10-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/10/04/BGP-%E6%B7%B1%E5%85%A5%E8%AE%A8%E8%AE%BABGP%E9%A2%84%E9%98%B2%E7%8E%AF%E8%B7%AF%E6%9C%BA%E5%88%B6-1-IBGP/">[BGP]深入讨论BGP预防环路机制(1) IBGP</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在AS内部，BGP路由只能传递一步。也就是说，<strong>从一个IBGP对等体学习到的路由，绝不会被传递给另一个IBGP对等体。</strong>（也就是IBGP的水平分割理念）</p>
+<h3 id="为什么要有这个原则？"><a href="#为什么要有这个原则？" class="headerlink" title="为什么要有这个原则？"></a>为什么要有这个原则？</h3><p>这个原则的核心目的是<strong>在自治系统内部防止BGP路由环路</strong>。</p>
+<ol>
+<li><strong>缺乏天然的防环机制</strong>：<ul>
+<li>在AS之间（EBGP），BGP使用著名的 <strong><code>AS_PATH</code></strong> 属性来防环。当一台BGP路由器看到自己的AS号出现在接收到的路由的<code>AS_PATH</code>中时，它就知道这是一个环路，从而拒绝该路由。</li>
+<li>然而，在AS<strong>内部</strong>（IBGP），路由在传递时<strong>不会改变<code>AS_PATH</code></strong> 属性。因为路由器都在同一个AS内，<code>AS_PATH</code>不会被追加。因此，<code>AS_PATH</code>这个强大的防环工具在AS内部失效了。</li>
+</ul>
+</li>
+<li><strong>需要一个替代的防环机制</strong>：<ul>
+<li>由于失去了<code>AS_PATH</code>这个“指路明灯”，BGP设计者必须引入一个新的规则来防止路由在AS内部无休止地循环。这个规则就是 <strong>“IBGP水平分割”</strong>。</li>
+<li>它通过<strong>切断IBGP路由的二次传播</strong>来从根本上杜绝环路。如果一条路由只能被“原始”接收，而不能被“转述”，那么它自然就无法形成环路。</li>
+</ul>
+</li>
+</ol>
+<p>基于此，IBGP中诞生了全互联与RR路由反射器两大设计理念。</p>
+<p>我们先对于全互联进行讨论：</p>
+<p><strong>BGP全互联</strong> 是指在同一个自治系统内，<strong>所有运行BGP的路由器都彼此两两建立IBGP对等体关系</strong>。</p>
+<p><strong>全互联的目的：</strong> 确保任何一台IBGP路由器从外部（通过EBGP）学到的路由，都能通过直接的IBGP会话传递给AS内的所有其他BGP路由器，而不会违反防环规则。</p>
+<p>总结起来就是：</p>
+<ul>
+<li><strong>“路由只能传递一步”（IBGP水平分割）是BGP的【设计规则&#x2F;原则】。</strong></li>
+<li><strong>“全互联”是为了满足这条规则并同时实现路由全域可达，而不得不采用的【工程实现方案&#x2F;拓扑要求】。</strong></li>
+</ul>
+<p>做一个通俗的理解：</p>
+<ul>
+<li><strong>规则：</strong> “一个秘密，你只能告诉直接听你说话的人，不能让你听来的人再去传话。”</li>
+<li><strong>结果：</strong> “如果你想让你所有的朋友都知道这个秘密，你就必须亲自对每一个朋友都说一遍。”</li>
+</ul>
+<p>全互联带来的后果与解决方案：</p>
+<ul>
+<li><strong>直接后果</strong>：为了实现全网路由可达，IBGP路由器之间必须建立<strong>全互联</strong>的邻居关系。意味着全员路由器之间都必须建立IBGP会话。</li>
+<li><strong>解决方案</strong>：<strong>路由反射器（RR）</strong> 就是为了<strong>打破</strong>这一原则而出现的。RR被特许可以违反IBGP水平分割规则，将路由“反射”给其他客户端，从而解决了全互联带来的可扩展性问题。</li>
+</ul>
+<p>一句话概括路由反射器（RR）：</p>
+<p><strong>BGP路由反射器（RR）的核心任务是解决在AS内部（IBGP）全互联需求带来的管理和扩展性问题。它允许一个BGP路由器将从某个IBGP对等体学来的路由，“反射”给其他的IBGP对等体，从而避免了所有路由器之间必须两两建立IBGP连接。</strong></p>
+<hr>
+<h3 id="详细解释"><a href="#详细解释" class="headerlink" title="详细解释"></a>详细解释</h3><p>要理解RR为什么存在，我们需要先看没有它的时候是怎样的。</p>
+<h4 id="1-问题背景：IBGP的全互联规则"><a href="#1-问题背景：IBGP的全互联规则" class="headerlink" title="1. 问题背景：IBGP的全互联规则"></a>1. 问题背景：IBGP的全互联规则</h4><p>在同一个自治系统内部，路由器之间运行的是<strong>IBGP</strong>。<br>BGP设计了一个非常重要的防环机制：<strong>一个路由器从IBGP对等体学到的路由，绝不会再通告给另一个IBGP对等体。</strong></p>
+<p>这个规则带来的直接后果就是：<strong>为了确保所有IBGP路由器都能学到完整的路由信息，它们之间必须建立全互联的TCP连接关系。</strong></p>
+<p><strong>举个例子：</strong><br>如果一个AS内有10台路由器运行BGP，那么需要建立的IBGP连接数量是 <code>n*(n-1)/2</code> &#x3D; <code>10*9/2 = 45</code> 条。这已经非常难以管理和维护了。</p>
+<p>如果路由器数量增加到100台呢？连接数会达到4950条！这在工程上是不可行的。</p>
+<h4 id="2-解决方案：路由反射器（RR）"><a href="#2-解决方案：路由反射器（RR）" class="headerlink" title="2. 解决方案：路由反射器（RR）"></a>2. 解决方案：路由反射器（RR）</h4><p>路由反射器就是为了打破上面那个“绝不通告”的规则而生的。它被允许<strong>将从一个IBGP对等体学到的路由，反射（重新通告）给其他特定的IBGP对等体</strong>。</p>
+<p>这样，网络拓扑就可以从全互联变成一个<strong>中心辐射型</strong> 模型：</p>
+<ul>
+<li><strong>路由反射器</strong>：作为中心节点，它与所有其他客户端路由器建立IBGP连接。</li>
+<li><strong>客户端</strong>：只与RR建立IBGP连接，客户端之间不需要建立连接。</li>
+<li><strong>非客户端</strong>：在同一个AS内，既不是RR也不是客户端的路由器。它们之间以及它们与RR之间仍然需要全互联。（这是一个高级细节，但在小型RR设计中，可以认为所有路由器都是客户端）</li>
+</ul>
+<p><strong>引入RR后的例子：</strong><br>同样是10台路由器，我们指定1台作为RR，其余9台作为它的客户端。那么只需要建立 <strong>9</strong> 条IBGP连接（从RR到每个客户端各一条）即可。</p>
+<h4 id="3-RR是如何工作的？（核心规则）"><a href="#3-RR是如何工作的？（核心规则）" class="headerlink" title="3. RR是如何工作的？（核心规则）"></a>3. RR是如何工作的？（核心规则）</h4><p>RR在反射路由时，遵循一套特定的规则来防止环路：</p>
+<ol>
+<li><strong>从非客户端学来的路由，反射给所有客户端。</strong><ul>
+<li>例如，RR从一台非客户端路由器学到一条路由，它会将这条路由反射给它所有的客户端。</li>
+</ul>
+</li>
+<li><strong>从客户端学来的路由，反射给所有非客户端和所有其他客户端（除了该路由的来源客户端）。</strong><ul>
+<li>这是最常用的场景。客户端A通告一条路由给RR，RR会将其反射给所有其他客户端（B、C、D…）以及所有非客户端。</li>
+</ul>
+</li>
+<li><strong>从EBGP对等体学来的路由，通告给所有客户端和非客户端。</strong><ul>
+<li>这和普通的BGP路由器行为一致。</li>
+</ul>
+</li>
+</ol>
+<h4 id="4-RR的优势"><a href="#4-RR的优势" class="headerlink" title="4. RR的优势"></a>4. RR的优势</h4><ul>
+<li><strong>极大的可扩展性</strong>：将IBGP连接数从 <code>O(n²)</code> 降低到 <code>O(n)</code>，使得大型AS的构建成为可能。</li>
+<li><strong>简化配置和管理</strong>：不需要在每台路由器上配置和维护大量的IBGP对等体关系。</li>
+<li><strong>网络结构更清晰</strong>：形成了逻辑清晰的中心辐射型架构。</li>
+</ul>
+<h4 id="5-需要注意的地方"><a href="#5-需要注意的地方" class="headerlink" title="5. 需要注意的地方"></a>5. 需要注意的地方</h4><ul>
+<li><strong>单点故障</strong>：单一的RR会成为一个单点故障。因此，在实际网络中，通常会部署<strong>多个RR（集群）</strong> 来实现冗余。常见的做法是，将一对路由器作为RR，并让它们互为客户端。</li>
+<li><strong>并非最佳路径计算者</strong>：RR只是路由信息的传递者（反射器），它本身不一定是数据转发的必经之路。数据转发仍然基于IGP计算出的最短路径。</li>
+<li><strong>集群内与集群间</strong>：在更复杂的网络中，一个AS内可以有多个RR集群，RR之间通过非客户端关系或联盟等方式交换路由。</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><strong>BGP路由反射器（RR）是一个为了解决IBGP全互联可扩展性难题而设计的“规则例外”机制。它通过指定一个中心节点来中继（反射）BGP路由信息，从而大幅减少了AS内部所需的IBGP连接数量，是现代大规模数据中心和运营商网络不可或缺的组件。</strong></p>
+<p>简单来说，它就像一个“广播站”，AS内部的路由器（客户端）只需要连接到这个广播站，就能收到所有其他路由器的路由信息，而不需要彼此直接相连。</p>
+<hr>
+<h3 id="全互联-vs-路由反射器：特点对比"><a href="#全互联-vs-路由反射器：特点对比" class="headerlink" title="全互联 vs. 路由反射器：特点对比"></a>全互联 vs. 路由反射器：特点对比</h3><p>下面这个表格清晰地展示了两者的核心区别。</p>
+<table>
+<thead>
+<tr>
+<th align="left">特性维度</th>
+<th align="left">全互联</th>
+<th align="left">路由反射器</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>核心概念</strong></td>
+<td align="left">遵守BGP基础防环规则：不向IBGP对等体传递从另一个IBGP对等体学来的路由。</td>
+<td align="left"><strong>打破</strong>BGP基础防环规则：允许将IBGP路由有选择地“反射”给其他IBGP对等体。</td>
+</tr>
+<tr>
+<td align="left"><strong>网络拓扑</strong></td>
+<td align="left"><strong>网状网</strong>：所有路由器间两两互联。</td>
+<td align="left"><strong>中心辐射型</strong>：客户端只与中心（RR）连接，客户端间无需直接连接。</td>
+</tr>
+<tr>
+<td align="left"><strong>连接数量</strong></td>
+<td align="left"><strong>O(n²)</strong>，随设备数量增长呈指数级增长。<br>公式：<code>n*(n-1)/2</code></td>
+<td align="left"><strong>O(n)</strong>，随设备数量线性增长。<br>（假设所有路由器都是客户端）</td>
+</tr>
+<tr>
+<td align="left"><strong>可扩展性</strong></td>
+<td align="left"><strong>极差</strong></td>
+<td align="left"><strong>极佳</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>配置与管理</strong></td>
+<td align="left"><strong>非常复杂且繁琐</strong>。<br>每增加一台新路由器，都需要在所有现有路由器上添加配置。</td>
+<td align="left"><strong>相对简单</strong>。<br>主要在RR上进行配置，客户端只需指向RR。</td>
+</tr>
+<tr>
+<td align="left"><strong>冗余性与可靠性</strong></td>
+<td align="left"><strong>高</strong>。<br>任何单台设备故障，不影响其他设备间的路由交换。</td>
+<td align="left"><strong>依赖RR的可靠性</strong>。<br>单台RR是单点故障。需通过部署<strong>RR集群</strong>（如两台RR互为客户端）来实现冗余。</td>
+</tr>
+<tr>
+<td align="left"><strong>故障排查</strong></td>
+<td align="left">相对直接，因为路径是端到端的。</td>
+<td align="left">稍显复杂，需要理解反射规则，可能引入隐藏的路径问题。</td>
+</tr>
+<tr>
+<td align="left"><strong>适用场景</strong></td>
+<td align="left">小型网络，或BGP路由器数量很少（例如少于10台）的环境。</td>
+<td align="left">中大型网络、数据中心、运营商网络等任何需要运行大量BGP路由器的场景。</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="深入理解：为什么RR能解决全互联问题？"><a href="#深入理解：为什么RR能解决全互联问题？" class="headerlink" title="深入理解：为什么RR能解决全互联问题？"></a>深入理解：为什么RR能解决全互联问题？</h3><p>关键在于RR引入了一套新的防环属性，代替了原始的“不通告”规则。</p>
+<ol>
+<li><p><strong>Originator_ID：</strong></p>
+<ul>
+<li>当RR反射一条路由时，它会将<strong>始发这条路由的路由器ID</strong>添加到该路径属性中。</li>
+<li>如果一台路由器收到了一条路由，发现其中的<code>Originator_ID</code>与自己相同，它就知道这条路由是自己最初产生的，于是丢弃它，防止环路。</li>
+</ul>
+</li>
+<li><p><strong>Cluster_ID：</strong></p>
+<ul>
+<li>每个RR及其客户端构成一个“集群”。每个集群有一个<code>Cluster_ID</code>（通常就是RR的路由器ID）。</li>
+<li>当RR反射一条路由时，它会将自己的<code>Cluster_ID</code>添加到<code>Cluster_List</code>中。</li>
+<li>如果一台RR收到一条路由，发现其中的<code>Cluster_List</code>包含自己的<code>Cluster_ID</code>，它就知道这条路由已经经过本集群了，于是丢弃它，防止集群间的环路。</li>
+</ul>
+</li>
+</ol>
+<p><strong>正是通过这些新属性，RR才能在打破原始规则的同时，依然保证网络无环。</strong></p>
+<hr>
+<h3 id="总结与类比"><a href="#总结与类比" class="headerlink" title="总结与类比"></a>总结与类比</h3><p>你可以这样理解：</p>
+<ul>
+<li><strong>全互联</strong>：像一个<strong>全员大会</strong>。任何消息（路由）都必须由发起人亲自告诉会议室里的每一个人。每个人之间都必须有直接通话的线路（IBGP会话）。来一个新成员，就要给所有人都拉一条线。</li>
+<li><strong>路由反射器</strong>：像一个<strong>部门经理（RR）和团队成员（客户端）</strong>。<ul>
+<li>团队成员A有消息，只需要告诉经理。</li>
+<li>经理负责将这个消息<strong>广播</strong>给团队里的所有其他成员（B、C、D…）。</li>
+<li>团队成员之间不需要直接沟通。</li>
+<li>这样极大地减少了沟通渠道，管理起来也方便。</li>
+</ul>
+</li>
+</ul>
+<p><strong>结论：</strong><br><strong>全互联是BGP最初设计的“理想化”模型，简单但不可扩展。而路由反射器是基于实际工程需求对BGP协议进行的“实用性”扩展，它通过引入新的防环机制，以中心化的架构完美解决了大规模网络下的可扩展性问题，是现代互联网骨干网的基石技术之一。</strong> 在当今的网络中，只要一个AS内的BGP路由器数量超过个位数，几乎无一例外都会使用路由反射器。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/10/04/BGP-%E6%B7%B1%E5%85%A5%E8%AE%A8%E8%AE%BABGP%E9%A2%84%E9%98%B2%E7%8E%AF%E8%B7%AF%E6%9C%BA%E5%88%B6-1-IBGP/" data-id="cuidBrsMlBCoaczTPnJsZVPW_" data-title="[BGP]深入讨论BGP预防环路机制(1) IBGP" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" rel="tag">网络工程师</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" rel="tag">路由协议</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-BGP-如何深入理解BGP与其他路由协议的结合" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/10/04/BGP-%E5%A6%82%E4%BD%95%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3BGP%E4%B8%8E%E5%85%B6%E4%BB%96%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%BB%93%E5%90%88/" class="article-date">
+  <time class="dt-published" datetime="2025-10-04T00:37:41.000Z" itemprop="datePublished">2025-10-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2025/10/04/BGP-%E5%A6%82%E4%BD%95%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3BGP%E4%B8%8E%E5%85%B6%E4%BB%96%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%BB%93%E5%90%88/">[BGP]如何深入理解BGP与其他路由协议的结合</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>有一种说法，BGP与其他路由的结合，相当于在原有的路由路径上加了层立交桥。</p>
+<p>这是个非常形象且准确的比喻。我们可以从几个层面来深入理解这句话的含义和它所体现的核心理念。</p>
+<h3 id="如何理解“BGP是路由世界里的立交桥”？"><a href="#如何理解“BGP是路由世界里的立交桥”？" class="headerlink" title="如何理解“BGP是路由世界里的立交桥”？"></a>如何理解“BGP是路由世界里的立交桥”？</h3><p>想象一个城市的交通系统：</p>
+<ol>
+<li><p><strong>城市内部道路（IGP）：</strong></p>
+<ul>
+<li>你所在城市里的街道、主干道、环线，就好比<strong>内部网关协议</strong>，如 <strong>OSPF</strong> 或 <strong>EIGRP</strong>。</li>
+<li>这些协议负责将数据包（车辆）在一个<strong>独立的网络（城市）</strong> 内部，从一点高效地送到另一点。它们关注的是<strong>最优路径</strong>，比如哪个路口转弯、走哪条路最快、避免拥堵（基于带宽、延迟等度量值）。</li>
+<li><strong>特点：</strong> 精细、快速、自动化，但管理范围有限，只在本“城市”（自治系统）内有效。</li>
+</ul>
+</li>
+<li><p><strong>城市间高速公路（BGP）：</strong></p>
+<ul>
+<li>连接不同城市甚至不同国家的高速公路网，就好比<strong>边界网关协议（BGP）</strong>。</li>
+<li>BGP不关心你在我这个“城市”里具体怎么走。它只关心：<strong>“哪个入口能上高速？”</strong> 和 <strong>“从哪个出口下高速能到达目标城市？”</strong>。这里的“入口”和“出口”就是<strong>自治系统</strong>的边界路由器。</li>
+</ul>
+</li>
+<li><p><strong>立交桥（BGP与IGP的结合点）：</strong></p>
+<ul>
+<li><strong>“立交桥”</strong> 正是这个比喻的精髓所在。它指的是一个<strong>自治系统的边界路由器</strong>。这里是内部道路（IGP）和外部高速公路（BGP）的<strong>交汇点和转换点</strong>。</li>
+<li><strong>功能一：信息汇总与分发（上桥）</strong><ul>
+<li>你的“城市”（自治系统）通过立交桥向外部高速公路（BGP）广播：“要来我这里，请从这个立交桥（我的AS号）下高速。” 它把内部复杂的街道信息（IGP路由）汇总成一个简单的、对外的指示牌（BGP路由）。</li>
+</ul>
+</li>
+<li><strong>功能二：路径选择与引入（下桥）</strong><ul>
+<li>当数据包从“高速公路”（BGP）来到你的“城市”边界时，它通过“立交桥”（边界路由器）下来。然后，这个数据包就交给了“城市内部交通系统”（IGP），由IGP负责根据内部道路情况，将其最终送达目的地。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>一个简单的数据包旅程例子：</strong></p>
+<p>假设你想从“上海公司网络”（AS 65001）访问“北京数据中心”（AS 65002）。</p>
+<ol>
+<li><strong>上海市内行驶（OSPF）：</strong> 你的数据包首先通过公司内部的OSPF网络，路由到公司的<strong>边界路由器（立交桥）</strong>。</li>
+<li><strong>上立交桥，进入高速（BGP）：</strong> 边界路由器查看BGP路由表，发现要去AS 65002，最优路径是下一跳交给“运营商A”（AS 100）。于是数据包被送上BGP“高速公路”。</li>
+<li><strong>在高速上行驶（BGP）：</strong> 数据包在运营商A、B、C的骨干网（通过BGP互联）中传递，BGP负责在这些巨大的自治系统之间选择最佳路径（基于策略、AS_PATH长度等，而非速度）。</li>
+<li><strong>下立交桥，进入北京市内（OSPF）：</strong> 数据包到达“北京数据中心”（AS 65002）的<strong>边界路由器（另一个立交桥）</strong>。BGP的任务完成，数据包被交给数据中心内部的OSPF网络。</li>
+<li><strong>北京市内行驶（OSPF）：</strong> 数据中心内部的OSPF负责将数据包最终送达目标服务器。</li>
+</ol>
+<p><strong>所以，“加了一层立交桥”的含义是：</strong><br>在原有的、精细的内部路由（城市道路）之上，叠加了一个宏观的、策略性的<strong>域间路由</strong>系统（高速公路）。这个“立交桥”层（BGP）不取代底层（IGP），而是与之协同工作，共同构成了完整的互联网路由体系。</p>
+<hr>
+<h3 id="它体现了什么？"><a href="#它体现了什么？" class="headerlink" title="它体现了什么？"></a>它体现了什么？</h3><p>这个比喻深刻地揭示了互联网路由架构的核心设计哲学：</p>
+<ol>
+<li><p><strong>分层与模块化设计：</strong></p>
+<ul>
+<li>这是最核心的体现。互联网是一个由无数自治系统组成的巨大网络，分层设计使得它易于管理、扩展和故障隔离。</li>
+<li><strong>IGP管“内政”</strong>：每个公司、机构可以自由选择和管理自己的内部路由，无需与外界协商。</li>
+<li><strong>BGP管“外交”</strong>：自治系统之间通过BGP建立对等关系，交换路由信息，但彼此不干涉内部事务。</li>
+<li>这种“立交桥”式的结构，使得整个互联网能够“分而治之”，具备了极强的可扩展性。</li>
+</ul>
+</li>
+<li><p><strong>策略与控制的分离：</strong></p>
+<ul>
+<li><strong>IGP的目标是“最快”</strong>：其决策基于技术指标（成本、延迟）。</li>
+<li><strong>BGP的目标是“最合适”</strong>：其决策 heavily 依赖于<strong>策略</strong>。比如，“我宁愿绕路也不经过竞争对手的网络”、“我优先选择付费更低的运营商作为出口”。立交桥（边界路由器）就是执行这些商业策略的关键节点。</li>
+</ul>
+</li>
+<li><p><strong>可扩展性与稳定性：</strong></p>
+<ul>
+<li>如果没有BGP这层“立交桥”，让OSPF去管理整个互联网的路由，路由表将庞大到无法计算，任何局部网络的抖动都会引发全球路由震荡。</li>
+<li>BGP通过聚合路由和基于AS_PATH的路由环路防止机制，极大地提升了全球网络的稳定性。一个城市内部修路（IGP路由变化），不会导致全国高速公路网（BGP）重新规划。</li>
+</ul>
+</li>
+<li><p><strong>互联网的真实形态：</strong></p>
+<ul>
+<li>这个比喻准确地描绘了互联网并非一个平坦、统一的网络，而是一个由众多独立管理的“网络岛屿”（自治系统）通过“立交桥”（BGP对等点）连接起来的<strong>联盟</strong>。它本质上是“网络的网络”。</li>
+</ul>
+</li>
+</ol>
+<p><strong>总结来说，“BGP相当于在原有路由路径上加了层立交桥”这个说法，完美地概括了互联网路由的分层、模块化和策略驱动的本质。它体现了将复杂的全局性问题（全球互联）分解为局部问题（内部路由）和边界问题（域间路由）的智慧，这正是互联网能够发展到今天如此巨大规模的关键所在。</strong></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/10/04/BGP-%E5%A6%82%E4%BD%95%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3BGP%E4%B8%8E%E5%85%B6%E4%BB%96%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%BB%93%E5%90%88/" data-id="cuidBOegKTShTrr7hLe0tiYXN" data-title="[BGP]如何深入理解BGP与其他路由协议的结合" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" rel="tag">网络工程师</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" rel="tag">路由协议</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IS-IS/" rel="tag">IS-IS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSPF/" rel="tag">OSPF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RIP/" rel="tag">RIP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/" rel="tag">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" rel="tag">网络工程师</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" rel="tag">路由协议</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BGP/" style="font-size: 15px;">BGP</a> <a href="/tags/IS-IS/" style="font-size: 10px;">IS-IS</a> <a href="/tags/OSPF/" style="font-size: 12.5px;">OSPF</a> <a href="/tags/RIP/" style="font-size: 10px;">RIP</a> <a href="/tags/github/" style="font-size: 12.5px;">github</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" style="font-size: 20px;">网络工程师</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 20px;">计算机网络</a> <a href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" style="font-size: 17.5px;">路由协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2025/10/16/%E6%B5%85%E6%9E%90%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E7%9B%B4%E8%BF%9E%E8%B7%AF%E7%94%B1/">浅析静态路由与直连路由</a>
+          </li>
+        
+          <li>
+            <a href="/2025/10/16/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2025/10/13/IS-IS-IS-IS%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">[IS-IS]IS-IS路由协议基本概念</a>
+          </li>
+        
+          <li>
+            <a href="/2025/10/13/RIP-RIP%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">[RIP]RIP路由协议基本概念</a>
+          </li>
+        
+          <li>
+            <a href="/2025/10/11/OSPF-%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%B2%E6%B8%85%E6%A5%9AOSPF%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E4%B8%83%E6%AD%A5%E9%82%BB%E6%8E%A5%E5%85%B3%E7%B3%BB%E5%BB%BA%E7%AB%8B%E6%AD%A5%E9%AA%A4/">[OSPF]一篇文章讲清楚OSPF路由协议的七步邻接关系建立步骤</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

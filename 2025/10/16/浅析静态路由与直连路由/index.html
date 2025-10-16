@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>浅析静态路由与直连路由 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="一.关于直连路由 路由器访问直连网段时使用直连路由。直连路由的接口配置了IP地址并且处于up状态，直连路由会自动产生，不需要任何配置。 二.静态路由 静态路由一般用于小型网络规模，不能根据网络的变更进行动态路由学习。配置形式一般为：目标网段 目标网段掩码 下一跳地址（本地出接口） 三.缺省路由 缺省路由是静态路由的一种特殊形态，一般用在内网三层设备需要访问互联网。配置形式一般为：0.0.0.0 0">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅析静态路由与直连路由">
+<meta property="og:url" content="http://example.com/2025/10/16/%E6%B5%85%E6%9E%90%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E7%9B%B4%E8%BF%9E%E8%B7%AF%E7%94%B1/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一.关于直连路由 路由器访问直连网段时使用直连路由。直连路由的接口配置了IP地址并且处于up状态，直连路由会自动产生，不需要任何配置。 二.静态路由 静态路由一般用于小型网络规模，不能根据网络的变更进行动态路由学习。配置形式一般为：目标网段 目标网段掩码 下一跳地址（本地出接口） 三.缺省路由 缺省路由是静态路由的一种特殊形态，一般用在内网三层设备需要访问互联网。配置形式一般为：0.0.0.0 0">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-10-16T15:22:31.000Z">
+<meta property="article:modified_time" content="2025-10-16T15:28:44.356Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="网络工程师">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-浅析静态路由与直连路由" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/10/16/%E6%B5%85%E6%9E%90%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E7%9B%B4%E8%BF%9E%E8%B7%AF%E7%94%B1/" class="article-date">
+  <time class="dt-published" datetime="2025-10-16T15:22:31.000Z" itemprop="datePublished">2025-10-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      浅析静态路由与直连路由
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>一.关于直连路由</p>
+<p>路由器访问直连网段时使用直连路由。直连路由的接口配置了IP地址并且处于up状态，<br>直连路由会自动产生，不需要任何配置。</p>
+<p>二.静态路由</p>
+<p>静态路由一般用于小型网络规模，不能根据网络的变更进行动态路由学习。配置形式<br>一般为：<em>目标网段 目标网段掩码 下一跳地址（本地出接口）</em></p>
+<p>三.缺省路由</p>
+<p>缺省路由是静态路由的一种特殊形态，一般用在内网三层设备需要访问互联网。配置<br>形式一般为：<em>0.0.0.0 0.0.0.0 下一跳地址（本地出接口）</em></p>
+<p>多说一句，个人其实一般习惯把缺省路由叫做默认路由，以便于理解。</p>
+<p>关于“缺省”这个专有名词的翻译，之前还特意和AI讨论过这方面问题，关于“缺省”是否可以同义替换为“默认”这个词。以下是AI对此的分析：</p>
+<ol>
+<li><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">### 一、为什么是“缺省”？—— 词源探秘</span><br><span class="line"></span><br><span class="line">“缺省”是一个典型的**意译词**，它翻译自英文术语 **“Default”**。</span><br><span class="line"></span><br><span class="line">要理解这个古怪的翻译，我们需要拆解一下“Default”在英文中的核心含义：</span><br><span class="line"></span><br><span class="line">- **De-**： 一个前缀，有“否定”、“离开”、“向下”的意思。</span><br><span class="line">- **-fault**： 来自拉丁语 *fallere*，意思是“欺骗、失败、辜负期望”。（和“fault”错误同源）</span><br><span class="line"></span><br><span class="line">所以，“Default”的本质是：</span><br><span class="line">**“由于（用户）未能做出（某个选择或提供某个信息），而由系统自动采用的一个预先设定好的（退而求其次的）选项或行为。”**</span><br><span class="line"></span><br><span class="line">中文译者当年在翻译时，抓住了这个“未能”和“缺失”的核心，将其拆解为：</span><br><span class="line"></span><br><span class="line">- **缺**： 缺失、缺乏、缺少。对应“未能提供”。</span><br><span class="line">- **省**： 省略、省去。对应“（用户）省略了操作”或“（系统）省去了判断”。</span><br><span class="line"></span><br><span class="line">因此，“缺省”直译过来就是 **“因缺失而省略”** 或 **“在用户缺位/未指定时，系统省去询问环节而采用的方案”** 。虽然逻辑上能自洽，但确实非常拗口，不符合日常语言习惯。相比之下，“默认”（默默地承认/认定）这个词就形象和自然得多。</span><br><span class="line"></span><br><span class="line">**结论：** 在绝大多数情况下，**“缺省” = “默认”**。你可以放心地在脑海里进行替换。</span><br><span class="line"></span><br><span class="line">------</span><br><span class="line"></span><br><span class="line">### 二、除了“缺省路由”，还有哪些地方会用到“缺省”？</span><br><span class="line"></span><br><span class="line">“缺省”这个概念在计算机科学中无处不在，只要有一个地方需要预设一个“保底”的、或“当用户不指定时”就启用的值或行为，就会用到它。以下是一些常见的例子：</span><br><span class="line"></span><br><span class="line">#### 1. 缺省路由</span><br><span class="line"></span><br><span class="line">这你已经提到了。它是路由表中的最后一条“保底”规则，当所有其他路由规则都不匹配目标IP地址时，数据包就会被发送到缺省路由所指向的**下一跳地址**（通常是网关路由器）。可以理解为“不知道去哪的数据包都往这儿送”。</span><br><span class="line"></span><br><span class="line">#### 2. 缺省网关</span><br><span class="line"></span><br><span class="line">这个概念和缺省路由紧密相关。**缺省网关**就是一个设备的**缺省路由所指的那个IP地址**。在你的电脑上，网络设置里填写的“默认网关”就是你这台电脑的缺省网关。你的电脑要访问互联网，所有非本地的流量都会先发给这个网关。</span><br><span class="line"></span><br><span class="line">#### 3. 缺省值</span><br><span class="line"></span><br><span class="line">这是最广泛的应用。指在用户没有显式提供值时，程序或系统自动使用的那个预设值。</span><br><span class="line"></span><br><span class="line">- **编程中**： 函数参数可以设置缺省值。例如 `function greet(name = &quot;Guest&quot;)`，如果你调用 `greet()` 不传参数，`name` 的缺省值就是 `&quot;Guest&quot;`。</span><br><span class="line">- **数据库中**： 可以为表的字段设置缺省值。例如一个 `users` 表的 `create_date` 字段，可以设置缺省值为 `CURRENT_TIMESTAMP`，这样当插入新数据没指定时间时，数据库会自动填入当前时间。</span><br><span class="line">- **软件设置中**： 软件的“恢复默认设置”功能，就是将所有配置重置为出厂时的**缺省值**。</span><br><span class="line"></span><br><span class="line">#### 4. 缺省配置 / 配置文件</span><br><span class="line"></span><br><span class="line">许多软件在启动时会加载一个 `default.conf` 或 `config.default.yml` 之类的**缺省配置文件**。如果用户没有创建自己的配置文件，或者自己的配置里缺少某些选项，系统就会使用这些缺省配置中的值。</span><br><span class="line"></span><br><span class="line">#### 5. 缺省构造函数</span><br><span class="line"></span><br><span class="line">在面向对象编程（如C++、Java、C#）中，指一个不需要提供任何参数的构造函数。当程序员没有为类编写任何构造函数时，编译器会自动生成一个缺省构造函数。</span><br><span class="line"></span><br><span class="line">#### 6. 缺省参数</span><br><span class="line"></span><br><span class="line">在函数调用或API请求中，如果某些参数是可选的，当调用者省略它们时，这些参数就会使用预先定义好的**缺省参数**。</span><br><span class="line"></span><br><span class="line">#### 7. 法律和金融领域的延伸</span><br><span class="line"></span><br><span class="line">甚至在计算机领域之外，“default”这个词也广泛使用，并同样被（生硬地）翻译为“缺省”。</span><br><span class="line"></span><br><span class="line">- **缺省判决**： 法律术语。指在庭审中，一方（通常是被告）未能出庭或未能答辩，法官据此作出的对其不利的判决。</span><br><span class="line">- **债务缺省**： 金融术语。指债务人未能履行偿还债务的合同义务，即“违约”。（这里的“缺省”和“违约”是同一个英文词“Default”）。</span><br><span class="line"></span><br><span class="line">### 总结与建议</span><br><span class="line"></span><br><span class="line">1. **直接理解**： 今后在任何计算机文献中看到“缺省”，请毫不犹豫地在心里将其替换为“默认”。你的理解是完全正确的。</span><br><span class="line">2. **知其所以然**： 了解“缺省”来自“Default”，并且其本意是“因用户缺失/省略操作而由系统采用的方案”，这能帮助你更深刻地理解这个概念，而不仅仅是死记硬背一个词。</span><br><span class="line">3. **沟通时灵活运用**： 在书面文档或正式场合，使用“缺省”是规范且专业的。但在日常口头交流中，说“默认路由”、“默认网关”所有人都能听懂，且更自然。这类似于很多人会把“URI”直接说成“网址”，虽然不精确但沟通效率高。</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/10/16/%E6%B5%85%E6%9E%90%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E7%9B%B4%E8%BF%9E%E8%B7%AF%E7%94%B1/" data-id="cuidBsvi7ty895CKX3wH15EE2" data-title="浅析静态路由与直连路由" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" rel="tag">网络工程师</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2025/10/16/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IS-IS/" rel="tag">IS-IS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSPF/" rel="tag">OSPF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RIP/" rel="tag">RIP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/" rel="tag">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" rel="tag">网络工程师</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" rel="tag">路由协议</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BGP/" style="font-size: 15px;">BGP</a> <a href="/tags/IS-IS/" style="font-size: 10px;">IS-IS</a> <a href="/tags/OSPF/" style="font-size: 12.5px;">OSPF</a> <a href="/tags/RIP/" style="font-size: 10px;">RIP</a> <a href="/tags/github/" style="font-size: 12.5px;">github</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" style="font-size: 20px;">网络工程师</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 20px;">计算机网络</a> <a href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" style="font-size: 17.5px;">路由协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2025/10/16/%E6%B5%85%E6%9E%90%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E7%9B%B4%E8%BF%9E%E8%B7%AF%E7%94%B1/">浅析静态路由与直连路由</a>
+          </li>
+        
+          <li>
+            <a href="/2025/10/16/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2025/10/13/IS-IS-IS-IS%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">[IS-IS]IS-IS路由协议基本概念</a>
+          </li>
+        
+          <li>
+            <a href="/2025/10/13/RIP-RIP%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">[RIP]RIP路由协议基本概念</a>
+          </li>
+        
+          <li>
+            <a href="/2025/10/11/OSPF-%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%B2%E6%B8%85%E6%A5%9AOSPF%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E4%B8%83%E6%AD%A5%E9%82%BB%E6%8E%A5%E5%85%B3%E7%B3%BB%E5%BB%BA%E7%AB%8B%E6%AD%A5%E9%AA%A4/">[OSPF]一篇文章讲清楚OSPF路由协议的七步邻接关系建立步骤</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>[BGP]如何深入理解BGP与其他路由协议的结合 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="有一种说法，BGP与其他路由的结合，相当于在原有的路由路径上加了层立交桥。 这是个非常形象且准确的比喻。我们可以从几个层面来深入理解这句话的含义和它所体现的核心理念。 如何理解“BGP是路由世界里的立交桥”？想象一个城市的交通系统：  城市内部道路（IGP）：  你所在城市里的街道、主干道、环线，就好比内部网关协议，如 OSPF 或 EIGRP。 这些协议负责将数据包（车辆）在一个独立的网络（城市">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[BGP]如何深入理解BGP与其他路由协议的结合">
+<meta property="og:url" content="http://example.com/2025/10/04/BGP-%E5%A6%82%E4%BD%95%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3BGP%E4%B8%8E%E5%85%B6%E4%BB%96%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%BB%93%E5%90%88/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="有一种说法，BGP与其他路由的结合，相当于在原有的路由路径上加了层立交桥。 这是个非常形象且准确的比喻。我们可以从几个层面来深入理解这句话的含义和它所体现的核心理念。 如何理解“BGP是路由世界里的立交桥”？想象一个城市的交通系统：  城市内部道路（IGP）：  你所在城市里的街道、主干道、环线，就好比内部网关协议，如 OSPF 或 EIGRP。 这些协议负责将数据包（车辆）在一个独立的网络（城市">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-10-04T00:37:41.000Z">
+<meta property="article:modified_time" content="2025-10-16T15:15:08.776Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="BGP">
+<meta property="article:tag" content="网络工程师">
+<meta property="article:tag" content="计算机网络">
+<meta property="article:tag" content="路由协议">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-BGP-如何深入理解BGP与其他路由协议的结合" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/10/04/BGP-%E5%A6%82%E4%BD%95%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3BGP%E4%B8%8E%E5%85%B6%E4%BB%96%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%BB%93%E5%90%88/" class="article-date">
+  <time class="dt-published" datetime="2025-10-04T00:37:41.000Z" itemprop="datePublished">2025-10-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      [BGP]如何深入理解BGP与其他路由协议的结合
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>有一种说法，BGP与其他路由的结合，相当于在原有的路由路径上加了层立交桥。</p>
+<p>这是个非常形象且准确的比喻。我们可以从几个层面来深入理解这句话的含义和它所体现的核心理念。</p>
+<h3 id="如何理解“BGP是路由世界里的立交桥”？"><a href="#如何理解“BGP是路由世界里的立交桥”？" class="headerlink" title="如何理解“BGP是路由世界里的立交桥”？"></a>如何理解“BGP是路由世界里的立交桥”？</h3><p>想象一个城市的交通系统：</p>
+<ol>
+<li><p><strong>城市内部道路（IGP）：</strong></p>
+<ul>
+<li>你所在城市里的街道、主干道、环线，就好比<strong>内部网关协议</strong>，如 <strong>OSPF</strong> 或 <strong>EIGRP</strong>。</li>
+<li>这些协议负责将数据包（车辆）在一个<strong>独立的网络（城市）</strong> 内部，从一点高效地送到另一点。它们关注的是<strong>最优路径</strong>，比如哪个路口转弯、走哪条路最快、避免拥堵（基于带宽、延迟等度量值）。</li>
+<li><strong>特点：</strong> 精细、快速、自动化，但管理范围有限，只在本“城市”（自治系统）内有效。</li>
+</ul>
+</li>
+<li><p><strong>城市间高速公路（BGP）：</strong></p>
+<ul>
+<li>连接不同城市甚至不同国家的高速公路网，就好比<strong>边界网关协议（BGP）</strong>。</li>
+<li>BGP不关心你在我这个“城市”里具体怎么走。它只关心：<strong>“哪个入口能上高速？”</strong> 和 <strong>“从哪个出口下高速能到达目标城市？”</strong>。这里的“入口”和“出口”就是<strong>自治系统</strong>的边界路由器。</li>
+</ul>
+</li>
+<li><p><strong>立交桥（BGP与IGP的结合点）：</strong></p>
+<ul>
+<li><strong>“立交桥”</strong> 正是这个比喻的精髓所在。它指的是一个<strong>自治系统的边界路由器</strong>。这里是内部道路（IGP）和外部高速公路（BGP）的<strong>交汇点和转换点</strong>。</li>
+<li><strong>功能一：信息汇总与分发（上桥）</strong><ul>
+<li>你的“城市”（自治系统）通过立交桥向外部高速公路（BGP）广播：“要来我这里，请从这个立交桥（我的AS号）下高速。” 它把内部复杂的街道信息（IGP路由）汇总成一个简单的、对外的指示牌（BGP路由）。</li>
+</ul>
+</li>
+<li><strong>功能二：路径选择与引入（下桥）</strong><ul>
+<li>当数据包从“高速公路”（BGP）来到你的“城市”边界时，它通过“立交桥”（边界路由器）下来。然后，这个数据包就交给了“城市内部交通系统”（IGP），由IGP负责根据内部道路情况，将其最终送达目的地。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>一个简单的数据包旅程例子：</strong></p>
+<p>假设你想从“上海公司网络”（AS 65001）访问“北京数据中心”（AS 65002）。</p>
+<ol>
+<li><strong>上海市内行驶（OSPF）：</strong> 你的数据包首先通过公司内部的OSPF网络，路由到公司的<strong>边界路由器（立交桥）</strong>。</li>
+<li><strong>上立交桥，进入高速（BGP）：</strong> 边界路由器查看BGP路由表，发现要去AS 65002，最优路径是下一跳交给“运营商A”（AS 100）。于是数据包被送上BGP“高速公路”。</li>
+<li><strong>在高速上行驶（BGP）：</strong> 数据包在运营商A、B、C的骨干网（通过BGP互联）中传递，BGP负责在这些巨大的自治系统之间选择最佳路径（基于策略、AS_PATH长度等，而非速度）。</li>
+<li><strong>下立交桥，进入北京市内（OSPF）：</strong> 数据包到达“北京数据中心”（AS 65002）的<strong>边界路由器（另一个立交桥）</strong>。BGP的任务完成，数据包被交给数据中心内部的OSPF网络。</li>
+<li><strong>北京市内行驶（OSPF）：</strong> 数据中心内部的OSPF负责将数据包最终送达目标服务器。</li>
+</ol>
+<p><strong>所以，“加了一层立交桥”的含义是：</strong><br>在原有的、精细的内部路由（城市道路）之上，叠加了一个宏观的、策略性的<strong>域间路由</strong>系统（高速公路）。这个“立交桥”层（BGP）不取代底层（IGP），而是与之协同工作，共同构成了完整的互联网路由体系。</p>
+<hr>
+<h3 id="它体现了什么？"><a href="#它体现了什么？" class="headerlink" title="它体现了什么？"></a>它体现了什么？</h3><p>这个比喻深刻地揭示了互联网路由架构的核心设计哲学：</p>
+<ol>
+<li><p><strong>分层与模块化设计：</strong></p>
+<ul>
+<li>这是最核心的体现。互联网是一个由无数自治系统组成的巨大网络，分层设计使得它易于管理、扩展和故障隔离。</li>
+<li><strong>IGP管“内政”</strong>：每个公司、机构可以自由选择和管理自己的内部路由，无需与外界协商。</li>
+<li><strong>BGP管“外交”</strong>：自治系统之间通过BGP建立对等关系，交换路由信息，但彼此不干涉内部事务。</li>
+<li>这种“立交桥”式的结构，使得整个互联网能够“分而治之”，具备了极强的可扩展性。</li>
+</ul>
+</li>
+<li><p><strong>策略与控制的分离：</strong></p>
+<ul>
+<li><strong>IGP的目标是“最快”</strong>：其决策基于技术指标（成本、延迟）。</li>
+<li><strong>BGP的目标是“最合适”</strong>：其决策 heavily 依赖于<strong>策略</strong>。比如，“我宁愿绕路也不经过竞争对手的网络”、“我优先选择付费更低的运营商作为出口”。立交桥（边界路由器）就是执行这些商业策略的关键节点。</li>
+</ul>
+</li>
+<li><p><strong>可扩展性与稳定性：</strong></p>
+<ul>
+<li>如果没有BGP这层“立交桥”，让OSPF去管理整个互联网的路由，路由表将庞大到无法计算，任何局部网络的抖动都会引发全球路由震荡。</li>
+<li>BGP通过聚合路由和基于AS_PATH的路由环路防止机制，极大地提升了全球网络的稳定性。一个城市内部修路（IGP路由变化），不会导致全国高速公路网（BGP）重新规划。</li>
+</ul>
+</li>
+<li><p><strong>互联网的真实形态：</strong></p>
+<ul>
+<li>这个比喻准确地描绘了互联网并非一个平坦、统一的网络，而是一个由众多独立管理的“网络岛屿”（自治系统）通过“立交桥”（BGP对等点）连接起来的<strong>联盟</strong>。它本质上是“网络的网络”。</li>
+</ul>
+</li>
+</ol>
+<p><strong>总结来说，“BGP相当于在原有路由路径上加了层立交桥”这个说法，完美地概括了互联网路由的分层、模块化和策略驱动的本质。它体现了将复杂的全局性问题（全球互联）分解为局部问题（内部路由）和边界问题（域间路由）的智慧，这正是互联网能够发展到今天如此巨大规模的关键所在。</strong></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/10/04/BGP-%E5%A6%82%E4%BD%95%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3BGP%E4%B8%8E%E5%85%B6%E4%BB%96%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%BB%93%E5%90%88/" data-id="cuidBOegKTShTrr7hLe0tiYXN" data-title="[BGP]如何深入理解BGP与其他路由协议的结合" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" rel="tag">网络工程师</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" rel="tag">路由协议</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/10/04/BGP-%E6%B7%B1%E5%85%A5%E8%AE%A8%E8%AE%BABGP%E9%A2%84%E9%98%B2%E7%8E%AF%E8%B7%AF%E6%9C%BA%E5%88%B6-1-IBGP/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          [BGP]深入讨论BGP预防环路机制(1) IBGP
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/10/04/BGP-BGP%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">[BGP]BGP路由协议详解</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BGP/" rel="tag">BGP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IS-IS/" rel="tag">IS-IS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSPF/" rel="tag">OSPF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RIP/" rel="tag">RIP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/" rel="tag">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" rel="tag">网络工程师</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" rel="tag">路由协议</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BGP/" style="font-size: 15px;">BGP</a> <a href="/tags/IS-IS/" style="font-size: 10px;">IS-IS</a> <a href="/tags/OSPF/" style="font-size: 12.5px;">OSPF</a> <a href="/tags/RIP/" style="font-size: 10px;">RIP</a> <a href="/tags/github/" style="font-size: 12.5px;">github</a> <a href="/tags/hexo/" style="font-size: 12.5px;">hexo</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" style="font-size: 20px;">网络工程师</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 20px;">计算机网络</a> <a href="/tags/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE/" style="font-size: 17.5px;">路由协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2025/10/16/%E6%B5%85%E6%9E%90%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E7%9B%B4%E8%BF%9E%E8%B7%AF%E7%94%B1/">浅析静态路由与直连路由</a>
+          </li>
+        
+          <li>
+            <a href="/2025/10/16/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2025/10/13/IS-IS-IS-IS%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">[IS-IS]IS-IS路由协议基本概念</a>
+          </li>
+        
+          <li>
+            <a href="/2025/10/13/RIP-RIP%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">[RIP]RIP路由协议基本概念</a>
+          </li>
+        
+          <li>
+            <a href="/2025/10/11/OSPF-%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E8%AE%B2%E6%B8%85%E6%A5%9AOSPF%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E4%B8%83%E6%AD%A5%E9%82%BB%E6%8E%A5%E5%85%B3%E7%B3%BB%E5%BB%BA%E7%AB%8B%E6%AD%A5%E9%AA%A4/">[OSPF]一篇文章讲清楚OSPF路由协议的七步邻接关系建立步骤</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
