@@ -1,0 +1,1067 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>[BGP]深入讨论BGP预防环路机制(3) BGP联盟 - 云上书房</title>
+
+  
+    <meta name="description" content="好的，这是一个非常核心的BGP进阶概念。我们来详细拆解一下这句话：“BGP通过AS内部使用联盟，以此防止环路”。 为了理解它，我们需要分三步走：  BGP的防环路基础机制 在单个AS内部（iBGP）遇到的问题 联盟如何解决这个问题并防止环路   1. BGP的防环路基础机制：AS_PATHBGP是一种“路径矢量”路由协议，它防环路的核心机制是 AS_PATH 属性。  工作原理：当BGP路由器向外">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[BGP]深入讨论BGP预防环路机制(3) BGP联盟">
+<meta property="og:url" content="https://fcbyoung.github.io/2025/10/04/BGP-%E6%B7%B1%E5%85%A5%E8%AE%A8%E8%AE%BABGP%E9%A2%84%E9%98%B2%E7%8E%AF%E8%B7%AF%E6%9C%BA%E5%88%B6-3-BGP%E8%81%94%E7%9B%9F/">
+<meta property="og:site_name" content="云上书房">
+<meta property="og:description" content="好的，这是一个非常核心的BGP进阶概念。我们来详细拆解一下这句话：“BGP通过AS内部使用联盟，以此防止环路”。 为了理解它，我们需要分三步走：  BGP的防环路基础机制 在单个AS内部（iBGP）遇到的问题 联盟如何解决这个问题并防止环路   1. BGP的防环路基础机制：AS_PATHBGP是一种“路径矢量”路由协议，它防环路的核心机制是 AS_PATH 属性。  工作原理：当BGP路由器向外">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-10-04T01:18:40.000Z">
+<meta property="article:modified_time" content="2025-12-04T03:06:28.793Z">
+<meta property="article:author" content="fcbyoung">
+<meta property="article:tag" content="BGP">
+<meta property="article:tag" content="网络工程师">
+<meta property="article:tag" content="计算机网络">
+<meta property="article:tag" content="路由协议">
+<meta name="twitter:card" content="summary">
+  
+  
+  
+  <meta name="keywords" content="网络工程师,计算机网络,BGP,路由协议">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"fcbyoung","sameAs":[]},"dateCreated":"2025-10-04T09:18:40+08:00","dateModified":"2025-12-04T11:06:28+08:00","datePublished":"2025-10-04T09:18:40+08:00","description":"","headline":"[BGP]深入讨论BGP预防环路机制(3) BGP联盟","mainEntityOfPage":{"@type":"WebPage","@id":"https://fcbyoung.github.io/2025/10/04/BGP-%E6%B7%B1%E5%85%A5%E8%AE%A8%E8%AE%BABGP%E9%A2%84%E9%98%B2%E7%8E%AF%E8%B7%AF%E6%9C%BA%E5%88%B6-3-BGP%E8%81%94%E7%9B%9F/"},"publisher":{"@type":"Organization","name":"fcbyoung","sameAs":[]},"url":"https://fcbyoung.github.io/2025/10/04/BGP-%E6%B7%B1%E5%85%A5%E8%AE%A8%E8%AE%BABGP%E9%A2%84%E9%98%B2%E7%8E%AF%E8%B7%AF%E6%9C%BA%E5%88%B6-3-BGP%E8%81%94%E7%9B%9F/","keywords":"网络工程师, 计算机网络, BGP, 路由协议","image":[]}</script>
+  
+</head>
+<body>
+
+<div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="undefined" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">云上书房</div><div class="sub cap">Designer Skyline</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"><a class="nav-item" title="Github" target="_blank" rel="noopener" href="https://github.com/fcbyoung" style="color:#3DC550"><img no-lazy src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" / onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="nav-item" title="B站" target="_blank" rel="noopener" href="https://space.bilibili.com/148884845" style="color:#FA6400"><img no-lazy src="https://www.bilibili.com/favicon.ico" / onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="nav-item" title="网易云音乐" target="_blank" rel="noopener" href="https://music.163.com/#/user/home?id=104779064" style="color:#F44336"><img no-lazy src="https://music.163.com/favicon.ico" / onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+
+<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2025/10/24/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E6%8A%91%E5%88%B6%E6%8E%A5%E5%8F%A3%E8%AF%A6%E8%A7%A3/"><span class="title">路由协议的抑制接口详解</span></a><a class="item title" href="/2025/10/25/%E8%B7%AF%E7%94%B1%E5%99%A8%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9A%84%E5%AF%B9%E6%AF%94/"><span class="title">路由器与交换机的对比</span></a><a class="item title" href="/2025/10/19/%E6%B5%85%E6%9E%90%E8%B7%AF%E7%94%B1%E7%9A%84%E6%8E%A7%E5%88%B6%E5%B1%82%E9%9D%A2%E4%B8%8E%E8%BD%AC%E5%8F%91%E5%B1%82%E9%9D%A2/"><span class="title">浅析路由的控制层面与转发层面</span></a><a class="item title" href="/2025/10/16/%E6%B5%85%E6%9E%90%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E7%9B%B4%E8%BF%9E%E8%B7%AF%E7%94%B1/"><span class="title">浅析静态路由与直连路由</span></a><a class="item title" href="/2025/12/02/%E8%AE%A9AI%E7%94%A8%E5%B9%B4%E5%BA%A6%E5%8D%81%E5%A4%A7%E6%B5%81%E8%A1%8C%E8%AF%AD%E8%AE%B2%E4%B8%80%E4%B8%AA%E6%95%85%E4%BA%8B/"><span class="title">让AI用年度十大流行语讲一个故事</span></a><a class="item title" href="/2025/10/19/%E6%8E%A2%E8%AE%A8%E5%8F%8D%E6%8E%A9%E7%A0%81%E7%9A%84%E4%BD%9C%E7%94%A8/"><span class="title">探讨反掩码的作用</span></a><a class="item title" href="/2025/12/01/%E6%B4%AA%E6%B0%B4%E5%86%B2%E8%B5%B0%E7%9F%B3%E7%8B%AE%E5%AD%90%E7%9A%84%E7%A7%91%E5%AD%A6%E5%88%86%E6%9E%90/"><span class="title">洪水冲走石狮子的科学分析</span></a><a class="item title" href="/2025/10/23/%E5%AF%B9%E6%AF%94RIP%EF%BC%8CIS-IS%EF%BC%8COSPF%EF%BC%8CBGP%E5%9B%9B%E5%A4%A7%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%EF%BC%882%EF%BC%89%E8%B7%AF%E7%94%B1%E8%81%9A%E5%90%88/"><span class="title">对比RIP，IS-IS，OSPF，BGP四大路由协议（2）路由聚合</span></a><a class="item title" href="/2025/10/19/%E5%AF%B9%E6%AF%94%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1%E5%92%8C%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E7%9A%84%E4%B8%8D%E5%90%8C/"><span class="title">对比路由策略和策略路由的不同</span></a><a class="item title" href="/2025/11/01/%E5%A6%82%E4%BD%95%E6%9F%A5%E7%9C%8B%E8%B7%AF%E7%94%B1%E8%A1%A8/"><span class="title">如何查看路由表</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2025-10-04T01:18:40.000Z">2025-10-04</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2025-12-04T03:06:28.793Z">2025-12-04</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>[BGP]深入讨论BGP预防环路机制(3) BGP联盟</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><p>好的，这是一个非常核心的BGP进阶概念。我们来详细拆解一下这句话：“BGP通过AS内部使用联盟，以此防止环路”。</p>
+<p>为了理解它，我们需要分三步走：</p>
+<ol>
+<li><strong>BGP的防环路基础机制</strong></li>
+<li><strong>在单个AS内部（iBGP）遇到的问题</strong></li>
+<li><strong>联盟如何解决这个问题并防止环路</strong></li>
+</ol>
+<hr>
+<h3 id="1-BGP的防环路基础机制：AS-PATH"><a href="#1-BGP的防环路基础机制：AS-PATH" class="headerlink" title="1. BGP的防环路基础机制：AS_PATH"></a>1. BGP的防环路基础机制：AS_PATH</h3><p>BGP是一种“路径矢量”路由协议，它防环路的核心机制是 <strong>AS_PATH</strong> 属性。</p>
+<ul>
+<li><strong>工作原理</strong>：当BGP路由器向外部的AS通告一条路由时，会把自己的<strong>AS号</strong> 添加到AS_PATH列表的最前面。</li>
+<li><strong>环路检测</strong>：当一台BGP路由器收到一条路由更新时，它会检查AS_PATH列表。<strong>如果在这个列表中发现了自己的AS号，它就认为这条路由产生了环路，从而丢弃该路由。</strong></li>
+</ul>
+<p><strong>举个例子：</strong><br>假设AS 100 -&gt; AS 200 -&gt; AS 300。<br>当路由从AS 100传到AS 200时，AS_PATH是 <code>100</code>。<br>当AS 200再传给AS 300时，AS_PATH变成 <code>200 100</code>。<br>如果AS 300试图把这条路由再传回给AS 200，AS 200会在AS_PATH <code>300 200 100</code> 中看到自己的AS号 <code>200</code>，于是它会拒绝接受这条路由，防止了环路。</p>
+<hr>
+<h3 id="2-在单个AS内部（iBGP）遇到的问题"><a href="#2-在单个AS内部（iBGP）遇到的问题" class="headerlink" title="2. 在单个AS内部（iBGP）遇到的问题"></a>2. 在单个AS内部（iBGP）遇到的问题</h3><p>在一个AS内部，路由器之间使用<strong>iBGP</strong> 来交换BGP路由信息。iBGP有一个非常重要的规则，叫做：</p>
+<p><strong>“从一台iBGP对等体学到的路由，永远不会传递给另一台iBGP对等体。”</strong></p>
+<p>这被称为 <strong>BGP Split-Horizon</strong>。</p>
+<p><strong>为什么要有这个规则？</strong><br>因为在AS内部，<strong>没有AS号被添加到AS_PATH中</strong>！回想一下防环路机制，它是基于AS_PATH来检测的。如果在同一个AS内，路由器之间互相传递路由，AS_PATH不会改变，BGP就无法通过AS_PATH来检测环路。为了防止在AS内部产生路由环路，所以干脆定下这个“死规矩”：iBGP邻居之间传一次就够了，不许二次传播。</p>
+<p><strong>这个规则带来的问题：</strong><br>为了保证AS内所有BGP路由器都能学到完整的路由信息，<strong>所有运行iBGP的路由器之间必须形成全互联的邻居关系</strong>。这在一个大型AS中会带来巨大的管理和性能开销（比如有N台路由器，就需要建立 N*(N-1)&#x2F;2 个iBGP会话）。</p>
+<hr>
+<h3 id="3-联盟如何解决这个问题并防止环路"><a href="#3-联盟如何解决这个问题并防止环路" class="headerlink" title="3. 联盟如何解决这个问题并防止环路"></a>3. 联盟如何解决这个问题并防止环路</h3><p><strong>联盟（BGP Confederations）</strong> 就是为了解决上述“iBGP全互联”问题而设计的一种方法。</p>
+<p><strong>它的核心思想是：</strong> <strong>“化整为零”</strong>。把一个大的AS（我们称之为<strong>联盟AS</strong>）划分成多个小的、更容易管理的AS（我们称之为<strong>子AS</strong> 或 <strong>成员AS</strong>）。</p>
+<p><strong>具体做法：</strong></p>
+<ol>
+<li><strong>划分</strong>：将原来的大AS 65000，划分为几个子AS，例如 AS 65001, AS 65002, AS 65003。</li>
+<li><strong>对外表现</strong>：对于<strong>联盟外部</strong>的BGP对等体来说，整个联盟仍然被看作<strong>一个单一的AS 65000</strong>。它们完全不知道内部被划分了。</li>
+<li><strong>内部运行</strong>：在<strong>联盟内部</strong>，这些子AS之间使用一种特殊的<strong>eBGP</strong> 来交换路由信息。注意，它不是标准的eBGP，而是经过修改的，我们称之为 ** Confederation eBGP**。</li>
+</ol>
+<h4 id="联盟如何防止环路？"><a href="#联盟如何防止环路？" class="headerlink" title="联盟如何防止环路？"></a><strong>联盟如何防止环路？</strong></h4><p>这里就是最关键的部分了。联盟通过引入两个概念来防止环路：</p>
+<p><strong>a) AS_CONFED_SEQUENCE</strong></p>
+<p>这是一个类似于AS_PATH的BGP路径属性，但它只在联盟内部使用。</p>
+<ul>
+<li>当路由在一个子AS（如AS 65001）内传播时，AS_PATH不会改变。</li>
+<li>但当路由从一个子AS（AS 65001）传到另一个子AS（AS 65002）时，<strong>发出路由的子AS号（65001）会被添加到 AS_CONFED_SEQUENCE 这个属性中</strong>。</li>
+</ul>
+<p><strong>b) 联盟内部的环路检测</strong><br>在联盟内部，路由器会同时检查 <strong>AS_PATH</strong> 和 <strong>AS_CONFED_SEQUENCE</strong>。</p>
+<ul>
+<li>如果在一台属于AS 65002的路由器收到的路由更新中，在 <strong>AS_CONFED_SEQUENCE</strong> 里看到了自己的子AS号 <code>65002</code>，它就会认为这条路由在联盟内部产生了环路，从而将其丢弃。</li>
+</ul>
+<p><strong>这样一来，联盟就在大的AS内部，重新创建了一个类似于外部AS之间的防环路机制。</strong></p>
+<h4 id="工作流程与好处"><a href="#工作流程与好处" class="headerlink" title="工作流程与好处"></a><strong>工作流程与好处</strong></h4><ul>
+<li><strong>流程</strong>：<ul>
+<li>子AS内部：使用iBGP，遵循iBGP的规则。</li>
+<li>子AS之间：使用 Confederation eBGP。它允许像标准eBGP一样传递路由，从而<strong>打破了iBGP全互联的要求</strong>。你只需要在每个子AS的边界路由器之间建立eBGP对等体关系即可。</li>
+</ul>
+</li>
+<li><strong>好处</strong>：<ol>
+<li><strong>解决了全互联问题</strong>：大大减少了需要建立的iBGP会话数量。</li>
+<li><strong>防止了AS内部环路</strong>：通过AS_CONFED_SEQUENCE属性，在联盟内部实现了可靠的环路检测。</li>
+<li><strong>策略灵活性</strong>：可以在子AS之间应用类似于eBGP的路由策略，提供了更精细的控制。</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li><strong>根本问题</strong>：iBGP因为AS_PATH在AS内不变，无法防环路，所以只能用“全互联”这个笨办法来规避环路，但这在大型网络中不可行。</li>
+<li><strong>联盟的解决方案</strong>：将大AS“伪装”成多个小AS的联合体。</li>
+<li><strong>防环路机制</strong>：在内部的小AS（子AS）之间通信时，使用一个<strong>新的、只在联盟内部有效的路径属性 <code>AS_CONFED_SEQUENCE</code></strong> 来记录路径。路由器通过检查这个属性来判断是否在联盟内部形成了环路。</li>
+</ul>
+<p><strong>一个简单的比喻：</strong><br>把一个有1000人的大公司（大AS）重组，分成10个部门（子AS）。</p>
+<ul>
+<li><strong>以前</strong>：为了保证信息一致，要求这1000人两两之间都要直接沟通（全互联），这根本做不到。</li>
+<li><strong>现在</strong>：部门内部（iBGP）自由沟通。部门之间（Confed eBGP）只派代表（边界路由器）沟通，并且每次跨部门传递消息时，都会在内部备忘录（AS_CONFED_SEQUENCE）上盖章，如果一份文件转了一圈又回到本部门，一看备忘录就知道是循环了，直接扔掉。而对于公司外部的人来说，他们仍然只认为这是一个公司（联盟AS）。</li>
+</ul>
+<p>那是不是可以说，BGP联盟仅适用于IBGP，而在EBGP上不可行？</p>
+<p>这是一个非常好的问题，它触及了BGP联盟设计的核心。</p>
+<p>首先给出结论：这个说法完全正确，并且非常精准。我们可以这样来理解：</p>
+<p><strong>BGP联盟本质上是一种用于“优化和改造大型AS内部iBGP网络”的技术。它不是为了在eBGP上使用，而是为了解决纯iBGP环境下的问题而诞生的。</strong></p>
+<p>下面我来详细解释为什么：</p>
+<hr>
+<h3 id="1-根本目的：解决iBGP的难题"><a href="#1-根本目的：解决iBGP的难题" class="headerlink" title="1. 根本目的：解决iBGP的难题"></a>1. 根本目的：解决iBGP的难题</h3><p>正如我们之前讨论的，iBGP有两大核心问题：</p>
+<ul>
+<li><strong>防环路机制缺失</strong>：在AS内部传递时，AS_PATH不变，无法用AS_PATH防环。</li>
+<li><strong>全互联要求</strong>：导致管理复杂度和资源消耗巨大。</li>
+</ul>
+<p><strong>联盟就是为了直接解决这两个iBGP特有的问题而设计的。</strong> 如果一个AS很小，根本不需要iBGP全互联，那么联盟也就没有存在的必要。</p>
+<hr>
+<h3 id="2-实现方式：在AS内部“模拟”eBGP"><a href="#2-实现方式：在AS内部“模拟”eBGP" class="headerlink" title="2. 实现方式：在AS内部“模拟”eBGP"></a>2. 实现方式：在AS内部“模拟”eBGP</h3><p>联盟的实现手法非常巧妙：<strong>它在一个真实的AS内部，创建了多个逻辑上的“子AS”，然后在它们之间运行一种特殊的、经过修改的eBGP。</strong></p>
+<p>这里的关键点是：</p>
+<ul>
+<li><strong>对“外”</strong>：对于联盟之外的、真正的eBGP对等体来说，它们看到的仍然是一个<strong>单一的、完整的AS号</strong>。它们完全不知道这个AS内部被划分成了多个子AS。在与外部通信时，联盟AS的行为和一个普通AS没有任何区别。</li>
+<li><strong>对“内”</strong>：在联盟内部，子AS之间的行为<strong>类似于eBGP</strong>（比如可以正常传递路由，而不需要全互联），但又<strong>不是标准的eBGP</strong>（比如下一跳属性、LOCAL_PREF等属性在子AS间依然保持，不像标准eBGP那样默认重置）。</li>
+</ul>
+<p>所以，<strong>联盟技术是将eBGP的某些机制“内化”为了一个解决iBGP问题的工具。</strong></p>
+<hr>
+<h3 id="3-为什么说它“在eBGP上不可行”？"><a href="#3-为什么说它“在eBGP上不可行”？" class="headerlink" title="3. 为什么说它“在eBGP上不可行”？"></a>3. 为什么说它“在eBGP上不可行”？</h3><p>这个说法可以从两个层面理解：</p>
+<p><strong>a) 从设计初衷和应用场景来看：</strong><br>联盟的设计目标就不是为了用于两个<strong>真正独立的、不同所属的AS</strong> 之间的eBGP连接。比如，你不可能告诉你的运营商：“我们在我们两个AS之间的eBGP链路上启用联盟吧。” 这是没有意义的，因为eBGP本身已经通过AS_PATH完美地解决了环路问题，并且不需要全互联。</p>
+<p><strong>b) 从技术细节来看：</strong><br>如果试图在两个真正的eBGP对等体之间使用联盟，会遇到根本性的矛盾：</p>
+<ul>
+<li><strong>AS号表示</strong>：联盟使用的子AS号通常属于私有AS号范围（64512-65534）。在真正的eBGP会话中，这些私有AS号是不应该被通告给对方的。</li>
+<li><strong>路径属性</strong>：联盟内部使用的<code>AS_CONFED_SEQUENCE</code>路径属性，在传递给真正的eBGP对等体之前<strong>必须被移除</strong>。如果将它泄露给外部AS，会导致路由问题，因为外部AS无法理解这个属性。</li>
+<li><strong>失去意义</strong>：eBGP本身工作得很好，引入联盟机制不会带来任何好处，反而会破坏标准的防环路和工作机制。</li>
+</ul>
+<hr>
+<h3 id="总结与类比"><a href="#总结与类比" class="headerlink" title="总结与类比"></a>总结与类比</h3><p>让我们用一个比喻来巩固理解：</p>
+<ul>
+<li><strong>一个大型公司</strong> &#x3D; 一个大的AS（例如AS 65000）</li>
+<li><strong>公司内部的部门（如市场部、技术部）</strong> &#x3D; 子AS（AS 65001， AS 65002）</li>
+<li><strong>公司与外部公司沟通</strong> &#x3D; eBGP</li>
+<li><strong>公司内部的全员大会</strong> &#x3D; iBGP全互联（效率低下）</li>
+<li><strong>联盟</strong> &#x3D; 公司重组，设立部门经理。部门内部自由沟通（子AS内的iBGP），部门经理之间开会沟通（子AS间的Confederation eBGP）。对外，公司仍然是一个整体。</li>
+</ul>
+<p><strong>结论：</strong></p>
+<p><strong>BGP联盟是一种专门为解决大型iBGP网络中的全互联和防环路问题而设计的技术。它通过在一个真实的AS内部引入类似eBGP的逻辑关系来实现这一目标，但它本身并不应用于两个独立AS之间的eBGP会话。</strong> 它是“用于iBGP的eBGP-like机制”，而不是“用于eBGP的技术”。</p>
+<p>最后，让我们再对IBGP中的全互联，反射路由器RR，以及BGP联盟三大预防环路机制进行详细对比。</p>
+<hr>
+<h3 id="对比总览"><a href="#对比总览" class="headerlink" title="对比总览"></a>对比总览</h3><table>
+<thead>
+<tr>
+<th align="left">特性维度</th>
+<th align="left">全互联</th>
+<th align="left">路由反射器</th>
+<th align="left">联盟</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>核心思想</strong></td>
+<td align="left">最直接的方法，遵守基础规则</td>
+<td align="left"><strong>打破“不传递”规则</strong>：指定特定路由器（RR）来反射路由</td>
+<td align="left"><strong>化整为零</strong>：将大AS划分为小AS，内部使用“特殊eBGP”</td>
+</tr>
+<tr>
+<td align="left"><strong>扩展性</strong></td>
+<td align="left"><strong>极差</strong><br>会话数呈O(N²)增长</td>
+<td align="left"><strong>优秀</strong><br>会话数呈O(N)线性增长</td>
+<td align="left"><strong>良好</strong><br>减少了全互联范围，但比RR稍复杂</td>
+</tr>
+<tr>
+<td align="left"><strong>配置与管理复杂度</strong></td>
+<td align="left"><strong>低</strong>（概念简单）<br><strong>高</strong>（实际维护会话多）</td>
+<td align="left"><strong>中等</strong><br>需要精心设计RR和客户机的拓扑</td>
+<td align="left"><strong>高</strong><br>需要规划子AS，配置边界路由器</td>
+</tr>
+<tr>
+<td align="left"><strong>防环机制</strong></td>
+<td align="left"><strong>BGP Split-Horizon</strong><br>（从iBGP学到的路由不传给其他iBGP对等体）</td>
+<td align="left"><strong>Cluster_List</strong> 和 <strong>Originator_ID</strong> 属性</td>
+<td align="left"><strong>AS_CONFED_SEQUENCE</strong> 属性</td>
+</tr>
+<tr>
+<td align="left"><strong>路径可见性</strong></td>
+<td align="left">AS_PATH保持原始状态，清晰明了</td>
+<td align="left">AS_PATH保持原始状态</td>
+<td align="left">对外隐藏内部子AS结构，AS_PATH中只显示联盟AS号</td>
+</tr>
+<tr>
+<td align="left"><strong>策略控制的灵活性</strong></td>
+<td align="left">策略在所有路由器上对等应用</td>
+<td align="left"><strong>集中化策略</strong><br>可在RR上应用策略，影响其所有客户机</td>
+<td align="left"><strong>分布式策略</strong><br>可在子AS边界应用类似eBGP的策略，更精细</td>
+</tr>
+<tr>
+<td align="left"><strong>网络稳定性与故障域</strong></td>
+<td align="left"><strong>无单点故障</strong><br>一个会话断开不影响其他会话</td>
+<td align="left"><strong>有单点故障风险</strong><br>一个RR故障会影响其所有客户机（可通过冗余缓解）</td>
+<td align="left"><strong>故障域隔离</strong><br>一个子AS的问题更容易被隔离在内部</td>
+</tr>
+<tr>
+<td align="left"><strong>迁移难度</strong></td>
+<td align="left">N&#x2F;A（基准）</td>
+<td align="left"><strong>相对容易</strong><br>可以逐步部署，将部分路由器设为RR的客户机</td>
+<td align="left"><strong>相对困难</strong><br>通常需要规划停机时间，重新划分AS并配置边界</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="深入分析各自特点"><a href="#深入分析各自特点" class="headerlink" title="深入分析各自特点"></a>深入分析各自特点</h3><h4 id="1-全互联"><a href="#1-全互联" class="headerlink" title="1. 全互联"></a>1. 全互联</h4><ul>
+<li><strong>优点</strong>：<ul>
+<li><strong>简单可靠</strong>：概念上最简单，符合BGP最基础的设计。</li>
+<li><strong>无单点故障</strong>：没有中心节点，任何一个iBGP会话的中断只会影响直接相连的两个路由器。</li>
+</ul>
+</li>
+<li><strong>缺点</strong>：<ul>
+<li><strong>无法扩展</strong>：这是其致命弱点。当路由器数量超过几十台时，会话数量会变得难以管理，消耗大量内存和CPU资源。</li>
+</ul>
+</li>
+<li><strong>适用场景</strong>：<ul>
+<li>小型网络或实验室环境。</li>
+<li>作为衡量其他方案优劣的基准。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-路由反射器"><a href="#2-路由反射器" class="headerlink" title="2. 路由反射器"></a>2. 路由反射器</h4><ul>
+<li><strong>优点</strong>：<ul>
+<li><strong>极佳的扩展性</strong>：大幅减少了iBGP会话数量。是当前大型网络中最主流的解决方案。</li>
+<li><strong>易于部署和迁移</strong>：可以从现有全互联网络中逐步引入RR，无需大规模重构网络。</li>
+<li><strong>保持逻辑拓扑</strong>：整个AS在逻辑上仍然是一个统一的实体，对外部网络没有影响。</li>
+</ul>
+</li>
+<li><strong>缺点</strong>：<ul>
+<li><strong>可能引入单点故障</strong>：如果RR发生故障，其下所有客户机将无法学习到完整的BGP路由。解决方案是部署多个冗余的RR。</li>
+<li><strong>潜在的子最优路径</strong>：RR会向所有客户机反射最佳路径，但客户机到该路径的下一跳可能不是最优的，需要依赖IGP的收敛或开启“下一跳自我”功能。</li>
+<li><strong>配置复杂性</strong>：需要精心设计RR的层级（如分层RR）和Cluster，配置不当容易引起环路。</li>
+</ul>
+</li>
+<li><strong>适用场景</strong>：<ul>
+<li><strong>绝大多数中大型企业和服务提供商网络</strong>。是目前事实上的标准。</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-联盟"><a href="#3-联盟" class="headerlink" title="3. 联盟"></a>3. 联盟</h4><ul>
+<li><strong>优点</strong>：<ul>
+<li><strong>天然的故障域隔离</strong>：将一个大的网络问题分解到多个子AS中，便于管理和故障排查。</li>
+<li><strong>策略灵活性强</strong>：在子AS边界，可以像使用eBGP一样应用丰富的路由策略（如MED、AS_PATH预挂等），提供了比RR更精细的控制粒度。</li>
+<li><strong>无单点故障</strong>：类似于全互联，在子AS内部是全互联或RR，但子AS之间是网状连接，没有中心化的反射器。</li>
+</ul>
+</li>
+<li><strong>缺点</strong>：<ul>
+<li><strong>配置和管理最复杂</strong>：需要规划子AS的划分、分配私有AS号，并配置所有子AS边界路由器。</li>
+<li><strong>迁移困难</strong>：从现有网络迁移到联盟架构通常需要详细的计划和可能的业务中断。</li>
+<li><strong>调试复杂度增加</strong>：在排查问题时，需要同时关注AS_PATH和AS_CONFED_SEQUENCE。</li>
+</ul>
+</li>
+<li><strong>适用场景</strong>：<ul>
+<li>规模极其庞大、结构复杂且由多个独立管理区域组成的网络（例如超大型运营商、经历了多次合并的网络）。</li>
+<li>对策略控制有极高要求的特殊场景。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="组合使用"><a href="#组合使用" class="headerlink" title="组合使用"></a>组合使用</h3><p>在实际网络中，这三种方案并非互斥，经常被<strong>组合使用</strong>以发挥最大效益。</p>
+<p><strong>最常见的组合是：路由反射器 + 联盟</strong></p>
+<ul>
+<li>在一个超大型的联盟AS内，每个子AS的内部可能仍然很大。</li>
+<li>此时，可以在<strong>每个子AS内部使用路由反射器</strong>来进一步减少iBGP会话数量。</li>
+<li>这样既获得了联盟的故障隔离和策略灵活性，又享受了RR在子AS内部的扩展性优势。</li>
+</ul>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><ul>
+<li><strong>全互联</strong>是“教科书式”的基准，但不可用于生产大型网络。</li>
+<li><strong>路由反射器</strong>是当今的“主流选择”，在扩展性和易用性之间取得了最佳平衡。</li>
+<li><strong>联盟</strong>是“高级武器”，提供了最强的控制力和隔离性，但代价是极高的复杂性。</li>
+</ul>
+<p>选择哪种方案取决于您的网络规模、增长预期、运维团队的技术能力和对网络控制力的具体要求。对于绝大多数网络而言，<strong>路由反射器</strong>都是首选方案。</p>
+</article>
+<div class="article-footer">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2025/10/11/OSPF-OSPF%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">[OSPF]OSPF路由协议基本概念</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2025/10/04/BGP-%E6%B7%B1%E5%85%A5%E8%AE%A8%E8%AE%BABGP%E9%A2%84%E9%98%B2%E7%8E%AF%E8%B7%AF%E6%9C%BA%E5%88%B6-2-EBGP/">[BGP]深入讨论BGP预防环路机制(2) EBGP</a></div></section></div>
+
+
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">fcbyoung</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-BGP%E7%9A%84%E9%98%B2%E7%8E%AF%E8%B7%AF%E5%9F%BA%E7%A1%80%E6%9C%BA%E5%88%B6%EF%BC%9AAS-PATH"><span class="toc-text">1. BGP的防环路基础机制：AS_PATH</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%9C%A8%E5%8D%95%E4%B8%AAAS%E5%86%85%E9%83%A8%EF%BC%88iBGP%EF%BC%89%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">2. 在单个AS内部（iBGP）遇到的问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%81%94%E7%9B%9F%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E8%BF%99%E4%B8%AA%E9%97%AE%E9%A2%98%E5%B9%B6%E9%98%B2%E6%AD%A2%E7%8E%AF%E8%B7%AF"><span class="toc-text">3. 联盟如何解决这个问题并防止环路</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%81%94%E7%9B%9F%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2%E7%8E%AF%E8%B7%AF%EF%BC%9F"><span class="toc-text">联盟如何防止环路？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E4%B8%8E%E5%A5%BD%E5%A4%84"><span class="toc-text">工作流程与好处</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%A0%B9%E6%9C%AC%E7%9B%AE%E7%9A%84%EF%BC%9A%E8%A7%A3%E5%86%B3iBGP%E7%9A%84%E9%9A%BE%E9%A2%98"><span class="toc-text">1. 根本目的：解决iBGP的难题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%EF%BC%9A%E5%9C%A8AS%E5%86%85%E9%83%A8%E2%80%9C%E6%A8%A1%E6%8B%9F%E2%80%9DeBGP"><span class="toc-text">2. 实现方式：在AS内部“模拟”eBGP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%B4%E5%AE%83%E2%80%9C%E5%9C%A8eBGP%E4%B8%8A%E4%B8%8D%E5%8F%AF%E8%A1%8C%E2%80%9D%EF%BC%9F"><span class="toc-text">3. 为什么说它“在eBGP上不可行”？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%E4%B8%8E%E7%B1%BB%E6%AF%94"><span class="toc-text">总结与类比</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E6%AF%94%E6%80%BB%E8%A7%88"><span class="toc-text">对比总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90%E5%90%84%E8%87%AA%E7%89%B9%E7%82%B9"><span class="toc-text">深入分析各自特点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%85%A8%E4%BA%92%E8%81%94"><span class="toc-text">1. 全互联</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E8%B7%AF%E7%94%B1%E5%8F%8D%E5%B0%84%E5%99%A8"><span class="toc-text">2. 路由反射器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E8%81%94%E7%9B%9F"><span class="toc-text">3. 联盟</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E5%90%88%E4%BD%BF%E7%94%A8"><span class="toc-text">组合使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93-1"><span class="toc-text">总结</span></a></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>

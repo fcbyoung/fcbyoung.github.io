@@ -1,0 +1,919 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>洪水冲走石狮子的科学分析 - 云上书房</title>
+
+  
+    <meta name="description" content="有个古代故事：发洪水冲走了寺庙门口的石狮子，洪水退去人们想在河床下游把石狮打捞出来，但是没有找到，这时有人根据逻辑推理认为应该去河床上游找。但是有人从现代物理学理论分析，认为在上游打捞并不科学。如何利用现代科学知识分析这个问题？ 这个古代故事可能源于清代纪晓岚的《阅微草堂笔记》，洪水冲走了寺庙门口的石狮子，人们最初在下游寻找未果，后来有人推理应去上游打捞。传统上，这个推理基于一种直观的流体动力学观">
+<meta property="og:type" content="article">
+<meta property="og:title" content="洪水冲走石狮子的科学分析">
+<meta property="og:url" content="https://fcbyoung.github.io/2025/12/01/%E6%B4%AA%E6%B0%B4%E5%86%B2%E8%B5%B0%E7%9F%B3%E7%8B%AE%E5%AD%90%E7%9A%84%E7%A7%91%E5%AD%A6%E5%88%86%E6%9E%90/">
+<meta property="og:site_name" content="云上书房">
+<meta property="og:description" content="有个古代故事：发洪水冲走了寺庙门口的石狮子，洪水退去人们想在河床下游把石狮打捞出来，但是没有找到，这时有人根据逻辑推理认为应该去河床上游找。但是有人从现代物理学理论分析，认为在上游打捞并不科学。如何利用现代科学知识分析这个问题？ 这个古代故事可能源于清代纪晓岚的《阅微草堂笔记》，洪水冲走了寺庙门口的石狮子，人们最初在下游寻找未果，后来有人推理应去上游打捞。传统上，这个推理基于一种直观的流体动力学观">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-12-01T15:53:57.000Z">
+<meta property="article:modified_time" content="2025-12-04T03:06:28.811Z">
+<meta property="article:author" content="fcbyoung">
+<meta property="article:tag" content="AI乱弹">
+<meta name="twitter:card" content="summary">
+  
+  
+  
+  <meta name="keywords" content="AI乱弹">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"fcbyoung","sameAs":[]},"dateCreated":"2025-12-01T23:53:57+08:00","dateModified":"2025-12-04T11:06:28+08:00","datePublished":"2025-12-01T23:53:57+08:00","description":"","headline":"洪水冲走石狮子的科学分析","mainEntityOfPage":{"@type":"WebPage","@id":"https://fcbyoung.github.io/2025/12/01/%E6%B4%AA%E6%B0%B4%E5%86%B2%E8%B5%B0%E7%9F%B3%E7%8B%AE%E5%AD%90%E7%9A%84%E7%A7%91%E5%AD%A6%E5%88%86%E6%9E%90/"},"publisher":{"@type":"Organization","name":"fcbyoung","sameAs":[]},"url":"https://fcbyoung.github.io/2025/12/01/%E6%B4%AA%E6%B0%B4%E5%86%B2%E8%B5%B0%E7%9F%B3%E7%8B%AE%E5%AD%90%E7%9A%84%E7%A7%91%E5%AD%A6%E5%88%86%E6%9E%90/","keywords":"AI乱弹","image":[]}</script>
+  
+</head>
+<body>
+
+<div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="undefined" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">云上书房</div><div class="sub cap">Designer Skyline</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"><a class="nav-item" title="Github" target="_blank" rel="noopener" href="https://github.com/fcbyoung" style="color:#3DC550"><img no-lazy src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" / onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="nav-item" title="B站" target="_blank" rel="noopener" href="https://space.bilibili.com/148884845" style="color:#FA6400"><img no-lazy src="https://www.bilibili.com/favicon.ico" / onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="nav-item" title="网易云音乐" target="_blank" rel="noopener" href="https://music.163.com/#/user/home?id=104779064" style="color:#F44336"><img no-lazy src="https://music.163.com/favicon.ico" / onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+
+<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2025/10/24/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E6%8A%91%E5%88%B6%E6%8E%A5%E5%8F%A3%E8%AF%A6%E8%A7%A3/"><span class="title">路由协议的抑制接口详解</span></a><a class="item title" href="/2025/10/25/%E8%B7%AF%E7%94%B1%E5%99%A8%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9A%84%E5%AF%B9%E6%AF%94/"><span class="title">路由器与交换机的对比</span></a><a class="item title" href="/2025/10/19/%E6%B5%85%E6%9E%90%E8%B7%AF%E7%94%B1%E7%9A%84%E6%8E%A7%E5%88%B6%E5%B1%82%E9%9D%A2%E4%B8%8E%E8%BD%AC%E5%8F%91%E5%B1%82%E9%9D%A2/"><span class="title">浅析路由的控制层面与转发层面</span></a><a class="item title" href="/2025/10/16/%E6%B5%85%E6%9E%90%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E7%9B%B4%E8%BF%9E%E8%B7%AF%E7%94%B1/"><span class="title">浅析静态路由与直连路由</span></a><a class="item title" href="/2025/12/02/%E8%AE%A9AI%E7%94%A8%E5%B9%B4%E5%BA%A6%E5%8D%81%E5%A4%A7%E6%B5%81%E8%A1%8C%E8%AF%AD%E8%AE%B2%E4%B8%80%E4%B8%AA%E6%95%85%E4%BA%8B/"><span class="title">让AI用年度十大流行语讲一个故事</span></a><a class="item title" href="/2025/10/19/%E6%8E%A2%E8%AE%A8%E5%8F%8D%E6%8E%A9%E7%A0%81%E7%9A%84%E4%BD%9C%E7%94%A8/"><span class="title">探讨反掩码的作用</span></a><a class="item title" href="/2025/12/01/%E6%B4%AA%E6%B0%B4%E5%86%B2%E8%B5%B0%E7%9F%B3%E7%8B%AE%E5%AD%90%E7%9A%84%E7%A7%91%E5%AD%A6%E5%88%86%E6%9E%90/"><span class="title">洪水冲走石狮子的科学分析</span></a><a class="item title" href="/2025/10/23/%E5%AF%B9%E6%AF%94RIP%EF%BC%8CIS-IS%EF%BC%8COSPF%EF%BC%8CBGP%E5%9B%9B%E5%A4%A7%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%EF%BC%882%EF%BC%89%E8%B7%AF%E7%94%B1%E8%81%9A%E5%90%88/"><span class="title">对比RIP，IS-IS，OSPF，BGP四大路由协议（2）路由聚合</span></a><a class="item title" href="/2025/10/19/%E5%AF%B9%E6%AF%94%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1%E5%92%8C%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E7%9A%84%E4%B8%8D%E5%90%8C/"><span class="title">对比路由策略和策略路由的不同</span></a><a class="item title" href="/2025/11/01/%E5%A6%82%E4%BD%95%E6%9F%A5%E7%9C%8B%E8%B7%AF%E7%94%B1%E8%A1%A8/"><span class="title">如何查看路由表</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2025-12-01T15:53:57.000Z">2025-12-01</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2025-12-04T03:06:28.811Z">2025-12-04</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>洪水冲走石狮子的科学分析</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><p>有个古代故事：发洪水冲走了寺庙门口的石狮子，洪水退去人们想在河床下游把石狮打捞出来，但是没有找到，这时有人根据逻辑推理认为应该去河床上游找。但是有人从现代物理学理论分析，认为在上游打捞并不科学。如何利用现代科学知识分析这个问题？</p>
+<p>这个古代故事可能源于清代纪晓岚的《阅微草堂笔记》，洪水冲走了寺庙门口的石狮子，人们最初在下游寻找未果，后来有人推理应去上游打捞。传统上，这个推理基于一种直观的流体动力学观察：石狮子沉重，洪水冲刷河床时，可能在石狮子前方形成冲刷坑，导致石狮子滚动或倾倒向上游移动。然而，从现代科学角度（包括流体力学、沉积物动力学和物理学），我们需要仔细分析这种可能性是否合理。以下我将基于现代科学知识逐步分析这个问题。</p>
+<h3 id="1-故事背景和传统推理"><a href="#1-故事背景和传统推理" class="headerlink" title="1. 故事背景和传统推理"></a>1. <strong>故事背景和传统推理</strong></h3><ul>
+<li>故事中，老河兵（或类似专家）的推理是：石狮子密度高、重量大，洪水水流无法直接将其冲向下游，反而会冲刷石狮子前方的河床泥沙，形成凹陷坑，石狮子因重力落入坑中，如此反复，逐渐向上游移动。这种推理强调局部冲刷和重物的滚动行为。</li>
+</ul>
+<h3 id="2-现代科学原理概述"><a href="#2-现代科学原理概述" class="headerlink" title="2. 现代科学原理概述"></a>2. <strong>现代科学原理概述</strong></h3><ul>
+<li><strong>流体力学基础</strong>：水流对河床物体的作用主要取决于水流速度、物体密度、形状、河床组成以及水流湍流程度。水流施加的力包括拖曳力（沿水流方向）和升力（垂直方向）。通常，物体在水流作用下会向下游移动。</li>
+<li><strong>沉积物运输</strong>：对于颗粒物或重物，移动阈值由希尔兹参数（Shields parameter）描述，涉及水流剪切力和颗粒密度。重物需要较高的水流速度才能移动（通常超过2-3 m&#x2F;s对于巨石）。</li>
+<li><strong>局部冲刷机制</strong>：当水流遇到障碍物（如石狮子），会产生湍流和涡旋，导致河床侵蚀。冲刷坑通常形成在障碍物的下游侧（由于水流分离），但有时也可能在上游侧形成，取决于物体形状和水流条件。</li>
+<li><strong>物体移动方向</strong>：大多数情况下，重物（如石头）会被运输向下游。向上游移动需要异常条件，如反向水流、特殊河床地形或不对称冲刷。</li>
+</ul>
+<h3 id="3-科学分析：石狮子在洪水中的行为"><a href="#3-科学分析：石狮子在洪水中的行为" class="headerlink" title="3. 科学分析：石狮子在洪水中的行为"></a>3. <strong>科学分析：石狮子在洪水中的行为</strong></h3><ul>
+<li><strong>石狮子的属性</strong>：石狮子通常由花岗岩或类似岩石制成，密度约2500-3000 kg&#x2F;m³，比水密度大得多，因此会沉底。假设石狮子重量为数百公斤至数吨，需要极强的水流才能移动（例如，洪水流速可能达3-5 m&#x2F;s，但对于大石头，移动阈值较高）。</li>
+<li><strong>水流移动能力</strong>：洪水期间，水流速度高，但通常足以移动泥沙和小砾石，对于大石头，移动可能有限。石狮子可能通过滚动或滑动移动，但方向一般向下游。</li>
+<li><strong>冲刷机制</strong>：现代研究（如桥梁墩冲刷或岩石移动）表明，冲刷坑主要形成在下游侧，物体因此向下游滚动。但对于某些形状（如扁平或不对称物体），冲刷可能发生在上游侧，导致向上游移动。然而，这种情况较少见，且需要特定条件：<ul>
+<li>河床由软质泥沙组成，易于冲刷。</li>
+<li>石狮子的形状可能使其前端（面向水流）更容易被冲刷，形成上游坑。</li>
+<li>水流持续且方向稳定，但洪水往往湍急多变。</li>
+</ul>
+</li>
+<li><strong>实际可能性</strong>：基于流体力学模拟和实验，重物向上游移动的概率很低。大多数自然河流中，物体都是向下游运输。即使有局部冲刷，石狮子更可能被埋藏或停留在原地，而不是显著向上游移动。</li>
+</ul>
+<h3 id="4-现代物理学视角的结论"><a href="#4-现代物理学视角的结论" class="headerlink" title="4. 现代物理学视角的结论"></a>4. <strong>现代物理学视角的结论</strong></h3><ul>
+<li><strong>不科学的原因</strong>：从现代物理学看，在上游打捞石狮子的建议并不科学，主要原因如下：<ul>
+<li><strong>能量和动量守恒</strong>：水流方向向下游，传递的动量也会将物体推向下游。向上移动需要逆流而上的力，这违反直觉且能量效率低。</li>
+<li><strong>实证证据</strong>：野外观察和实验表明，洪水后重物（如巨石）通常在下游沉积，尤其是在流速降低的区域（如河湾、障碍物后）。</li>
+<li><strong>冲刷坑的典型位置</strong>：对于障碍物，冲刷坑更常见于下游侧，物体因此向下游移动。上游冲刷仅在某些实验室条件下观察到，但自然界中极少。</li>
+<li><strong>风险分析</strong>：如果石狮子被冲走，它更可能在下游某个位置被埋藏或沉积，而不是上游。因此，搜索下游（包括河床和岸边）是更合理的。</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-建议行动"><a href="#5-建议行动" class="headerlink" title="5. 建议行动"></a>5. <strong>建议行动</strong></h3><ul>
+<li>如果您在类似情景中寻找丢失的重物，基于科学，应优先搜索下游区域，并考虑以下因素：<ul>
+<li>洪水流速和方向：使用水流模型估计运输距离。</li>
+<li>河床组成：软泥沙滩可能埋藏物体，硬质河床可能允许滚动。</li>
+<li>物体形状：不对称形状可能影响移动方向，但总体上向下游。</li>
+<li>使用现代技术：如声纳、磁力仪或无人机摄影，覆盖下游大面积区域。</li>
+</ul>
+</li>
+</ul>
+<p>总之，古代故事中的推理可能基于个别观察或经验，但现代科学不支持常规向上游搜索的做法。洪水后，石狮子更可能在下游找到。</p>
+<p>追问一句，如果在下有没有找到，除了被水流冲到了更远的地方，或者是被泥沙掩埋在河床深处，还有哪些可能？</p>
+<p>这触及了问题的核心——当现实与最初的推理不符时，科学思维要求我们提出并检验新的假说。</p>
+<p>如果在下游没有找到石狮子，除了“被冲到更远的下游”和“被泥沙掩埋在河床深处”这两个最常见的原因外，从现代科学和工程学的角度，还有以下几种可能性：</p>
+<h3 id="1-地形剧变：被冲入支流或废弃河道"><a href="#1-地形剧变：被冲入支流或废弃河道" class="headerlink" title="1. 地形剧变：被冲入支流或废弃河道"></a>1. <strong>地形剧变：被冲入支流或废弃河道</strong></h3><ul>
+<li><strong>科学原理</strong>：洪水，尤其是特大洪水，具有巨大的能量，可以瞬间改变局部地形。主流河道可能因为瞬间的洪峰流量而“夺占”旧的废弃河道，或者将物体冲入支流。</li>
+<li><strong>可能性分析</strong>：搜索队伍可能只沿着主河道向下游搜索，而石狮子很可能在洪水的混乱流场中被“甩”进了某条不显眼的支流、旧河道或者由于地形形成的回流区而沉积在非主航道的位置。<strong>这是最可能被忽略的情况之一</strong>。</li>
+</ul>
+<h3 id="2-被卡在障碍物之下或之中（如灌木丛、桥墩、-fallen-logs）"><a href="#2-被卡在障碍物之下或之中（如灌木丛、桥墩、-fallen-logs）" class="headerlink" title="2. 被卡在障碍物之下或之中（如灌木丛、桥墩、 fallen logs）"></a>2. <strong>被卡在障碍物之下或之中（如灌木丛、桥墩、 fallen logs）</strong></h3><ul>
+<li><strong>科学原理</strong>：洪水会携带大量漂浮物和残骸（树木、家具等）。这些残骸可能形成巨大的“垃圾坝”（debris jam）。一个沉重的物体如石狮子，很可能在移动过程中被这些残骸拦截并包裹，最终随着残骸坝一起沉积在某个地方。</li>
+<li><strong>可能性分析</strong>：即使洪水退去，残骸坝可能依然存在，并将石狮子完全遮盖在其中。从表面上看，这里只是一堆烂木头和垃圾，不会有人想到去翻找。</li>
+</ul>
+<h3 id="3-物理性碎裂"><a href="#3-物理性碎裂" class="headerlink" title="3. 物理性碎裂"></a>3. <strong>物理性碎裂</strong></h3><ul>
+<li><strong>科学原理</strong>：石狮子虽然是石头，但可能有内在的裂纹或薄弱面。在洪水巨大的冲击力下，它可能撞上其他巨石或硬物（如桥墩），导致碎裂成几大块或很多小块。</li>
+<li><strong>可能性分析</strong>：人们可能在寻找一个完整的石狮子，而实际上它已经碎裂。较大的碎块可能分散在河床各处，较小的碎块则被冲得更远或埋得更深，这使得目标物变得更难识别。</li>
+</ul>
+<h3 id="4-被拖拽上岸或被人为打捞（人为干预）"><a href="#4-被拖拽上岸或被人为打捞（人为干预）" class="headerlink" title="4. 被拖拽上岸或被人为打捞（人为干预）"></a>4. <strong>被拖拽上岸或被人为打捞（人为干预）</strong></h3><ul>
+<li><strong>科学原理</strong>：这属于外部因素。在洪水期间或之后，可能有人发现了石狮子，并将其打捞起来运走。或者，洪水将其冲到了岸边的某处（例如农田、路边），被路人或当地居民发现并收藏。</li>
+<li><strong>可能性分析</strong>：虽然故事背景是古代，但人性古今相通。这是一个不能排除的可能性，尤其对于有价值或是有文物意义的物品。</li>
+</ul>
+<h3 id="5-初始位置记忆错误或参照物改变"><a href="#5-初始位置记忆错误或参照物改变" class="headerlink" title="5. 初始位置记忆错误或参照物改变"></a>5. <strong>初始位置记忆错误或参照物改变</strong></h3><ul>
+<li><strong>科学原理</strong>：洪水不仅冲走了石狮子，还可能彻底改变了寺庙周边的地形地貌。人们记忆中被冲走的地点可能本身就不准确，或者洪水之后，原来的参照物（如台阶、树木）已经消失，导致大家对“原始掉落点”的判断产生巨大偏差。</li>
+<li><strong>可能性分析</strong>：如果初始位置都搞错了，那么基于“下游”或“上游”的搜索逻辑本身就建立在错误的前提上。</li>
+</ul>
+<h3 id="6-极低概率事件：古代推理成立的条件"><a href="#6-极低概率事件：古代推理成立的条件" class="headerlink" title="6. 极低概率事件：古代推理成立的条件"></a>6. <strong>极低概率事件：古代推理成立的条件</strong></h3><ul>
+<li><strong>科学原理</strong>：虽然现代流体力学认为向上游移动极不寻常，但并非绝对不可能。这需要极其严苛的条件：<ul>
+<li><strong>河床组成</strong>：必须是非常松软、均匀的细沙质河床，易于被冲刷。</li>
+<li><strong>物体形状</strong>：石狮子的形状必须非常特殊，其迎水面的底部能够高效地引导水流向下冲刷其前方的河床，同时自身重心又便于向前（向上游）倾倒翻滚，而不是向后。</li>
+<li><strong>水流条件</strong>：需要持续、稳定且强度恰到好处的水流。水流太弱冲不动沙，太强则会把石狮子直接推向下游。</li>
+</ul>
+</li>
+<li><strong>可能性分析</strong>：<strong>这是一种理论上的可能性，但在自然界的复杂环境中，其发生的概率远低于其他情况。</strong> 它更像是一个巧妙的思想实验，而非实用的搜救指南。如果所有其他可能性都被排除，最后才可能考虑这一点。</li>
+</ul>
+<hr>
+<h3 id="现代科学指导下的系统性搜索策略"><a href="#现代科学指导下的系统性搜索策略" class="headerlink" title="现代科学指导下的系统性搜索策略"></a><strong>现代科学指导下的系统性搜索策略</strong></h3><p>如果运用现代技术来解决这个问题，我们不会纠结于“上游还是下游”的二元争论，而是会采取一个系统性的方案：</p>
+<ol>
+<li><strong>重新校准基准点</strong>：尽可能精确地确定石狮子原始位置（利用历史照片、证人访谈、地面残留痕迹等）。</li>
+<li><strong>建立水动力模型</strong>：根据洪水时的降雨量、地形数据等，用计算机模拟洪水的流速、流向和能量分布，预测物体最可能的运输路径和沉积区域。</li>
+<li><strong>扩大搜索范围</strong>：使用技术手段进行大范围、非破坏性探测：<ul>
+<li><strong>侧扫声纳</strong>：对主河道、支流、回流区进行水下测绘，识别河床上的异常物体。</li>
+<li><strong>磁力计</strong>：如果石狮子有任何金属部件（如底座镶铁），可用其探测。</li>
+<li><strong>探地雷达</strong>：对于岸滩和干涸的河床，可探测地下是否埋有大型物体。</li>
+<li><strong>无人机多光谱成像</strong>：从空中识别被浅层泥沙覆盖的形状异常。</li>
+</ul>
+</li>
+<li><strong>优先搜索高概率区</strong>：根据模型和经验，优先搜索河道弯曲处的内侧（流速慢，沉积区）、障碍物下游、支流入口、河道变宽处等。</li>
+</ol>
+<p><strong>结论：</strong><br>虽然“向上游寻找”是一个充满智慧趣味的古代推理故事，但现代科学告诉我们，在下游找不到石狮子的原因多种多样，<strong>“被冲入支流”</strong> 和 <strong>“被残骸掩埋”</strong> 是比“逆流而上”更合理、更常见的科学解释。科学的思维方式不是固守一种解释，而是不断提出可检验的假说，并利用技术手段逐一验证。</p>
+</article>
+<div class="article-footer">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2025/12/02/%E8%AE%A9AI%E7%94%A8%E5%B9%B4%E5%BA%A6%E5%8D%81%E5%A4%A7%E6%B5%81%E8%A1%8C%E8%AF%AD%E8%AE%B2%E4%B8%80%E4%B8%AA%E6%95%85%E4%BA%8B/">让AI用年度十大流行语讲一个故事</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2025/11/01/%E5%A6%82%E4%BD%95%E6%9F%A5%E7%9C%8B%E8%B7%AF%E7%94%B1%E8%A1%A8/">如何查看路由表</a></div></section></div>
+
+
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">fcbyoung</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%95%85%E4%BA%8B%E8%83%8C%E6%99%AF%E5%92%8C%E4%BC%A0%E7%BB%9F%E6%8E%A8%E7%90%86"><span class="toc-text">1. 故事背景和传统推理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%8E%B0%E4%BB%A3%E7%A7%91%E5%AD%A6%E5%8E%9F%E7%90%86%E6%A6%82%E8%BF%B0"><span class="toc-text">2. 现代科学原理概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%A7%91%E5%AD%A6%E5%88%86%E6%9E%90%EF%BC%9A%E7%9F%B3%E7%8B%AE%E5%AD%90%E5%9C%A8%E6%B4%AA%E6%B0%B4%E4%B8%AD%E7%9A%84%E8%A1%8C%E4%B8%BA"><span class="toc-text">3. 科学分析：石狮子在洪水中的行为</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E7%8E%B0%E4%BB%A3%E7%89%A9%E7%90%86%E5%AD%A6%E8%A7%86%E8%A7%92%E7%9A%84%E7%BB%93%E8%AE%BA"><span class="toc-text">4. 现代物理学视角的结论</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%BB%BA%E8%AE%AE%E8%A1%8C%E5%8A%A8"><span class="toc-text">5. 建议行动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%9C%B0%E5%BD%A2%E5%89%A7%E5%8F%98%EF%BC%9A%E8%A2%AB%E5%86%B2%E5%85%A5%E6%94%AF%E6%B5%81%E6%88%96%E5%BA%9F%E5%BC%83%E6%B2%B3%E9%81%93"><span class="toc-text">1. 地形剧变：被冲入支流或废弃河道</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E8%A2%AB%E5%8D%A1%E5%9C%A8%E9%9A%9C%E7%A2%8D%E7%89%A9%E4%B9%8B%E4%B8%8B%E6%88%96%E4%B9%8B%E4%B8%AD%EF%BC%88%E5%A6%82%E7%81%8C%E6%9C%A8%E4%B8%9B%E3%80%81%E6%A1%A5%E5%A2%A9%E3%80%81-fallen-logs%EF%BC%89"><span class="toc-text">2. 被卡在障碍物之下或之中（如灌木丛、桥墩、 fallen logs）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%89%A9%E7%90%86%E6%80%A7%E7%A2%8E%E8%A3%82"><span class="toc-text">3. 物理性碎裂</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E8%A2%AB%E6%8B%96%E6%8B%BD%E4%B8%8A%E5%B2%B8%E6%88%96%E8%A2%AB%E4%BA%BA%E4%B8%BA%E6%89%93%E6%8D%9E%EF%BC%88%E4%BA%BA%E4%B8%BA%E5%B9%B2%E9%A2%84%EF%BC%89"><span class="toc-text">4. 被拖拽上岸或被人为打捞（人为干预）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%88%9D%E5%A7%8B%E4%BD%8D%E7%BD%AE%E8%AE%B0%E5%BF%86%E9%94%99%E8%AF%AF%E6%88%96%E5%8F%82%E7%85%A7%E7%89%A9%E6%94%B9%E5%8F%98"><span class="toc-text">5. 初始位置记忆错误或参照物改变</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E6%9E%81%E4%BD%8E%E6%A6%82%E7%8E%87%E4%BA%8B%E4%BB%B6%EF%BC%9A%E5%8F%A4%E4%BB%A3%E6%8E%A8%E7%90%86%E6%88%90%E7%AB%8B%E7%9A%84%E6%9D%A1%E4%BB%B6"><span class="toc-text">6. 极低概率事件：古代推理成立的条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%B0%E4%BB%A3%E7%A7%91%E5%AD%A6%E6%8C%87%E5%AF%BC%E4%B8%8B%E7%9A%84%E7%B3%BB%E7%BB%9F%E6%80%A7%E6%90%9C%E7%B4%A2%E7%AD%96%E7%95%A5"><span class="toc-text">现代科学指导下的系统性搜索策略</span></a></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>

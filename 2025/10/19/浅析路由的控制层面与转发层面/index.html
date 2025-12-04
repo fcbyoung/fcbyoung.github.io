@@ -1,0 +1,1108 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>浅析路由的控制层面与转发层面 - 云上书房</title>
+
+  
+    <meta name="description" content="一.关于控制层面和转发层面路由器的控制层面和转发层面。这个概念是现代路由器架构的基石，理解了它，就能理解路由器如何工作、如何进行故障排查以及SDN（软件定义网络）的革命性意义。  核心概念：一个形象的比喻为了更好地理解，我们可以把路由器比作一个城市的交通管理系统：  控制层面：相当于交通管理局。它负责制定全市的交通规则、绘制道路地图（路由表）、根据实时事故（网络拓扑变化）更新导航APP。它进行的是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅析路由的控制层面与转发层面">
+<meta property="og:url" content="https://fcbyoung.github.io/2025/10/19/%E6%B5%85%E6%9E%90%E8%B7%AF%E7%94%B1%E7%9A%84%E6%8E%A7%E5%88%B6%E5%B1%82%E9%9D%A2%E4%B8%8E%E8%BD%AC%E5%8F%91%E5%B1%82%E9%9D%A2/">
+<meta property="og:site_name" content="云上书房">
+<meta property="og:description" content="一.关于控制层面和转发层面路由器的控制层面和转发层面。这个概念是现代路由器架构的基石，理解了它，就能理解路由器如何工作、如何进行故障排查以及SDN（软件定义网络）的革命性意义。  核心概念：一个形象的比喻为了更好地理解，我们可以把路由器比作一个城市的交通管理系统：  控制层面：相当于交通管理局。它负责制定全市的交通规则、绘制道路地图（路由表）、根据实时事故（网络拓扑变化）更新导航APP。它进行的是">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-10-19T09:38:54.000Z">
+<meta property="article:modified_time" content="2025-12-04T03:06:28.812Z">
+<meta property="article:author" content="fcbyoung">
+<meta property="article:tag" content="网络工程师">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary">
+  
+  
+  
+  <meta name="keywords" content="网络工程师,计算机网络">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"fcbyoung","sameAs":[]},"dateCreated":"2025-10-19T17:38:54+08:00","dateModified":"2025-12-04T11:06:28+08:00","datePublished":"2025-10-19T17:38:54+08:00","description":"","headline":"浅析路由的控制层面与转发层面","mainEntityOfPage":{"@type":"WebPage","@id":"https://fcbyoung.github.io/2025/10/19/%E6%B5%85%E6%9E%90%E8%B7%AF%E7%94%B1%E7%9A%84%E6%8E%A7%E5%88%B6%E5%B1%82%E9%9D%A2%E4%B8%8E%E8%BD%AC%E5%8F%91%E5%B1%82%E9%9D%A2/"},"publisher":{"@type":"Organization","name":"fcbyoung","sameAs":[]},"url":"https://fcbyoung.github.io/2025/10/19/%E6%B5%85%E6%9E%90%E8%B7%AF%E7%94%B1%E7%9A%84%E6%8E%A7%E5%88%B6%E5%B1%82%E9%9D%A2%E4%B8%8E%E8%BD%AC%E5%8F%91%E5%B1%82%E9%9D%A2/","keywords":"网络工程师, 计算机网络","image":[]}</script>
+  
+</head>
+<body>
+
+<div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="undefined" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">云上书房</div><div class="sub cap">Designer Skyline</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"><a class="nav-item" title="Github" target="_blank" rel="noopener" href="https://github.com/fcbyoung" style="color:#3DC550"><img no-lazy src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" / onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="nav-item" title="B站" target="_blank" rel="noopener" href="https://space.bilibili.com/148884845" style="color:#FA6400"><img no-lazy src="https://www.bilibili.com/favicon.ico" / onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="nav-item" title="网易云音乐" target="_blank" rel="noopener" href="https://music.163.com/#/user/home?id=104779064" style="color:#F44336"><img no-lazy src="https://music.163.com/favicon.ico" / onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+
+<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2025/10/24/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E6%8A%91%E5%88%B6%E6%8E%A5%E5%8F%A3%E8%AF%A6%E8%A7%A3/"><span class="title">路由协议的抑制接口详解</span></a><a class="item title" href="/2025/10/25/%E8%B7%AF%E7%94%B1%E5%99%A8%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9A%84%E5%AF%B9%E6%AF%94/"><span class="title">路由器与交换机的对比</span></a><a class="item title" href="/2025/10/19/%E6%B5%85%E6%9E%90%E8%B7%AF%E7%94%B1%E7%9A%84%E6%8E%A7%E5%88%B6%E5%B1%82%E9%9D%A2%E4%B8%8E%E8%BD%AC%E5%8F%91%E5%B1%82%E9%9D%A2/"><span class="title">浅析路由的控制层面与转发层面</span></a><a class="item title" href="/2025/10/16/%E6%B5%85%E6%9E%90%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E7%9B%B4%E8%BF%9E%E8%B7%AF%E7%94%B1/"><span class="title">浅析静态路由与直连路由</span></a><a class="item title" href="/2025/12/02/%E8%AE%A9AI%E7%94%A8%E5%B9%B4%E5%BA%A6%E5%8D%81%E5%A4%A7%E6%B5%81%E8%A1%8C%E8%AF%AD%E8%AE%B2%E4%B8%80%E4%B8%AA%E6%95%85%E4%BA%8B/"><span class="title">让AI用年度十大流行语讲一个故事</span></a><a class="item title" href="/2025/10/19/%E6%8E%A2%E8%AE%A8%E5%8F%8D%E6%8E%A9%E7%A0%81%E7%9A%84%E4%BD%9C%E7%94%A8/"><span class="title">探讨反掩码的作用</span></a><a class="item title" href="/2025/12/01/%E6%B4%AA%E6%B0%B4%E5%86%B2%E8%B5%B0%E7%9F%B3%E7%8B%AE%E5%AD%90%E7%9A%84%E7%A7%91%E5%AD%A6%E5%88%86%E6%9E%90/"><span class="title">洪水冲走石狮子的科学分析</span></a><a class="item title" href="/2025/10/23/%E5%AF%B9%E6%AF%94RIP%EF%BC%8CIS-IS%EF%BC%8COSPF%EF%BC%8CBGP%E5%9B%9B%E5%A4%A7%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%EF%BC%882%EF%BC%89%E8%B7%AF%E7%94%B1%E8%81%9A%E5%90%88/"><span class="title">对比RIP，IS-IS，OSPF，BGP四大路由协议（2）路由聚合</span></a><a class="item title" href="/2025/10/19/%E5%AF%B9%E6%AF%94%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1%E5%92%8C%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E7%9A%84%E4%B8%8D%E5%90%8C/"><span class="title">对比路由策略和策略路由的不同</span></a><a class="item title" href="/2025/11/01/%E5%A6%82%E4%BD%95%E6%9F%A5%E7%9C%8B%E8%B7%AF%E7%94%B1%E8%A1%A8/"><span class="title">如何查看路由表</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2025-10-19T09:38:54.000Z">2025-10-19</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2025-12-04T03:06:28.812Z">2025-12-04</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>浅析路由的控制层面与转发层面</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h2 id="一-关于控制层面和转发层面"><a href="#一-关于控制层面和转发层面" class="headerlink" title="一.关于控制层面和转发层面"></a>一.关于控制层面和转发层面</h2><p>路由器的控制层面和转发层面。这个概念是现代路由器架构的基石，理解了它，就能理解路由器如何工作、如何进行故障排查以及SDN（软件定义网络）的革命性意义。</p>
+<hr>
+<h3 id="核心概念：一个形象的比喻"><a href="#核心概念：一个形象的比喻" class="headerlink" title="核心概念：一个形象的比喻"></a>核心概念：一个形象的比喻</h3><p>为了更好地理解，我们可以把<strong>路由器</strong>比作一个<strong>城市的交通管理系统</strong>：</p>
+<ul>
+<li><strong>控制层面</strong>：相当于<strong>交通管理局</strong>。它负责制定全市的交通规则、绘制道路地图（路由表）、根据实时事故（网络拓扑变化）更新导航APP。它进行的是全局性的、智能的决策。</li>
+<li><strong>转发层面</strong>：相当于<strong>每个路口的交警或交通信号灯</strong>。他们不关心城市整体路况，只负责根据现有的交通规则和目的地指示牌，指挥每一辆到达路口的车（数据包）应该往哪个方向走。他们进行的是局部的、高速的、重复性的执行。</li>
+</ul>
+<hr>
+<h3 id="1-控制层面"><a href="#1-控制层面" class="headerlink" title="1. 控制层面"></a>1. 控制层面</h3><p>控制层面是路由器的“大脑”，负责<strong>学习和生成路由信息</strong>，并最终构建出路由表。</p>
+<h4 id="主要功能："><a href="#主要功能：" class="headerlink" title="主要功能："></a>主要功能：</h4><ol>
+<li><p><strong>运行路由协议</strong>：</p>
+<ul>
+<li>与相邻的路由器通过OSPF、BGP、EIGRP等路由协议进行通信。</li>
+<li>互相交换和学习网络拓扑信息（如链路状态、路径属性等）。</li>
+</ul>
+</li>
+<li><p><strong>维护路由信息库</strong>：</p>
+<ul>
+<li>将从各个路由协议学到的、以及直连路由、静态路由等所有路由信息存储在一个数据库中。</li>
+</ul>
+</li>
+<li><p><strong>执行路由决策</strong>：</p>
+<ul>
+<li>根据特定的算法（如SPF算法 for OSPF）或策略（如BGP路径属性），从RIB中选择出到达每个目标网络的最佳路径。</li>
+</ul>
+</li>
+<li><p><strong>生成转发信息库</strong>：</p>
+<ul>
+<li>将最终确定的最佳路径信息安装到<strong>路由表</strong> 中，这个表就是转发层面实际使用的“地图”。在高端路由器上，控制平面会将这个表优化后生成一个更适合硬件快速查找的表，即<strong>转发信息库</strong>，并下发给转发层面。</li>
+</ul>
+</li>
+</ol>
+<h4 id="关键特点："><a href="#关键特点：" class="headerlink" title="关键特点："></a>关键特点：</h4><ul>
+<li><strong>智能的、决策性的</strong>：它负责思考和计算。</li>
+<li><strong>基于CPU和软件</strong>：运行复杂的路由算法，消耗CPU和内存资源。</li>
+<li><strong>异步工作</strong>：路由更新和计算是事件驱动的（如链路up&#x2F;down），不是定时发生的。</li>
+<li><strong>全局视角</strong>：了解网络的整体拓扑结构。</li>
+</ul>
+<hr>
+<h3 id="2-转发层面"><a href="#2-转发层面" class="headerlink" title="2. 转发层面"></a>2. 转发层面</h3><p>转发层面是路由器的“肌肉”，负责<strong>根据控制层面生成的FIB，对每一个到达的数据包执行转发操作</strong>。</p>
+<h4 id="主要功能：-1"><a href="#主要功能：-1" class="headerlink" title="主要功能："></a>主要功能：</h4><ol>
+<li><strong>数据包接收</strong>：在入接口接收数据链路层帧，解封装出IP数据包。</li>
+<li><strong>查找FIB</strong>：提取数据包中的<strong>目标IP地址</strong>，在FIB中进行最长前缀匹配查找，确定出接口和下一跳IP地址。</li>
+<li><strong>重写数据链路层头</strong>：根据ARP表或邻居发现协议，将下一跳IP地址解析为MAC地址，并重写数据帧的源&#x2F;目标MAC地址。</li>
+<li><strong>数据包发送</strong>：将重新封装好的数据帧从确定的出接口发送出去。</li>
+</ol>
+<h4 id="关键特点：-1"><a href="#关键特点：-1" class="headerlink" title="关键特点："></a>关键特点：</h4><ul>
+<li><strong>无状态的、执行性的</strong>：它不做决策，只执行命令。</li>
+<li><strong>基于专用硬件</strong>：为了达到线速转发，现代路由器使用<strong>ASIC</strong>、<strong>NPU</strong> 等专用芯片进行查找和转发，速度极快（纳秒级）。</li>
+<li><strong>同步工作</strong>：对每一个数据包都执行相同的、流水线式的操作。</li>
+<li><strong>局部视角</strong>：只关心当前数据包的目标地址和FIB中的对应条目，不关心网络全局。</li>
+</ul>
+<hr>
+<h3 id="两者关系总结"><a href="#两者关系总结" class="headerlink" title="两者关系总结"></a>两者关系总结</h3><table>
+<thead>
+<tr>
+<th align="left">特性维度</th>
+<th align="left">控制层面</th>
+<th align="left">转发层面</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>功能</strong></td>
+<td align="left"><strong>路由</strong>：学习和决策，生成“地图”</td>
+<td align="left"><strong>交换</strong>：查找和执行，按照“地图”行驶</td>
+</tr>
+<tr>
+<td align="left"><strong>处理对象</strong></td>
+<td align="left">路由协议报文</td>
+<td align="left">用户数据包</td>
+</tr>
+<tr>
+<td align="left"><strong>工作频率</strong></td>
+<td align="left">低频、异步</td>
+<td align="left">高频、同步（每个数据包）</td>
+</tr>
+<tr>
+<td align="left"><strong>性能关键</strong></td>
+<td align="left">CPU、内存</td>
+<td align="left">吞吐量、延迟、丢包率</td>
+</tr>
+<tr>
+<td align="left"><strong>资源依赖</strong></td>
+<td align="left">软件、通用处理器</td>
+<td align="left">专用硬件、ASIC&#x2F;TCAM</td>
+</tr>
+<tr>
+<td align="left"><strong>视角</strong></td>
+<td align="left">全局网络拓扑</td>
+<td align="left">单个数据包的目的地</td>
+</tr>
+</tbody></table>
+<p><strong>关系流程</strong>：<br><code>路由协议通信</code> -&gt; <code>控制层面计算最佳路径</code> -&gt; <code>更新路由表和FIB</code> -&gt; <code>转发层面查询FIB</code> -&gt; <code>转发数据包</code></p>
+<hr>
+<h3 id="故障排查中的应用"><a href="#故障排查中的应用" class="headerlink" title="故障排查中的应用"></a>故障排查中的应用</h3><p>理解这两个层面可以极大地帮助网络故障排查：</p>
+<ol>
+<li><p><strong>连通性故障</strong>：PC无法访问服务器。</p>
+<ul>
+<li><strong>检查控制层面</strong>：在沿途路由器上使用 <code>show ip route &lt;server_ip&gt;</code> 命令。如果路由表中没有相应的路由条目，问题出在控制层面（路由协议未学习到、静态路由缺失等）。</li>
+<li><strong>检查转发层面</strong>：如果路由表中有正确的路由条目，但数据包还是过不去，问题可能出在转发层面（ACL拦截、策略路由、硬件故障等）。</li>
+</ul>
+</li>
+<li><p><strong>路径异常</strong>：数据包走了错误的路径。</p>
+<ul>
+<li>这通常是<strong>控制层面</strong>的问题，因为路径选择是由控制层面决定的（如BGP策略配置错误、OSPF成本值设置不当）。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="与SDN的关联"><a href="#与SDN的关联" class="headerlink" title="与SDN的关联"></a>与SDN的关联</h3><p>软件定义网络（SDN）的核心思想正是<strong>将控制层面与转发层面彻底分离</strong>。</p>
+<ul>
+<li><strong>传统网络</strong>：每个路由器都集成了自己的控制层面和转发层面，是分布式的大脑。</li>
+<li><strong>SDN网络</strong>：<ul>
+<li><strong>控制层面</strong>被集中到一个独立的、逻辑上的<strong>SDN控制器</strong>中。控制器拥有全网视图，并向所有交换机下发流表。</li>
+<li><strong>转发层面</strong>保留在交换机上（称为<strong>数据平面</strong>），但变得非常“笨”，它只负责根据控制器下发的<strong>流表</strong> 来转发数据包。</li>
+</ul>
+</li>
+</ul>
+<p>这种分离带来了网络的集中管理、灵活编程和自动化等巨大优势。</p>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p><strong>控制层面决定“去哪走”，转发层面负责“怎么走”</strong>。这两个层面各司其职，一个负责全局的、智能的路径计算，一个负责局部的、高速的数据包转发，共同构成了路由器高效、可靠工作的基础。理解它们的区别和联系，是掌握路由技术和现代网络架构的关键。</p>
+<h2 id="二-ACL与IP前缀列表中的应用理念"><a href="#二-ACL与IP前缀列表中的应用理念" class="headerlink" title="二.ACL与IP前缀列表中的应用理念"></a>二.ACL与IP前缀列表中的应用理念</h2><p>那么，在ACL和IP前缀列表两大应用中，ACL可以用于数据过滤和网段匹配，IP前缀列表只可用于网段匹配。这两个哪些对应控制层面，哪些对应转发层面？</p>
+<p>我们首先需要理解ACL（访问控制列表）和IP前缀列表在网络设备中的常见应用场景。</p>
+<ul>
+<li>ACL：通常用于过滤数据包，可以基于源&#x2F;目标IP、协议、端口等。它既可以用在控制层面过滤路由信息（如过滤路由更新），也可以用在前向转发层面过滤数据包。</li>
+<li>IP前缀列表：通常用于匹配IP网段（即路由前缀），一般用于控制层面，例如在路由策略中匹配特定的路由前缀，从而进行路由的过滤或属性修改。</li>
+</ul>
+<p>现在，问题问的是这两个工具分别对应控制层面和转发层面。注意，ACL可以用于两个层面，而IP前缀列表只用于控制层面。</p>
+<p>具体来说：</p>
+<ul>
+<li>在控制层面，ACL可以用于过滤路由更新（例如，在OSPF或BGP中，使用ACL来匹配路由前缀，从而决定接受或拒绝某些路由）。但ACL在控制层面的使用不如IP前缀列表灵活，因为ACL不能直接匹配前缀长度（掩码），而IP前缀列表可以同时匹配前缀和掩码长度。</li>
+<li>在转发层面，ACL用于过滤数据包（例如，在接口上应用ACL来允许或拒绝数据包通过）。IP前缀列表一般不用于转发层面，因为它设计的目的就是为路由策略服务的。</li>
+</ul>
+<p>因此，我们可以总结：</p>
+<ul>
+<li>ACL：既可用于控制层面（路由过滤），也可用于转发层面（数据包过滤）。</li>
+<li>IP前缀列表：仅用于控制层面（路由过滤）。</li>
+</ul>
+<p>所以，回答这个问题：</p>
+<ul>
+<li>对应控制层面的有：ACL（部分功能）和IP前缀列表。</li>
+<li>对应转发层面的有：ACL（部分功能）。</li>
+</ul>
+<p>但是，问题表述是“这两个那些对应控制层面，那些对应转发层面”，所以我们分别说明：</p>
+<ul>
+<li>ACL：在控制层面和转发层面都有应用。</li>
+<li>IP前缀列表：只用于控制层面。</li>
+</ul>
+<p>注意：在具体设备上，ACL和IP前缀列表的应用可能略有不同，但这是通用概念。</p>
+<h2 id="三-各种路由协议的详细体现"><a href="#三-各种路由协议的详细体现" class="headerlink" title="三.各种路由协议的详细体现"></a>三.各种路由协议的详细体现</h2><p>另一个问题，各种路由协议（RIP，IS-IS，OSPF，BGP等）体现的是路由的控制层面还是转发层面？</p>
+<p><strong>先说结论：所有路由协议（RIP，IS-IS，OSPF，BGP等）本身都属于控制层面。</strong></p>
+<p>它们是控制层面最核心、最活跃的组成部分，是路由器“大脑”中进行思考和交流的部分。</p>
+<hr>
+<h3 id="详细分析"><a href="#详细分析" class="headerlink" title="详细分析"></a>详细分析</h3><p>我们可以把控制层面想象成一个公司的“战略决策部门”，而不同的路由协议就像是部门内部不同的沟通和决策机制。</p>
+<h4 id="为什么它们属于控制层面？"><a href="#为什么它们属于控制层面？" class="headerlink" title="为什么它们属于控制层面？"></a>为什么它们属于控制层面？</h4><ol>
+<li><strong>处理的对象是路由信息，而非数据包</strong>：<ul>
+<li>路由协议之间互相发送和接收的是<strong>路由更新报文</strong>（例如OSPF的LSA、BGP的Update消息）。这些报文的内容是“我已知哪些网络，路径成本是多少”等信息。</li>
+<li>它们<strong>不处理</strong>用户的真实数据流量（如你浏览的网页、下载的文件）。用户数据是由<strong>转发层面</strong>处理的。</li>
+</ul>
+</li>
+<li><strong>核心功能是构建和更新路由表</strong>：<ul>
+<li>所有路由协议的最终目的，都是通过各自的算法（如RIP的跳数、OSPF的SPF算法、BGP的路径属性比较），计算出到达所有已知目标网络的最佳路径。</li>
+<li>计算出的最优路径最终会被安装到路由器的<strong>路由表</strong>中。这个路由表就是控制层面输出给转发层面的“最终指令集”。</li>
+</ul>
+</li>
+<li><strong>工作方式是异步和事件驱动的</strong>：<ul>
+<li>它们通常在后台运行，定期发送keepalive消息，或者在网络拓扑发生变化时（如链路故障）触发更新。这不是对每个数据包都进行的操作。</li>
+</ul>
+</li>
+</ol>
+<h3 id="不同路由协议在控制层面的特点"><a href="#不同路由协议在控制层面的特点" class="headerlink" title="不同路由协议在控制层面的特点"></a>不同路由协议在控制层面的特点</h3><p>尽管都属于控制层面，但它们在控制层面内部扮演的角色和运作方式有所不同：</p>
+<table>
+<thead>
+<tr>
+<th align="left">路由协议</th>
+<th align="left">在控制层面中的角色与特点</th>
+<th align="left">控制层面交互方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>RIP</strong></td>
+<td align="left">一种简单的“距离矢量”协议。路由器之间互相告知“我到某网的距离是X跳”。</td>
+<td align="left">周期性地向邻居广播整个路由表。</td>
+</tr>
+<tr>
+<td align="left"><strong>OSPF</strong></td>
+<td align="left">一种复杂的“链路状态”协议。路由器之间同步整个区域的网络拓扑地图，然后各自独立计算最短路径。</td>
+<td align="left">通过组播发送链路状态通告，只在拓扑变化时进行增量更新。</td>
+</tr>
+<tr>
+<td align="left"><strong>IS-IS</strong></td>
+<td align="left">另一种“链路状态”协议，在机制上与OSPF类似，但源于OSI模型，通常用于大型运营商网络。</td>
+<td align="left">与OSPF类似，使用LSP进行链路状态信息的同步。</td>
+</tr>
+<tr>
+<td align="left"><strong>BGP</strong></td>
+<td align="left">一种“路径矢量”协议，用于在不同自治系统之间交换路由信息。其决策基于丰富的策略和路径属性。</td>
+<td align="left">通过可靠的TCP会话与对等体建立连接，进行增量更新。</td>
+</tr>
+</tbody></table>
+<h3 id="与控制层面和转发层面的关系"><a href="#与控制层面和转发层面的关系" class="headerlink" title="与控制层面和转发层面的关系"></a>与控制层面和转发层面的关系</h3><ol>
+<li><strong>控制层面</strong>：路由协议作为核心引擎，通过互相通信，生成路由表（RIB），并最终生成转发信息库（FIB）。</li>
+<li><strong>转发层面</strong>：不运行任何路由协议。它只做一件事：当数据包到达时，查询控制层面下发的FIB，然后执行转发动作。</li>
+</ol>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li><strong>路由协议是控制层面的核心引擎</strong>：没有它们，控制层面就无法自动学习路由，路由器就只能依靠手工配置的静态路由来工作。</li>
+<li><strong>它们为转发层面提供“导航地图”</strong>：路由协议辛勤工作的最终产物，就是一张详尽且最优的“路径地图”（FIB），转发层面则依赖这张地图来高效地转发每一个数据包。</li>
+</ul>
+<p>所以，当您在想RIP、IS-IS、OSPF、BGP时，您应该立即联想到它们是在<strong>控制层面</strong>负责“路由决策”的智能协议。而IP转发、ACL过滤等操作，则是在<strong>转发层面</strong>负责“数据包搬运”的执行过程。</p>
+<h2 id="四-静态路由与默认路由的体现"><a href="#四-静态路由与默认路由的体现" class="headerlink" title="四.静态路由与默认路由的体现"></a>四.静态路由与默认路由的体现</h2><p><strong>静态路由和默认路由也同样属于控制层面。</strong></p>
+<p>它们同样是控制层面用于“决策”和“生成路由表”的一种方式，只不过其“智能”的来源不同。</p>
+<hr>
+<h3 id="详细分析-1"><a href="#详细分析-1" class="headerlink" title="详细分析"></a>详细分析</h3><p>让我们回到那个“交通管理系统”的比喻：</p>
+<ul>
+<li><strong>动态路由协议（OSPF&#x2F;BGP等）</strong>：像是一个<strong>实时的交通信息网络</strong>。每个路由器（交通节点）自动与邻居交换路况信息，共同计算并实时更新出最优路径。这是<strong>分布式、自动的智能</strong>。</li>
+<li><strong>静态路由</strong>：则像是<strong>交通管理员手动绘制在地图上的固定路线</strong>。管理员明确指定：“要去往目的地A，必须从X路口出去。” 路由器无需与其他路由器通信，直接听从这条指令。</li>
+<li><strong>默认路由</strong>：是一种特殊的静态路由，它像是<strong>指向“主干道”或“高速公路”的通用指示牌</strong>，上面写着：“所有没有明确指示目的地的车辆，请全部驶入此路。” 它是一个捕获所有未知流量的最后手段。</li>
+</ul>
+<h3 id="为什么它们属于控制层面？-1"><a href="#为什么它们属于控制层面？-1" class="headerlink" title="为什么它们属于控制层面？"></a>为什么它们属于控制层面？</h3><ol>
+<li><p><strong>它们直接影响路由表（RIB）的生成</strong>：</p>
+<ul>
+<li>当您在路由器上输入 <code>ip route 192.168.2.0 255.255.255.0 10.1.1.1</code> 这条静态路由命令后，这条路径信息会<strong>直接被安装到路由表</strong>中。</li>
+<li>控制层面的核心任务就是“构建路由表”。无论是通过动态协议学来的，还是通过手工配置输入的，都是路由条目的来源。</li>
+</ul>
+</li>
+<li><p><strong>它们是转发层面的“指令”来源</strong>：</p>
+<ul>
+<li>控制层面将静态路由和默认路由加入到路由表后，同样会将其最优路径<strong>下发到转发信息库（FIB）</strong> 中。</li>
+<li>转发层面在转发数据包时，并不会区分这条路由是来自OSPF还是静态配置。它只是盲目地查询FIB并执行转发。</li>
+<li><strong>例如</strong>：一个去往 <code>192.168.2.10</code> 的数据包到达路由器，转发层面在FIB中查找到匹配的静态路由条目，然后就会从指定接口转发给下一跳 <code>10.1.1.1</code>。</li>
+</ul>
+</li>
+<li><p><strong>它们参与控制层面的决策过程</strong>：</p>
+<ul>
+<li>路由器可能会从多个来源学到通往同一目的地的路由（如同时从OSPF和静态路由学到）。这时，控制层面会根据<strong>管理距离</strong> 这个值来决策哪个来源更可信，并将最可信的路由安装到路由表中。</li>
+<li>静态路由通常拥有一个很小的管理距离（例如1或更小），这意味着它比大多数动态路由协议（如OSPF的管理距离是110）更受信任。</li>
+</ul>
+</li>
+</ol>
+<h3 id="对比总结"><a href="#对比总结" class="headerlink" title="对比总结"></a>对比总结</h3><table>
+<thead>
+<tr>
+<th align="left">特性</th>
+<th align="left">动态路由协议 (OSPF&#x2F;BGP等)</th>
+<th align="left">静态路由 &#x2F; 默认路由</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>本质</strong></td>
+<td align="left"><strong>自动、分布式智能</strong></td>
+<td align="left"><strong>手动、集中式智能</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>控制层面工作</strong></td>
+<td align="left">与邻居通信、运行算法、计算路径</td>
+<td align="left">网络管理员直接输入路径信息</td>
+</tr>
+<tr>
+<td align="left"><strong>路由信息来源</strong></td>
+<td align="left">其他路由器</td>
+<td align="left">本机配置（config）</td>
+</tr>
+<tr>
+<td align="left"><strong>开销与灵活性</strong></td>
+<td align="left">占用CPU、内存资源；灵活，能自动适应拓扑变化</td>
+<td align="left">无运行时开销；不灵活，拓扑变化需手动修改</td>
+</tr>
+<tr>
+<td align="left"><strong>在控制层面的角色</strong></td>
+<td align="left"><strong>自动路由发现与计算</strong></td>
+<td align="left"><strong>手动路由注入</strong></td>
+</tr>
+</tbody></table>
+<h3 id="结论-1"><a href="#结论-1" class="headerlink" title="结论"></a>结论</h3><p>您可以这样理解控制层面的构成：</p>
+<p><strong>控制层面 &#x3D; 动态路由协议（负责自动学习） + 静态&#x2F;默认路由（负责手动指定） + 其他来源（如直连路由）</strong></p>
+<p>它们共同协作，有时也相互竞争（通过管理距离），最终汇集成一张完整的“网络地图”——<strong>路由表</strong>。这张地图随后被交给转发层面去执行。</p>
+<p>所以，无论是动态路由协议还是静态路由，它们都是<strong>控制层面</strong>用于回答“数据包应该往哪去？”这个核心问题的方法。它们的区别在于<strong>获取答案的方式</strong>是自动还是手动，而它们<strong>所属的逻辑层面</strong>是完全一致的。</p>
+</article>
+<div class="article-footer">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2025/10/19/%E6%8E%A2%E8%AE%A8%E5%8F%8D%E6%8E%A9%E7%A0%81%E7%9A%84%E4%BD%9C%E7%94%A8/">探讨反掩码的作用</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2025/10/16/%E6%B5%85%E6%9E%90%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E7%9B%B4%E8%BF%9E%E8%B7%AF%E7%94%B1/">浅析静态路由与直连路由</a></div></section></div>
+
+
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">fcbyoung</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80-%E5%85%B3%E4%BA%8E%E6%8E%A7%E5%88%B6%E5%B1%82%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B1%82%E9%9D%A2"><span class="toc-text">一.关于控制层面和转发层面</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%BD%A2%E8%B1%A1%E7%9A%84%E6%AF%94%E5%96%BB"><span class="toc-text">核心概念：一个形象的比喻</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%8E%A7%E5%88%B6%E5%B1%82%E9%9D%A2"><span class="toc-text">1. 控制层面</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E5%8A%9F%E8%83%BD%EF%BC%9A"><span class="toc-text">主要功能：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E7%89%B9%E7%82%B9%EF%BC%9A"><span class="toc-text">关键特点：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E8%BD%AC%E5%8F%91%E5%B1%82%E9%9D%A2"><span class="toc-text">2. 转发层面</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E5%8A%9F%E8%83%BD%EF%BC%9A-1"><span class="toc-text">主要功能：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E7%89%B9%E7%82%B9%EF%BC%9A-1"><span class="toc-text">关键特点：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%A4%E8%80%85%E5%85%B3%E7%B3%BB%E6%80%BB%E7%BB%93"><span class="toc-text">两者关系总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-text">故障排查中的应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8ESDN%E7%9A%84%E5%85%B3%E8%81%94"><span class="toc-text">与SDN的关联</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E8%AE%BA"><span class="toc-text">结论</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C-ACL%E4%B8%8EIP%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A8%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8%E7%90%86%E5%BF%B5"><span class="toc-text">二.ACL与IP前缀列表中的应用理念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89-%E5%90%84%E7%A7%8D%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E8%AF%A6%E7%BB%86%E4%BD%93%E7%8E%B0"><span class="toc-text">三.各种路由协议的详细体现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90"><span class="toc-text">详细分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%AE%83%E4%BB%AC%E5%B1%9E%E4%BA%8E%E6%8E%A7%E5%88%B6%E5%B1%82%E9%9D%A2%EF%BC%9F"><span class="toc-text">为什么它们属于控制层面？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8D%E5%90%8C%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9C%A8%E6%8E%A7%E5%88%B6%E5%B1%82%E9%9D%A2%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-text">不同路由协议在控制层面的特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8E%E6%8E%A7%E5%88%B6%E5%B1%82%E9%9D%A2%E5%92%8C%E8%BD%AC%E5%8F%91%E5%B1%82%E9%9D%A2%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-text">与控制层面和转发层面的关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B-%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E9%BB%98%E8%AE%A4%E8%B7%AF%E7%94%B1%E7%9A%84%E4%BD%93%E7%8E%B0"><span class="toc-text">四.静态路由与默认路由的体现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90-1"><span class="toc-text">详细分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%AE%83%E4%BB%AC%E5%B1%9E%E4%BA%8E%E6%8E%A7%E5%88%B6%E5%B1%82%E9%9D%A2%EF%BC%9F-1"><span class="toc-text">为什么它们属于控制层面？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E6%AF%94%E6%80%BB%E7%BB%93"><span class="toc-text">对比总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E8%AE%BA-1"><span class="toc-text">结论</span></a></li></ol></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>

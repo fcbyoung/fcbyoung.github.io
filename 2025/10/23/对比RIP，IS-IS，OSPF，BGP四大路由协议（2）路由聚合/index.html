@@ -1,0 +1,1200 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>对比RIP，IS-IS，OSPF，BGP四大路由协议（2）路由聚合 - 云上书房</title>
+
+  
+    <meta name="description" content="一. 什么是路由聚合？路由聚合，也常被称为路由汇总 或超网，是一种网络设计技术。它的核心思想是：将多个连续的、更小的IP地址网络（子网）合并成一个更大的、单一的地址块，并在网络中只通告这个汇总后的路由。 你可以把它想象成现实生活中的邮政系统：  没有聚合：邮局需要知道每一个具体的门牌号（如：北京路1号、2号、3号…）才能送信，路由表会非常庞大。 使用聚合：邮局只需要知道“所有寄往北京路的信都扔到这">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对比RIP，IS-IS，OSPF，BGP四大路由协议（2）路由聚合">
+<meta property="og:url" content="https://fcbyoung.github.io/2025/10/23/%E5%AF%B9%E6%AF%94RIP%EF%BC%8CIS-IS%EF%BC%8COSPF%EF%BC%8CBGP%E5%9B%9B%E5%A4%A7%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%EF%BC%882%EF%BC%89%E8%B7%AF%E7%94%B1%E8%81%9A%E5%90%88/">
+<meta property="og:site_name" content="云上书房">
+<meta property="og:description" content="一. 什么是路由聚合？路由聚合，也常被称为路由汇总 或超网，是一种网络设计技术。它的核心思想是：将多个连续的、更小的IP地址网络（子网）合并成一个更大的、单一的地址块，并在网络中只通告这个汇总后的路由。 你可以把它想象成现实生活中的邮政系统：  没有聚合：邮局需要知道每一个具体的门牌号（如：北京路1号、2号、3号…）才能送信，路由表会非常庞大。 使用聚合：邮局只需要知道“所有寄往北京路的信都扔到这">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-10-23T15:40:11.000Z">
+<meta property="article:modified_time" content="2025-12-04T03:06:28.810Z">
+<meta property="article:author" content="fcbyoung">
+<meta property="article:tag" content="网络工程师">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary">
+  
+  
+  
+  <meta name="keywords" content="网络工程师,计算机网络">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"fcbyoung","sameAs":[]},"dateCreated":"2025-10-23T23:40:11+08:00","dateModified":"2025-12-04T11:06:28+08:00","datePublished":"2025-10-23T23:40:11+08:00","description":"","headline":"对比RIP，IS-IS，OSPF，BGP四大路由协议（2）路由聚合","mainEntityOfPage":{"@type":"WebPage","@id":"https://fcbyoung.github.io/2025/10/23/%E5%AF%B9%E6%AF%94RIP%EF%BC%8CIS-IS%EF%BC%8COSPF%EF%BC%8CBGP%E5%9B%9B%E5%A4%A7%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%EF%BC%882%EF%BC%89%E8%B7%AF%E7%94%B1%E8%81%9A%E5%90%88/"},"publisher":{"@type":"Organization","name":"fcbyoung","sameAs":[]},"url":"https://fcbyoung.github.io/2025/10/23/%E5%AF%B9%E6%AF%94RIP%EF%BC%8CIS-IS%EF%BC%8COSPF%EF%BC%8CBGP%E5%9B%9B%E5%A4%A7%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%EF%BC%882%EF%BC%89%E8%B7%AF%E7%94%B1%E8%81%9A%E5%90%88/","keywords":"网络工程师, 计算机网络","image":[]}</script>
+  
+</head>
+<body>
+
+<div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="undefined" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">云上书房</div><div class="sub cap">Designer Skyline</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"><a class="nav-item" title="Github" target="_blank" rel="noopener" href="https://github.com/fcbyoung" style="color:#3DC550"><img no-lazy src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" / onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="nav-item" title="B站" target="_blank" rel="noopener" href="https://space.bilibili.com/148884845" style="color:#FA6400"><img no-lazy src="https://www.bilibili.com/favicon.ico" / onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="nav-item" title="网易云音乐" target="_blank" rel="noopener" href="https://music.163.com/#/user/home?id=104779064" style="color:#F44336"><img no-lazy src="https://music.163.com/favicon.ico" / onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+
+<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2025/10/24/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E6%8A%91%E5%88%B6%E6%8E%A5%E5%8F%A3%E8%AF%A6%E8%A7%A3/"><span class="title">路由协议的抑制接口详解</span></a><a class="item title" href="/2025/10/25/%E8%B7%AF%E7%94%B1%E5%99%A8%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E7%9A%84%E5%AF%B9%E6%AF%94/"><span class="title">路由器与交换机的对比</span></a><a class="item title" href="/2025/10/19/%E6%B5%85%E6%9E%90%E8%B7%AF%E7%94%B1%E7%9A%84%E6%8E%A7%E5%88%B6%E5%B1%82%E9%9D%A2%E4%B8%8E%E8%BD%AC%E5%8F%91%E5%B1%82%E9%9D%A2/"><span class="title">浅析路由的控制层面与转发层面</span></a><a class="item title" href="/2025/10/16/%E6%B5%85%E6%9E%90%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8E%E7%9B%B4%E8%BF%9E%E8%B7%AF%E7%94%B1/"><span class="title">浅析静态路由与直连路由</span></a><a class="item title" href="/2025/12/02/%E8%AE%A9AI%E7%94%A8%E5%B9%B4%E5%BA%A6%E5%8D%81%E5%A4%A7%E6%B5%81%E8%A1%8C%E8%AF%AD%E8%AE%B2%E4%B8%80%E4%B8%AA%E6%95%85%E4%BA%8B/"><span class="title">让AI用年度十大流行语讲一个故事</span></a><a class="item title" href="/2025/10/19/%E6%8E%A2%E8%AE%A8%E5%8F%8D%E6%8E%A9%E7%A0%81%E7%9A%84%E4%BD%9C%E7%94%A8/"><span class="title">探讨反掩码的作用</span></a><a class="item title" href="/2025/12/01/%E6%B4%AA%E6%B0%B4%E5%86%B2%E8%B5%B0%E7%9F%B3%E7%8B%AE%E5%AD%90%E7%9A%84%E7%A7%91%E5%AD%A6%E5%88%86%E6%9E%90/"><span class="title">洪水冲走石狮子的科学分析</span></a><a class="item title" href="/2025/10/23/%E5%AF%B9%E6%AF%94RIP%EF%BC%8CIS-IS%EF%BC%8COSPF%EF%BC%8CBGP%E5%9B%9B%E5%A4%A7%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%EF%BC%882%EF%BC%89%E8%B7%AF%E7%94%B1%E8%81%9A%E5%90%88/"><span class="title">对比RIP，IS-IS，OSPF，BGP四大路由协议（2）路由聚合</span></a><a class="item title" href="/2025/10/19/%E5%AF%B9%E6%AF%94%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1%E5%92%8C%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E7%9A%84%E4%B8%8D%E5%90%8C/"><span class="title">对比路由策略和策略路由的不同</span></a><a class="item title" href="/2025/11/01/%E5%A6%82%E4%BD%95%E6%9F%A5%E7%9C%8B%E8%B7%AF%E7%94%B1%E8%A1%A8/"><span class="title">如何查看路由表</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2025-10-23T15:40:11.000Z">2025-10-23</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2025-12-04T03:06:28.810Z">2025-12-04</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>对比RIP，IS-IS，OSPF，BGP四大路由协议（2）路由聚合</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h3 id="一-什么是路由聚合？"><a href="#一-什么是路由聚合？" class="headerlink" title="一. 什么是路由聚合？"></a>一. 什么是路由聚合？</h3><p><strong>路由聚合</strong>，也常被称为<strong>路由汇总</strong> 或<strong>超网</strong>，是一种网络设计技术。它的核心思想是：<strong>将多个连续的、更小的IP地址网络（子网）合并成一个更大的、单一的地址块，并在网络中只通告这个汇总后的路由。</strong></p>
+<p>你可以把它想象成现实生活中的邮政系统：</p>
+<ul>
+<li>没有聚合：邮局需要知道<strong>每一个</strong>具体的门牌号（如：北京路1号、2号、3号…）才能送信，路由表会非常庞大。</li>
+<li>使用聚合：邮局只需要知道“所有寄往北京路的信都扔到这个分拣中心”即可。这个“北京路”就是一个聚合后的路由。</li>
+</ul>
+<p><strong>技术上的实现：</strong><br>路由聚合依赖于<strong>无类域间路由（CIDR）</strong> 的思想。它通过缩短IP地址的网络前缀（即子网掩码变短）来实现。</p>
+<p><strong>举个例子：</strong><br>假设一个路由器后面连接着以下四个子网：</p>
+<ul>
+<li>192.168.0.0&#x2F;24</li>
+<li>192.168.1.0&#x2F;24</li>
+<li>192.168.2.0&#x2F;24</li>
+<li>192.168.3.0&#x2F;24</li>
+</ul>
+<p>如果我们不进行聚合，路由器需要向网络中的其他路由器分别通告这4条路由条目。</p>
+<p>但如果我们进行聚合：</p>
+<ol>
+<li>将这些地址写成二进制，观察它们的前缀。</li>
+<li>我们发现这四个子网的前24位是相同的，但从第25位开始有变化。</li>
+<li>我们可以找到一个更短的公共前缀：<strong>&#x2F;22</strong>。</li>
+<li>计算后，这个聚合后的路由就是：<strong>192.168.0.0&#x2F;22</strong>。</li>
+</ol>
+<p>这个 <code>/22</code> 的网络包含了从 <code>192.168.0.0</code> 到 <code>192.168.3.255</code> 的所有地址，完美覆盖了原来的四个 <code>/24</code> 子网。现在，路由器只需要向外通告 <strong>192.168.0.0&#x2F;22</strong> 这一条路由，就代表了背后的所有四个子网。</p>
+<hr>
+<h3 id="为什么路由协议中要使用路由聚合？"><a href="#为什么路由协议中要使用路由聚合？" class="headerlink" title="为什么路由协议中要使用路由聚合？"></a>为什么路由协议中要使用路由聚合？</h3><p>在路由协议（如OSPF, EIGRP, BGP等）中部署路由聚合，主要是为了解决以下几个核心问题，并带来巨大的网络效益：</p>
+<p><strong>1. 大幅减小路由表规模</strong><br>这是最直接、最重要的好处。互联网的核心路由器和大型企业网络的核心设备承载着数十万甚至百万条路由。通过聚合，可以将成百上千条具体路由压缩成几条汇总路由，极大地减轻了路由器内存的负担。</p>
+<p><strong>2. 提高路由效率和转发性能</strong><br>路由表越小，路由器查询“最佳路径”的速度就越快。这直接提升了数据包的转发效率，降低了处理延迟。</p>
+<p><strong>3. 限制路由波动的影响，增强网络稳定性</strong><br>在大型网络中，某一条具体链路的“翻动”（频繁Up&#x2F;Down）会导致该路由信息在网络中被反复通告和撤销。这种现象称为<strong>路由抖动</strong>。</p>
+<ul>
+<li><strong>没有聚合</strong>：一个子网的抖动会传播到整个网络，导致所有路由器不停地重新计算路由表，消耗CPU资源，甚至引发网络震荡。</li>
+<li><strong>使用聚合</strong>：由于外部路由器只知道聚合后的路由（如上面的192.168.0.0&#x2F;22），而不知道内部具体的子网（如192.168.1.0&#x2F;24）。因此，内部某个子网的抖动被限制在了聚合边界之内，不会影响到外部网络。这极大地提升了整个网络的稳定性。</li>
+</ul>
+<p><strong>4. 节省网络带宽</strong><br>更少的路由条目意味着路由协议在邻居之间发送的路由更新报文体积更小，占用的链路带宽也更少。</p>
+<p><strong>5. 隐藏网络细节，提升安全性</strong><br>聚合对外部网络隐藏了内部寻址的具体结构。从外部看，你只知道有一个大的地址块（如192.168.0.0&#x2F;22），但无法知晓其内部具体划分了多少个子网以及它们的拓扑结构。这在一定程度上增加了网络攻击的难度。</p>
+<p><strong>6. 简化网络设计和维护</strong><br>通过将网络设计成层次化结构（核心、汇聚、接入），并在汇聚层进行路由聚合，可以使网络逻辑更清晰，故障排查和日常维护也更加容易。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><table>
+<thead>
+<tr>
+<th align="left">特性</th>
+<th align="left">未使用路由聚合</th>
+<th align="left">使用路由聚合</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>路由表大小</strong></td>
+<td align="left">庞大，包含所有明细路由</td>
+<td align="left">精简，只有汇总路由</td>
+</tr>
+<tr>
+<td align="left"><strong>性能</strong></td>
+<td align="left">查询慢，转发效率较低</td>
+<td align="left">查询快，转发效率高</td>
+</tr>
+<tr>
+<td align="left"><strong>稳定性</strong></td>
+<td align="left">路由抖动易传播，不稳定</td>
+<td align="left">隔离路由抖动，更稳定</td>
+</tr>
+<tr>
+<td align="left"><strong>带宽占用</strong></td>
+<td align="left">路由更新信息多，占用带宽大</td>
+<td align="left">路由更新信息少，节省带宽</td>
+</tr>
+<tr>
+<td align="left"><strong>网络设计</strong></td>
+<td align="left">扁平化，复杂难维护</td>
+<td align="left">层次化，清晰易维护</td>
+</tr>
+</tbody></table>
+<p>简单来说，<strong>路由聚合是构建大规模、可扩展、稳定高效网络的一项基础且至关重要的技术。</strong> 它通过“抓大放小”的策略，用一条汇总信息代表一系列明细网络，从而解决了网络规模增长带来的诸多挑战。</p>
+<h3 id="二-RIP路由聚合详解"><a href="#二-RIP路由聚合详解" class="headerlink" title="二. RIP路由聚合详解"></a>二. RIP路由聚合详解</h3><p>RIP的路由聚合主要作用在于<strong>减少路由表规模</strong>和<strong>提升网络稳定性</strong>。华为设备支持两种聚合方式：</p>
+<table>
+<thead>
+<tr>
+<th align="left">特性</th>
+<th align="left">自动路由聚合 (有类聚合)</th>
+<th align="left">手动路由聚合 (无类聚合)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>配置视图</strong></td>
+<td align="left">RIP视图</td>
+<td align="left">接口视图</td>
+</tr>
+<tr>
+<td align="left"><strong>聚合原则</strong></td>
+<td align="left">按<strong>自然网络边界</strong>（主类网络）聚合</td>
+<td align="left">按<strong>自定义网络边界</strong>（无类别地址）聚合</td>
+</tr>
+<tr>
+<td align="left"><strong>优先级</strong></td>
+<td align="left">低</td>
+<td align="left">高</td>
+</tr>
+<tr>
+<td align="left"><strong>主要命令</strong></td>
+<td align="left"><code>summary</code> 或 <code>summary always</code></td>
+<td align="left"><code>rip summary-address ip-address mask</code></td>
+</tr>
+</tbody></table>
+<h4 id="配置步骤"><a href="#配置步骤" class="headerlink" title="配置步骤"></a>配置步骤</h4><ol>
+<li><p><strong>配置自动路由聚合</strong><br>在系统视图下进入RIP进程，并确保版本为RIP-2，然后使能聚合功能。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;HUAWEI&gt; system-view</span><br><span class="line">[HUAWEI] rip 1</span><br><span class="line">[HUAWEI-rip-1] version 2</span><br><span class="line">[HUAWEI-rip-1] summary</span><br></pre></td></tr></table></figure>
+<p>如果配置了水平分割或毒性反转，普通<code>summary</code>命令会失效，此时可以使用<code>summary always</code>命令强制开启聚合。</p>
+</li>
+<li><p><strong>配置手动路由聚合</strong><br>手动聚合提供了更精细的控制，可以在指定接口上发布一条聚合后的路由。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;HUAWEI&gt; system-view</span><br><span class="line">[HUAWEI] interface GigabitEthernet 0/0/1</span><br><span class="line">[HUAWEI-GigabitEthernet0/0/1] rip summary-address 192.168.0.0 255.255.0.0</span><br></pre></td></tr></table></figure>
+<p>添加<code>avoid-feedback</code>参数可以防止从该接口再学习到相同的聚合路由，避免潜在环路。</p>
+</li>
+</ol>
+<h4 id="⚠️-核心注意事项"><a href="#⚠️-核心注意事项" class="headerlink" title="⚠️ 核心注意事项"></a>⚠️ 核心注意事项</h4><ul>
+<li><p><strong>与防环机制的冲突</strong>：这是RIP聚合配置中最关键的一点。<strong>水平分割</strong>和<strong>毒性反转</strong>功能会阻止在同一个接口发送从该接口学来的路由，这导致自动聚合在配置了这些功能的接口上<strong>失效</strong>。解决方案是：</p>
+<ul>
+<li>在需要发送聚合路由的接口上<strong>关闭水平分割和毒性反转</strong>。</li>
+<li>或者，直接使用<code>summary always</code>命令，此命令能无视防环机制，强制进行聚合。</li>
+</ul>
+</li>
+<li><p><strong>优先级规则</strong>：当同时配置了自动聚合和接口手动聚合时，<strong>手动聚合的优先级更高</strong>。只有当某些子网路由超出了手动聚合的地址范围时，RIP的自动聚合路由才会被发布出去。</p>
+</li>
+<li><p><strong>版本要求</strong>：路由聚合是<strong>RIP-2</strong>的特性，RIP-1不支持。在配置前请确保已执行<code>version 2</code>命令。</p>
+</li>
+<li><p><strong>防止路由环路</strong>：在NBMA（非广播多路访问）网络等复杂拓扑中配置聚合时，使用<code>avoid-feedback</code>参数是防止路由环路的有效手段。</p>
+</li>
+</ul>
+<h2 id="三-IS-IS路由聚合详解"><a href="#三-IS-IS路由聚合详解" class="headerlink" title="三. IS-IS路由聚合详解"></a>三. IS-IS路由聚合详解</h2><p>IS-IS的路由聚合是一项关键功能，主要用于<strong>缩减路由表规模</strong>、<strong>优化网络资源利用</strong>并<strong>提升网络稳定性</strong>。</p>
+<p>在华为设备上，配置IS-IS路由聚合的核心命令是 <strong><code>summary ip-address mask</code></strong> 。你还可以通过一些可选参数来精确控制聚合行为：</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong><code>level-1</code></strong></td>
+<td align="left">仅对引入到<strong>Level-1</strong>区域的路由进行聚合。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>level-2</code></strong></td>
+<td align="left">仅对引入到<strong>Level-2</strong>区域（骨干区域）的路由进行聚合。此为<strong>缺省</strong>级别。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>level-1-2</code></strong></td>
+<td align="left">同时对向<strong>Level-1和Level-2</strong>区域引入的路由进行聚合。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>avoid-feedback</code></strong></td>
+<td align="left">避免设备通过路由计算再学习到自身发布的聚合路由。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>generate_null0_route</code></strong></td>
+<td align="left">生成一条<strong>Null0</strong>路由，用于防止路由环路。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>tag tag</code></strong></td>
+<td align="left">为聚合路由分配一个管理标签，常用于通过路由策略匹配路由。</td>
+</tr>
+</tbody></table>
+<h3 id="📝-配置步骤与查看结果"><a href="#📝-配置步骤与查看结果" class="headerlink" title="📝 配置步骤与查看结果"></a>📝 配置步骤与查看结果</h3><p>配置IS-IS路由聚合的基本步骤如下：</p>
+<ol>
+<li>进入系统视图：<code>system-view</code>。</li>
+<li>进入IS-IS视图：<code>isis [ process-id ]</code>。</li>
+<li>配置路由聚合：<code>summary ip-address mask [ 可选参数 ] *</code>，例如 <code>summary 192.168.0.0 255.255.248.0 level-2</code>。</li>
+<li>提交配置：<code>commit</code>。</li>
+</ol>
+<p>配置完成后，可以使用 <strong><code>display isis route</code></strong> 命令查看IS-IS路由表中的聚合路由，或使用 <strong><code>display ip routing-table verbose</code></strong> 命令查看IP路由表中的聚合路由。</p>
+<h3 id="🏗️-理解IS-IS路由聚合的应用"><a href="#🏗️-理解IS-IS路由聚合的应用" class="headerlink" title="🏗️ 理解IS-IS路由聚合的应用"></a>🏗️ 理解IS-IS路由聚合的应用</h3><p>理解IS-IS路由聚合，关键在于把握其<strong>应用场景</strong>和<strong>生效特点</strong>。</p>
+<ul>
+<li><p><strong>应用场景与好处</strong><br>在大中型IS-IS网络中，配置路由聚合能<strong>有效减少路由表中的条目数量</strong>，节省设备内存和网络资源。同时，<strong>当被聚合地址范围内的某条具体链路发生震荡时，这种变化不会被传播到聚合范围之外</strong>，从而避免了频繁的LSP扩散和SPF计算，提升了网络的稳定性。</p>
+</li>
+<li><p><strong>生效特点与位置</strong><br>IS-IS路由聚合<strong>只对本地设备生成的LSP（链路状态报文）中的路由生效</strong>。这意味着，<strong>配置聚合的设备，其本地路由表仍然会显示所有具体路由</strong>；但接收到该设备发出的聚合LSP的其他设备，其路由表中则<strong>只会出现聚合后的路由</strong>。</p>
+<p>通常，<strong>在作为Level-1-2路由器并负责将Level-1路由泄漏到Level-2区域的设备上配置聚合</strong>非常有效。这可以防止Level-1区域内的链路抖动影响到整个骨干区域。</p>
+</li>
+</ul>
+<h3 id="⚠️-重要注意事项"><a href="#⚠️-重要注意事项" class="headerlink" title="⚠️ 重要注意事项"></a>⚠️ 重要注意事项</h3><p>配置IS-IS路由聚合时，有几点需要特别留意：</p>
+<ul>
+<li><strong>聚合路由的开销值</strong>：聚合后路由的开销值（Cost）<strong>取所有被聚合的具体路由中的最小开销值</strong>。</li>
+<li><strong>避免路由环路</strong>：在特定网络拓扑中（如NBMA网络），合理使用 <strong><code>avoid-feedback</code></strong> 和 <strong><code>generate_null0_route</code></strong> 参数有助于防止路由环路。</li>
+<li><strong>IPv6支持</strong>：对于IPv6网络，IS-IS也支持路由聚合，配置命令为 <strong><code>ipv6 summary ipv6-address prefix-length</code></strong>。</li>
+</ul>
+<h3 id="💎-总结"><a href="#💎-总结" class="headerlink" title="💎 总结"></a>💎 总结</h3><p>总的来说，IS-IS路由聚合通过将多条具体路由汇总为更粗略的路由，有效提升了大规模网络的效率和稳定性。配置时，关键在于<strong>选择合适的聚合位置（通常是Level-1-2路由器）和精细控制聚合参数</strong>。</p>
+<h2 id="四-OSPF路由聚合详解"><a href="#四-OSPF路由聚合详解" class="headerlink" title="四.OSPF路由聚合详解"></a>四.OSPF路由聚合详解</h2><p>下面这个表格汇总了OSPF路由聚合的主要特点和华为设备的配置命令：</p>
+<table>
+<thead>
+<tr>
+<th>特性维度</th>
+<th>ABR路由聚合 (区域间路由聚合)</th>
+<th>ASBR路由聚合 (外部路由聚合)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>配置视图</strong></td>
+<td>OSPF区域视图 (<code>area area-id</code>)</td>
+<td>OSPF进程视图 (<code>ospf [process-id]</code>)</td>
+</tr>
+<tr>
+<td><strong>核心配置命令</strong></td>
+<td><code>abr-summary ip-address mask</code></td>
+<td><code>asbr-summary ip-address mask</code></td>
+</tr>
+<tr>
+<td><strong>聚合对象</strong></td>
+<td>同一OSPF区域内的<strong>内部路由</strong> (Type-3 LSA)</td>
+<td>通过重分发引入的<strong>外部路由</strong> (Type-5&#x2F;Type-7 LSA)</td>
+</tr>
+<tr>
+<td><strong>主要目的</strong></td>
+<td>减少区域间传播的LSA数量，缩小其他区域路由表</td>
+<td>减少引入OSPF域内的外部路由数量，抑制外部路由波动</td>
+</tr>
+<tr>
+<td><strong>可选参数举例</strong></td>
+<td><code>cost</code>、<code>not-advertise</code>、<code>generate-null0-route</code></td>
+<td><code>cost</code>、<code>not-advertise</code>、<code>tag</code></td>
+</tr>
+</tbody></table>
+<h3 id="🔧-配置步骤与说明"><a href="#🔧-配置步骤与说明" class="headerlink" title="🔧 配置步骤与说明"></a>🔧 配置步骤与说明</h3><p><strong>ABR路由聚合</strong> 在ABR（区域边界路由器）上进行配置。它的主要目的是将来自某个区域内部的一组连续路由，在ABR向其他区域发送路由信息时，聚合成一条汇总路由。这样可以减少其他区域中LSDB的规模。</p>
+<p>具体配置步骤如下：</p>
+<ol>
+<li>进入系统视图：<code>system-view</code>。</li>
+<li>进入OSPF进程视图：<code>ospf [process-id]</code>。</li>
+<li>进入特定的OSPF区域视图：<code>area area-id</code>。</li>
+<li>配置ABR路由聚合命令：<code>abr-summary ip-address mask [ [ cost { cost | inherit-minimum } | [ advertise [ generate-null0-route ] | not-advertise | generate-null0-route [ advertise ] ] ] * ]</code>。</li>
+</ol>
+<p><strong>ASBR路由聚合</strong> 在ASBR（自治系统边界路由器）上进行配置。当大量外部路由被引入到OSPF时，ASBR路由聚合可以对引入的路由进行聚合，这样可确保每次发布的聚合路由信息携带更多的有效路由，避免由于不正确的路由信息造成的网络振荡。</p>
+<p>具体配置步骤如下：</p>
+<ol>
+<li>进入系统视图：<code>system-view</code>。</li>
+<li>进入OSPF进程视图：<code>ospf [process-id]</code>。</li>
+<li>配置ASBR路由聚合命令：<code>asbr-summary ip-address mask [ not-advertise | tag tag | cost cost | distribute-delay interval ] *</code>。</li>
+</ol>
+<h3 id="⚠️-配置要点与注意事项"><a href="#⚠️-配置要点与注意事项" class="headerlink" title="⚠️ 配置要点与注意事项"></a>⚠️ 配置要点与注意事项</h3><ul>
+<li><p><strong>聚合路由的开销值（Cost）</strong>：</p>
+<ul>
+<li>对于<strong>ABR聚合</strong>，默认情况下，聚合路由的开销取所有被聚合的具体路由中的<strong>最大开销值</strong>。你也可以通过<code>cost</code>参数手动指定一个开销值。</li>
+<li>对于<strong>ASBR聚合</strong>，默认情况下，聚合路由的开销取所有被聚合的外部路由中的<strong>最大开销值</strong>。如果是Type2外部路由，则聚合路由的开销值是所有被聚合路由中的最大开销值再加上1。同样，你也可以通过<code>cost</code>参数手动指定。</li>
+</ul>
+</li>
+<li><p><strong><code>not-advertise</code>参数的使用</strong>：</p>
+<ul>
+<li>在<code>abr-summary</code>或<code>asbr-summary</code>命令中配置<code>not-advertise</code>参数，可以<strong>抑制聚合路由的通告</strong>。这意味着符合该聚合地址范围的路由将不会被发布出去。这个功能可以用于精确控制路由的传播范围。</li>
+</ul>
+</li>
+<li><p><strong>生成Null0路由以防止环路</strong>：</p>
+<ul>
+<li>在配置ABR路由聚合时，可以使用 <strong><code>generate-null0-route</code></strong> 参数。这会在本地生成一条指向Null0接口的聚合路由，作为一种防环机制。当匹配到聚合路由但找不到更精确的具体路由时，数据包会被丢弃，从而避免形成路由环路。</li>
+</ul>
+</li>
+<li><p><strong>聚合与网络规划</strong>：</p>
+<ul>
+<li>为了更有效地实施路由聚合，在规划网络时，应尽量<strong>为同一区域分配连续的网络地址</strong>。连续的地址块更容易被聚合，能充分发挥路由聚合的优势。</li>
+</ul>
+</li>
+</ul>
+<h3 id="📝-参考配置实例"><a href="#📝-参考配置实例" class="headerlink" title="📝 参考配置实例"></a>📝 参考配置实例</h3><p>以下是一个在华为设备上配置OSPF ASBR路由聚合的示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#</span><br><span class="line">ospf 2</span><br><span class="line"> asbr-summary 192.168.2.0 255.255.254.0  // 聚合192.168.2.0/24和192.168.3.0/24等连续路由</span><br><span class="line"> import-route direct  // 引入直连路由</span><br><span class="line"> area 0.0.0.0</span><br><span class="line">  network 192.168.0.0 0.0.0.255</span><br><span class="line">#</span><br></pre></td></tr></table></figure>
+
+<p>此配置将引入的直连路由（例如192.168.2.0&#x2F;24和192.168.3.0&#x2F;24）聚合为一条路由<strong>192.168.2.0&#x2F;23</strong>发布到OSPF网络中。</p>
+<h2 id="五-BGP路由聚合详解"><a href="#五-BGP路由聚合详解" class="headerlink" title="五. BGP路由聚合详解"></a>五. BGP路由聚合详解</h2><p>BGP的路由聚合是控制路由表规模和优化网络稳定性的关键手段，主要分为<strong>自动聚合</strong>和<strong>手动聚合</strong>两种方式。下面这个表格汇总了它们的核心特性，方便你快速了解：</p>
+<table>
+<thead>
+<tr>
+<th align="left">特性维度</th>
+<th align="left">自动聚合</th>
+<th align="left">手动聚合</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>配置命令</strong></td>
+<td align="left"><code>summary automatic</code></td>
+<td align="left">&#96;aggregate ipv4-address { mask</td>
+</tr>
+<tr>
+<td align="left"><strong>生效对象</strong></td>
+<td align="left">仅对通过 <code>import-route</code> 命令引入的路由有效（如直连、静态、OSPF等）</td>
+<td align="left">对BGP本地路由表中<strong>已存在</strong>的明细路由有效</td>
+</tr>
+<tr>
+<td align="left"><strong>聚合方式</strong></td>
+<td align="left">按IP地址的<strong>自然网段</strong>（Classful）进行聚合</td>
+<td align="left">按配置的<strong>无类别</strong>地址块进行聚合，更为灵活</td>
+</tr>
+<tr>
+<td align="left"><strong>优先级</strong></td>
+<td align="left">低于手动聚合</td>
+<td align="left">更高</td>
+</tr>
+<tr>
+<td align="left"><strong>适用场景</strong></td>
+<td align="left">快速简化路由，但<strong>在现代网络中不推荐使用</strong></td>
+<td align="left"><strong>推荐使用</strong>，提供精细控制</td>
+</tr>
+</tbody></table>
+<h3 id="🔧-配置要点与步骤"><a href="#🔧-配置要点与步骤" class="headerlink" title="🔧 配置要点与步骤"></a>🔧 配置要点与步骤</h3><h4 id="自动聚合配置"><a href="#自动聚合配置" class="headerlink" title="自动聚合配置"></a><strong>自动聚合配置</strong></h4><p>自动聚合的配置相对直接，但需要注意其局限性。</p>
+<ol>
+<li><strong>进入系统视图和BGP视图</strong>：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;HUAWEI&gt; system-view</span><br><span class="line">[HUAWEI] bgp 100</span><br><span class="line">[HUAWEI-bgp] ipv4-family unicast  // 进入IPv4单播地址族视图</span><br></pre></td></tr></table></figure></li>
+<li><strong>（可选）引入路由</strong>：如果尚未引入，可配置例如 <code>import-route direct</code> 引入直连路由。</li>
+<li><strong>使能自动聚合</strong>：在对应的地址族视图下执行 <code>summary automatic</code>。</li>
+</ol>
+<h4 id="手动聚合配置"><a href="#手动聚合配置" class="headerlink" title="手动聚合配置"></a><strong>手动聚合配置</strong></h4><p>手动聚合提供了强大的控制能力，通过为 <code>aggregate</code> 命令添加不同的关键字，可以实现复杂的聚合策略：</p>
+<table>
+<thead>
+<tr>
+<th align="left">命令关键字</th>
+<th align="left">功能说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong><code>detail-suppressed</code></strong></td>
+<td align="left"><strong>只发布聚合路由</strong>，抑制所有明细路由的通告。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>suppress-policy route-policy-name</code></strong></td>
+<td align="left"><strong>有选择地抑制部分明细路由</strong>，匹配路由策略的明细路由被抑制，其他的仍可通告。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>as-set</code></strong></td>
+<td align="left">生成携带 <strong><code>AS_SET</code></strong> 属性的聚合路由，该属性包含了所有被聚合明细路由的AS路径信息，<strong>用于防止路由环路</strong>，但在明细路由频繁变化时可能导致路由振荡。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>attribute-policy route-policy-name</code></strong></td>
+<td align="left">通过路由策略来<strong>设置聚合路由的属性</strong>（如Community、MED等）。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>origin-policy route-policy-name</code></strong></td>
+<td align="left"><strong>只根据通过路由策略筛选出的明细路由</strong>来生成聚合路由。</td>
+</tr>
+</tbody></table>
+<p>配置手动聚合的基本步骤为：</p>
+<ol>
+<li>进入系统视图和BGP视图，并选择合适的地址族视图（如 <code>ipv4-family unicast</code>）。</li>
+<li>使用 <code>aggregate</code> 命令并组合所需的关键字，例如：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[HUAWEI-bgp-af-ipv4] aggregate 10.1.0.0 255.255.0.0 detail-suppressed</span><br><span class="line">// 这将聚合10.1.0.0/16的路由，并抑制所有明细路由。</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="⚠️-重要注意事项-1"><a href="#⚠️-重要注意事项-1" class="headerlink" title="⚠️ 重要注意事项"></a>⚠️ 重要注意事项</h3><ul>
+<li><strong>手动聚合的前提</strong>：BGP本地路由表中<strong>必须至少存在一条属于该聚合地址范围的明细路由</strong>，手动聚合才能生效并生成聚合路由。例如，BGP路由表中不存在 <code>10.1.1.0/24</code> 这样的明细路由，那么配置 <code>aggregate 10.1.0.0 255.255.0.0</code> 是无效的。</li>
+<li><strong>聚合路由的下一跳</strong>：手动聚合产生的聚合路由，其<strong>出接口默认为 <code>Null0</code></strong>。这是一种防环机制，但需要注意确保该聚合路由不会成为设备自身的优选路由，否则可能导致流量被错误丢弃。</li>
+<li><strong><code>as-set</code> 属性的权衡</strong>：使用 <code>as-set</code> 可以保留AS路径信息以防环，但会<strong>导致聚合路由携带的AS_PATH变为无序的AS集合</strong>。当聚合范围内的任何一条明细路由发生抖动时，都会引起整个聚合路由的更新，因此<strong>在聚合大量AS路径或明细路由频繁变化时需谨慎使用</strong>。</li>
+</ul>
+<h3 id="📊-四大路由协议聚合方式概览"><a href="#📊-四大路由协议聚合方式概览" class="headerlink" title="📊 四大路由协议聚合方式概览"></a>📊 四大路由协议聚合方式概览</h3><p>下表简要对比了RIP、OSPF、IS-IS和BGP的路由聚合特性，帮助你建立一个整体的认识。</p>
+<table>
+<thead>
+<tr>
+<th align="left">协议</th>
+<th align="left">聚合类型</th>
+<th align="left">主要特点与说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>RIP</strong></td>
+<td align="left">自动&#x2F;手动</td>
+<td align="left">如前述，手动聚合优先级高，需注意与防环机制配合。</td>
+</tr>
+<tr>
+<td align="left"><strong>OSPF</strong></td>
+<td align="left">手动</td>
+<td align="left">主要在<strong>区域边界路由器（ABR）</strong> 上进行<strong>区域间路由聚合</strong>，以及在<strong>自治系统边界路由器（ASBR）</strong> 上进行<strong>外部路由聚合</strong>。</td>
+</tr>
+<tr>
+<td align="left"><strong>IS-IS</strong></td>
+<td align="left">手动</td>
+<td align="left">通常在<strong>Level-1-2路由器</strong>上将Level-1路由聚合后发布到Level-2区域，也可以在Level-2路由器上进行聚合。支持通过路由策略精细控制。</td>
+</tr>
+<tr>
+<td align="left"><strong>BGP</strong></td>
+<td align="left">手动</td>
+<td align="left">聚合灵活性最高，可通过<code>aggregate</code>命令生成聚合路由，并灵活控制是否抑制具体路由、是否携带AS_SET属性等，常用于优化庞大的互联网路由表。</td>
+</tr>
+</tbody></table>
+</article>
+<div class="article-footer">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2025/10/24/%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E7%9A%84%E6%8A%91%E5%88%B6%E6%8E%A5%E5%8F%A3%E8%AF%A6%E8%A7%A3/">路由协议的抑制接口详解</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2025/10/21/%E5%AF%B9%E6%AF%94RIP%EF%BC%8CIS-IS%EF%BC%8COSPF%EF%BC%8CBGP%E5%9B%9B%E5%A4%A7%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%EF%BC%881%EF%BC%89%E5%AE%A3%E5%91%8A%E8%B7%AF%E7%94%B1/">对比RIP，IS-IS，OSPF，BGP四大路由协议（1）宣告路由</a></div></section></div>
+
+
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">fcbyoung</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80-%E4%BB%80%E4%B9%88%E6%98%AF%E8%B7%AF%E7%94%B1%E8%81%9A%E5%90%88%EF%BC%9F"><span class="toc-text">一. 什么是路由聚合？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E4%B8%AD%E8%A6%81%E4%BD%BF%E7%94%A8%E8%B7%AF%E7%94%B1%E8%81%9A%E5%90%88%EF%BC%9F"><span class="toc-text">为什么路由协议中要使用路由聚合？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C-RIP%E8%B7%AF%E7%94%B1%E8%81%9A%E5%90%88%E8%AF%A6%E8%A7%A3"><span class="toc-text">二. RIP路由聚合详解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%AD%A5%E9%AA%A4"><span class="toc-text">配置步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9A%A0%EF%B8%8F-%E6%A0%B8%E5%BF%83%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">⚠️ 核心注意事项</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89-IS-IS%E8%B7%AF%E7%94%B1%E8%81%9A%E5%90%88%E8%AF%A6%E8%A7%A3"><span class="toc-text">三. IS-IS路由聚合详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%93%9D-%E9%85%8D%E7%BD%AE%E6%AD%A5%E9%AA%A4%E4%B8%8E%E6%9F%A5%E7%9C%8B%E7%BB%93%E6%9E%9C"><span class="toc-text">📝 配置步骤与查看结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%8F%97%EF%B8%8F-%E7%90%86%E8%A7%A3IS-IS%E8%B7%AF%E7%94%B1%E8%81%9A%E5%90%88%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-text">🏗️ 理解IS-IS路由聚合的应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%9A%A0%EF%B8%8F-%E9%87%8D%E8%A6%81%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">⚠️ 重要注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%92%8E-%E6%80%BB%E7%BB%93"><span class="toc-text">💎 总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B-OSPF%E8%B7%AF%E7%94%B1%E8%81%9A%E5%90%88%E8%AF%A6%E8%A7%A3"><span class="toc-text">四.OSPF路由聚合详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%A7-%E9%85%8D%E7%BD%AE%E6%AD%A5%E9%AA%A4%E4%B8%8E%E8%AF%B4%E6%98%8E"><span class="toc-text">🔧 配置步骤与说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%9A%A0%EF%B8%8F-%E9%85%8D%E7%BD%AE%E8%A6%81%E7%82%B9%E4%B8%8E%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">⚠️ 配置要点与注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%93%9D-%E5%8F%82%E8%80%83%E9%85%8D%E7%BD%AE%E5%AE%9E%E4%BE%8B"><span class="toc-text">📝 参考配置实例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94-BGP%E8%B7%AF%E7%94%B1%E8%81%9A%E5%90%88%E8%AF%A6%E8%A7%A3"><span class="toc-text">五. BGP路由聚合详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%A7-%E9%85%8D%E7%BD%AE%E8%A6%81%E7%82%B9%E4%B8%8E%E6%AD%A5%E9%AA%A4"><span class="toc-text">🔧 配置要点与步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E8%81%9A%E5%90%88%E9%85%8D%E7%BD%AE"><span class="toc-text">自动聚合配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%8B%E5%8A%A8%E8%81%9A%E5%90%88%E9%85%8D%E7%BD%AE"><span class="toc-text">手动聚合配置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%9A%A0%EF%B8%8F-%E9%87%8D%E8%A6%81%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-1"><span class="toc-text">⚠️ 重要注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%93%8A-%E5%9B%9B%E5%A4%A7%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E8%81%9A%E5%90%88%E6%96%B9%E5%BC%8F%E6%A6%82%E8%A7%88"><span class="toc-text">📊 四大路由协议聚合方式概览</span></a></li></ol></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>
