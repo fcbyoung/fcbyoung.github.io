@@ -17,26 +17,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
   <meta name="theme-color" content="#f9fafb">
-  <title>探讨反掩码的作用 - 云上书房</title>
+  <title>追与忆 - 云上书房</title>
 
   
-    <meta name="description" content="普通掩码（子网掩码）和反掩码虽然都使用32位二进制格式，但它们的设计目的和逻辑是完全相反的。普通掩码用于IP地址划分，用连续的1和0表示，而反掩码是匹配工具，用0和1表示要检查或忽略的位。 因此，在ACL和OSPF宣告这种需要“匹配”或“指定范围”的场景下，反掩码比普通掩码更灵活、更精确。 下面我们来详细解释为什么。  1. 核心概念：目的不同 普通掩码（子网掩码）  目的： 定义一个IP地址中哪">
+    <meta name="description" content="（本文首发于公众号 涂鸦radio） （本文内容纯属虚构，如有雷同情节实属巧合） 今天是周末，天气不错，秦波和以往一样，骑上自行车去趟图书馆坐坐。 周末的图书馆人来人往，有很多前来借阅图书的读者。这时候秦波注意到，三楼的第七阅览室，这里平时并不开门，只是正好赶上今天是开放日，正好可以进去看看。 这是个比较独特的阅览室，面积很大，里面的书绝大多数都是上个世纪出版的，最新的书也有二十来年的历史了。因为">
 <meta property="og:type" content="article">
-<meta property="og:title" content="探讨反掩码的作用">
-<meta property="og:url" content="https://fcbyoung.github.io/2025/10/19/%E6%8E%A2%E8%AE%A8%E5%8F%8D%E6%8E%A9%E7%A0%81%E7%9A%84%E4%BD%9C%E7%94%A8/">
+<meta property="og:title" content="追与忆">
+<meta property="og:url" content="https://fcbyoung.github.io/2025/12/30/%E8%BF%BD%E4%B8%8E%E5%BF%86/">
 <meta property="og:site_name" content="云上书房">
-<meta property="og:description" content="普通掩码（子网掩码）和反掩码虽然都使用32位二进制格式，但它们的设计目的和逻辑是完全相反的。普通掩码用于IP地址划分，用连续的1和0表示，而反掩码是匹配工具，用0和1表示要检查或忽略的位。 因此，在ACL和OSPF宣告这种需要“匹配”或“指定范围”的场景下，反掩码比普通掩码更灵活、更精确。 下面我们来详细解释为什么。  1. 核心概念：目的不同 普通掩码（子网掩码）  目的： 定义一个IP地址中哪">
+<meta property="og:description" content="（本文首发于公众号 涂鸦radio） （本文内容纯属虚构，如有雷同情节实属巧合） 今天是周末，天气不错，秦波和以往一样，骑上自行车去趟图书馆坐坐。 周末的图书馆人来人往，有很多前来借阅图书的读者。这时候秦波注意到，三楼的第七阅览室，这里平时并不开门，只是正好赶上今天是开放日，正好可以进去看看。 这是个比较独特的阅览室，面积很大，里面的书绝大多数都是上个世纪出版的，最新的书也有二十来年的历史了。因为">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-10-19T10:37:03.000Z">
-<meta property="article:modified_time" content="2025-12-04T03:06:28.811Z">
+<meta property="article:published_time" content="2025-12-30T09:38:57.000Z">
+<meta property="article:modified_time" content="2025-12-30T09:40:43.729Z">
 <meta property="article:author" content="fcbyoung">
-<meta property="article:tag" content="网络工程师">
-<meta property="article:tag" content="计算机网络">
 <meta name="twitter:card" content="summary">
   
   
   
-  <meta name="keywords" content="网络工程师,计算机网络">
+  
 
   <!-- feed -->
   
@@ -48,7 +46,7 @@
 
   
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"fcbyoung","sameAs":[]},"dateCreated":"2025-10-19T18:37:03+08:00","dateModified":"2025-12-04T11:06:28+08:00","datePublished":"2025-10-19T18:37:03+08:00","description":"","headline":"探讨反掩码的作用","mainEntityOfPage":{"@type":"WebPage","@id":"https://fcbyoung.github.io/2025/10/19/%E6%8E%A2%E8%AE%A8%E5%8F%8D%E6%8E%A9%E7%A0%81%E7%9A%84%E4%BD%9C%E7%94%A8/"},"publisher":{"@type":"Organization","name":"fcbyoung","sameAs":[]},"url":"https://fcbyoung.github.io/2025/10/19/%E6%8E%A2%E8%AE%A8%E5%8F%8D%E6%8E%A9%E7%A0%81%E7%9A%84%E4%BD%9C%E7%94%A8/","keywords":"网络工程师, 计算机网络","image":[]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"fcbyoung","sameAs":[]},"dateCreated":"2025-12-30T17:38:57+08:00","dateModified":"2025-12-30T17:40:43+08:00","datePublished":"2025-12-30T17:38:57+08:00","description":"","headline":"追与忆","mainEntityOfPage":{"@type":"WebPage","@id":"https://fcbyoung.github.io/2025/12/30/%E8%BF%BD%E4%B8%8E%E5%BF%86/"},"publisher":{"@type":"Organization","name":"fcbyoung","sameAs":[]},"url":"https://fcbyoung.github.io/2025/12/30/%E8%BF%BD%E4%B8%8E%E5%BF%86/","image":[]}</script>
   
 </head>
 <body>
@@ -80,133 +78,96 @@
   <div class="content">
     <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
 <span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div>
-<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2025-10-19T10:37:03.000Z">2025-10-19</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2025-12-04T03:06:28.811Z">2025-12-04</time></span></div></div></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2025-12-30T09:38:57.000Z">2025-12-30</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2025-12-30T09:40:43.729Z">2025-12-30</time></span></div></div></div>
     
     <div class="bottom only-title">
       
       <div class="text-area">
-        <h1 class="text title"><span>探讨反掩码的作用</span></h1>
+        <h1 class="text title"><span>追与忆</span></h1>
         
       </div>
     </div>
     
   </div>
-  </div><article class="md-text content"><p><strong>普通掩码（子网掩码）和反掩码虽然都使用32位二进制格式，但它们的设计目的和逻辑是完全相反的。普通掩码用于IP地址划分，用连续的1和0表示，而反掩码是匹配工具，用0和1表示要检查或忽略的位。</strong></p>
-<p>因此，在ACL和OSPF宣告这种需要“匹配”或“指定范围”的场景下，反掩码比普通掩码更灵活、更精确。</p>
-<p>下面我们来详细解释为什么。</p>
-<hr>
-<h3 id="1-核心概念：目的不同"><a href="#1-核心概念：目的不同" class="headerlink" title="1. 核心概念：目的不同"></a>1. 核心概念：目的不同</h3><ul>
-<li><p><strong>普通掩码（子网掩码）</strong></p>
-<ul>
-<li><strong>目的：</strong> 定义一个IP地址中哪部分是<strong>网络位</strong>，哪部分是<strong>主机位</strong>。</li>
-<li><strong>逻辑：</strong> 掩码中的 <code>1</code> 表示网络位，<code>0</code> 表示主机位。它必须是<strong>连续的</strong>1和0。</li>
-<li><strong>例子：</strong> <code>255.255.255.0</code> (<code>/24</code>) 表示前24位是网络地址，后8位是主机地址。它定义的是一个<strong>连续的、完整的</strong>IP地址段。</li>
-</ul>
-</li>
-<li><p><strong>反掩码</strong></p>
-<ul>
-<li><strong>目的：</strong> 作为一个<strong>通配符掩码</strong>，用来匹配一个或多个IP地址。</li>
-<li><strong>逻辑：</strong> 掩码中的 <code>0</code> 表示“<strong>必须精确匹配</strong>”，<code>1</code> 表示“<strong>不关心，可以任意</strong>”。</li>
-<li><strong>例子：</strong> <code>0.0.0.255</code> 表示前24位必须精确匹配，后8位可以是任意值。</li>
-</ul>
-</li>
-</ul>
-<h3 id="2-为什么在ACL中使用反掩码？"><a href="#2-为什么在ACL中使用反掩码？" class="headerlink" title="2. 为什么在ACL中使用反掩码？"></a>2. 为什么在ACL中使用反掩码？</h3><p>访问控制列表的核心功能是<strong>匹配数据包的源&#x2F;目标IP地址，并执行允许或拒绝操作</strong>。这种匹配通常不是针对单个主机，而是针对一个网段，甚至是多个不连续的IP。</p>
-<ul>
-<li><p><strong>场景1：匹配一个完整的子网</strong></p>
-<ul>
-<li>你想允许 <code>192.168.1.0/24</code> 这个网段的所有主机。</li>
-<li><strong>ACL语句：</strong> <code>permit 192.168.1.0 0.0.0.255</code></li>
-<li><strong>解释：</strong><ul>
-<li>IP地址： <code>192.168.1.0</code> (这是一个代表网段的参考点)</li>
-<li>反掩码： <code>0.0.0.255</code> (二进制为 <code>00000000.00000000.00000000.11111111</code>)</li>
-<li>匹配规则：前三个八位组 (<code>192.168.1</code>) 必须精确匹配 (<code>0</code>)，最后一个八位组可以是任何值 (<code>255</code>)。所以它匹配从 <code>192.168.1.0</code> 到 <code>192.168.1.255</code> 的所有IP。</li>
-</ul>
-</li>
-<li><strong>这里用普通掩码 <code>255.255.255.0</code> 是无法实现这种“匹配”逻辑的。</strong></li>
-</ul>
-</li>
-<li><p><strong>场景2：匹配一个特定主机</strong></p>
-<ul>
-<li>你想拒绝主机 <code>192.168.1.10</code>。</li>
-<li><strong>ACL语句：</strong> <code>deny 192.168.1.10 0.0.0.0</code></li>
-<li><strong>解释：</strong> 反掩码全是 <code>0</code>，表示所有32位都必须精确匹配。这等同于 <code>host 192.168.1.10</code> 命令。</li>
-</ul>
-</li>
-<li><p><strong>场景3：匹配不连续的IP（反掩码的超级优势）</strong></p>
-<ul>
-<li>假设你想匹配 <code>192.168.1.1</code> 和 <code>192.168.1.3</code> 这两个IP。用普通掩码无法定义一个包含这两个IP的连续网段。</li>
-<li><strong>ACL语句：</strong> <code>permit 192.168.1.1 0.0.0.2</code></li>
-<li><strong>解释：</strong><ul>
-<li>IP地址： <code>192.168.1.1</code> (二进制最后8位: <code>000000**01**</code>)</li>
-<li>反掩码： <code>0.0.0.2</code> (二进制最后8位: <code>000000**10**</code>)</li>
-<li>匹配规则：前24位精确匹配，最后8位中，只有对应反掩码为 <code>0</code> 的位需要匹配。看最后一位：<ul>
-<li>第1位 (最低位)：反掩码是 <code>0</code>，必须匹配IP地址的 <code>1</code>。</li>
-<li>第2位：反掩码是 <code>1</code>，不关心。</li>
-<li>其他位都是 <code>0</code>，必须匹配IP地址的 <code>0</code>。</li>
-</ul>
-</li>
-<li>所以可能的组合是：<ul>
-<li><code>...00000001</code> (十进制 1) -&gt; <strong>匹配</strong></li>
-<li><code>...00000011</code> (十进制 3) -&gt; <strong>匹配</strong></li>
-</ul>
-</li>
-<li>这样就巧妙地匹配了两个不连续的IP。<strong>这是普通掩码绝对做不到的。</strong></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h3 id="3-为什么在OSPF宣告中使用反掩码？"><a href="#3-为什么在OSPF宣告中使用反掩码？" class="headerlink" title="3. 为什么在OSPF宣告中使用反掩码？"></a>3. 为什么在OSPF宣告中使用反掩码？</h3><p>在OSPF中，使用 <code>network</code> 命令时，反掩码的作用是<strong>告诉路由器，哪些接口的IP地址应该被“宣告”到OSPF进程中</strong>。</p>
-<ul>
-<li><strong>场景：</strong> 你有一个路由器，接口1的IP是 <code>10.1.1.1/24</code>，接口2的IP是 <code>172.16.1.1/24</code>。你只想把 <code>10.1.1.0/24</code> 这个网段宣告到OSPF区域0。</li>
-<li><strong>OSPF配置：</strong> <code>network 10.1.1.0 0.0.0.255 area 0</code></li>
-<li><strong>解释：</strong><ul>
-<li>路由器会检查它所有接口的IP地址。</li>
-<li>对于每个接口IP，用它和 <code>network</code> 命令中的 <code>IP + 反掩码</code> 进行运算。</li>
-<li>如果 <code>(接口IP) XOR (network命令中的IP)</code> 然后 <code>AND (反掩码)</code> 的结果为 <code>0</code>，则该接口被激活OSPF。</li>
-<li>简单理解就是：接口IP的前24位如果是 <code>10.1.1</code>，那么这个接口就会加入OSPF进程，并在区域0中宣告其连接的网段 <code>10.1.1.0/24</code>。</li>
-</ul>
-</li>
-</ul>
-<p>这里使用反掩码，同样是为了提供<strong>精确控制</strong>，让你可以灵活地选择将哪个精确的网段（甚至是不连续的网段）宣告到OSPF中，而不是只能宣告一个主类网络。</p>
-<hr>
-<h3 id="总结对比"><a href="#总结对比" class="headerlink" title="总结对比"></a>总结对比</h3><table>
-<thead>
-<tr>
-<th align="left">特性</th>
-<th align="left">普通掩码（子网掩码）</th>
-<th align="left">反掩码（通配符掩码）</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left"><strong>设计目的</strong></td>
-<td align="left"><strong>定义</strong>一个IP地址的网络和主机部分。</td>
-<td align="left"><strong>匹配</strong>一个或多个IP地址。</td>
-</tr>
-<tr>
-<td align="left"><strong>逻辑</strong></td>
-<td align="left"><code>1</code> &#x3D; 网络位， <code>0</code> &#x3D; 主机位。</td>
-<td align="left"><code>0</code> &#x3D; 精确匹配， <code>1</code> &#x3D; 不关心（任意）。</td>
-</tr>
-<tr>
-<td align="left"><strong>连续性</strong></td>
-<td align="left"><strong>必须</strong>是连续的1和0。</td>
-<td align="left"><strong>可以是任意组合</strong>的0和1。</td>
-</tr>
-<tr>
-<td align="left"><strong>灵活性</strong></td>
-<td align="left">较低，只能定义标准的、连续的IP网段。</td>
-<td align="left"><strong>极高</strong>，可以匹配单个主机、连续网段、甚至不连续的IP。</td>
-</tr>
-<tr>
-<td align="left"><strong>主要应用</strong></td>
-<td align="left">IP地址规划、子网划分、路由器接口配置。</td>
-<td align="left">ACL、OSPF&#x2F;BGP的 <code>network</code> 命令、NAT等需要精确匹配的场景。</td>
-</tr>
-</tbody></table>
-<p><strong>结论：</strong> 不是普通的掩码不能起作用，而是因为它“起作用”的方式（定义网络）与ACL和OSPF宣告所需要的“匹配”功能不匹配。反掩码凭借其“通配符”的特性，为网络匹配操作提供了无与伦比的灵活性和精确度，因此成为了这些场景下的标准选择。</p>
+  </div><article class="md-text content"><p>（本文首发于公众号 涂鸦radio）</p>
+<p>（本文内容纯属虚构，如有雷同情节实属巧合）</p>
+<p>今天是周末，天气不错，秦波和以往一样，骑上自行车去趟图书馆坐坐。</p>
+<p>周末的图书馆人来人往，有很多前来借阅图书的读者。这时候秦波注意到，三楼的第七阅览室，这里平时并不开门，只是正好赶上今天是开放日，正好可以进去看看。</p>
+<p>这是个比较独特的阅览室，面积很大，里面的书绝大多数都是上个世纪出版的，最新的书也有二十来年的历史了。因为位置不起眼，偌大的阅览室里并没有多少读者进来，所以显得格外幽静，和外面熙熙攘攘的场景形成了强烈的对比。</p>
+<p>漫步在这安静的阅览室中，秦波浏览着书架上那些纸张早已泛黄、年龄甚至比他自己都大的老书，不时地会从书架上抽取一两本捧在手里翻翻，伴随着老书特有的那种味道，静静地浏览着书页上的文字，觉得这样的场景还挺有趣。</p>
+<p>这时，秦波突然在其中一个书架前停下脚步，书架上的一本《被侮辱和被损害的》引起了他强烈的兴趣。这本书的新版本他之前读过，这也是他非常喜欢的一本书，没想到今天能在图书馆的旧书阅览室找到早期的译本，这使他非常好奇，很想看看早年的译文会是什么样。</p>
+<p>正当他沉浸在书中的内容时，突然翻到了其中一页，书里夹的一张稿纸引起了他的注意。他小心翼翼地将稿纸取出，展开在眼前。随着岁月的流逝，稿纸早已变得发黄，唯有抬头处印刷的“和平机械厂”五个红色的大字，还有稿纸上用蓝黑色墨水写下的钢笔字依然清晰可见。</p>
+<p>他仔细地看，只见纸上写着这样一段话：</p>
+<p>“这是一个凄惨的故事，是在彼得堡的阴暗天空下，在广大城市的黑暗秘密的角落里，在生活的眩目的沸腾中间，在阴沉的自私、利益的矛盾、黑暗的罪恶和秘密的犯罪中间，在没有理性和反常的生活的最下层地狱中间常常看不见地、几乎是神秘地扮演着的许多凄惨而备库单戏剧中间的一个故事……”</p>
+<p>随着稿纸所夹在书中的位置，秦波一眼就认出来这一段正是书中的原文。看着稿纸上陈旧的字迹，他不禁陷入了沉思：这是谁在当年写下的字迹，当时他在写下这段话时又是有着怎样的想法呢。</p>
+<p>“你是在找我吗？”</p>
+<p>秦波刚刚将稿纸收起放回原处，突然，一个清脆的女声轻轻地在他耳边响起，秦波一惊，赶忙向四周张望，发现周围并没有人。他还以为自己听错了，这时那个声音又响了起来：</p>
+<p>“你是在找我吗？我在这呢。”</p>
+<p>秦波随着声音的方向看去，只见面前的书架上，在自己刚才抽出来的书的旁边，静静地趴着一只紫色的蝴蝶。</p>
+<p>“你好。”</p>
+<p>那个声音又一次在耳边响起，秦波轻轻地向旁边的书架迈了一步，只见紫蝴蝶又轻轻颤了颤翅膀。</p>
+<p>“你好啊。”秦波不由得放轻了声音，怕惊扰了它。</p>
+<p>“如你所见，我是一只蝴蝶。”它的声音细微却清晰。</p>
+<p>“真的是你……”秦波还是有些难以置信，“你是从哪来的？”</p>
+<p>蝴蝶翅膀微微一敛，“就从你刚才看着的那页稿纸上来。墨迹干了，年头久了，一点思绪没散，就成了我。”</p>
+<p>秦波怔住，一时接不上话。</p>
+<p>紫蝴蝶却已翩然飞起，落在那张夹在书页里的稿纸上，头上的触须几乎触碰到那些泛黄的纸张。“别紧张，你可能在好奇是谁写了这些话，其实这没什么神秘的。”它顿了顿，像在回忆。</p>
+<p>“如你所见，就在当年，和平机械厂里一个年轻姑娘，读到这里，心里被撞了一下。她身边没别的纸，只有厂里用的稿纸，就伏在车间休息的桌上，一笔一画用钢笔把它抄了下来。”</p>
+<p>“难怪用的是这种纸。”秦波恍然大悟，一边轻抚着稿纸略显粗糙的表面，不禁微微笑了一下，“我刚才正琢磨呢。”</p>
+<p>“那工厂在哪里……”秦波缓过了神，迫不及待地追问。</p>
+<p>“工厂早就关了……不过厂房基本还在。你想去看看吗？”</p>
+<p>紫蝴蝶轻扇两下翅膀，从书页上缓缓升起，慢慢飞到了秦波眼前。“我给你带路。”</p>
+<p>秦波点头，只见紫蝴蝶轻轻落在他肩头。</p>
+<p>“远吗？我骑自行车来的。”</p>
+<p>“不远。不是有句话说得好吗，‘走路太远，开车太堵，骑车刚刚好。’”</p>
+<p>“哈哈，没想到这你都知道。”秦波轻轻地笑了。</p>
+<p>出了图书馆，秦波蹬上自行车。紫蝴蝶没再停在他肩上，而是稳稳落在车把前方，随着车子骑过带起的风，偶尔会轻轻扇动几下翅膀。</p>
+<p>“和平机械厂……还从来没听说过这个名字，应该挺早的。”伴随着骑车掠过耳畔的风，秦波满怀好奇地问。</p>
+<p>“有些年头了，大概得有五六十年再往上。”在风中，紫蝴蝶的声音依旧很轻，每个字还是那么清晰。</p>
+<p>“当时还有很多从外地过来支援工厂建设生产的大部队，大家一起每天在工厂里拼足了劲在干。先是在一片荒地上从什么都没有，到建起了厂房和烟囱，再到机器组装到位开工生产，每天大家都忙个不停。”</p>
+<p>听到这里，秦波眼前不禁浮现出了曾经在老电影上看到过的那些热火朝天的劳动场景，他只是轻轻回应了一声，一边继续听，一边陷入了沉思。</p>
+<p>“后来，就像那个年代很多那样的厂子一样，渐渐被时代一点点地遗忘。”说到这里，蝴蝶的语调也明显低缓了许多，“业务越来越少，原来从早到晚忙个不停的生产线也一点点停了下来……”</p>
+<p>“那……最后怎么办了？”</p>
+<p>“幸好当年这边是由南方的庆宝厂援建的，两边的往来几十年里从来没断过。到最后关头，庆宝再次伸出手拉了一把，把和平厂并了过去，能用的设备、愿意去的工人，都迁去了南方。在那边，算是重新扎下了根。”</p>
+<p>“啊，是庆宝！以前在新闻上听说过，没想到还有这样一段历史。听说庆宝这两年业务发展得还不错。对于和平厂来说，虽然厂子不在这里了，不过终究是没有被时代彻底遗忘。已经很让人欣慰了。”</p>
+<p>“是啊，比起同时代其他厂的命运，已经算好的了。”</p>
+<p>“当年那位姑娘……”秦波突然似乎想起来了什么。</p>
+<p>“她也跟着走了。”紫蝴蝶轻声说，就像在介绍一位久日未见的老友，“她老家在南方，当年随着支援新厂过来，一来就在这里干了三十多年，青春和岁月都留在这片厂区了。临走前最后一个月，她特意又来图书馆，找到这本书，安安静静又完整地看了一遍。然后，在另一张稿纸上，写了一段告别的话，然后又像当年一样夹在了书里……我就是在她最后一次还书之后，读到了她夹在书里的另一张字条，从那时知道的这些。”</p>
+<p>“在异乡生活了半辈子，老去的时候还能跟着机器工厂一起回到家乡，也是有了着落。”秦波不禁感叹。</p>
+<p>“是啊。”</p>
+<p>伴随着车轮碾过路面细碎的声响，不经意间路上行人渐渐稀少了起来，再往前走一段，眼前出现了一段斑驳的红砖墙，沿着砖墙继续向前，紧接着就看到了一扇破旧的大铁门，大门紧闭，只有门板上开着的一扇小门还半开着。铁门整体锈迹斑斑，曾经门上的绿色油漆早已褪去大半。大门的锁也被厚重的铁锈剥夺了原有的颜色，能看出来已经很久没有被打开过了。门柱上贴着的棕黄色的方形瓷砖依稀可见当年鼎盛时期工厂的风采，大门顶部是一个水刷石材质的屋顶，上面排着一排早已褪了色的彩色灯泡，有好几只早已破裂。此时一个陈旧的大院赫然出现在眼前。</p>
+<p>紫蝴蝶从他车把上飞起，盘旋在他面前。</p>
+<p>“我们到了。”</p>
+<p>秦波下意识抬起手腕看了眼手表，此时距离他们从图书馆出发还不到半小时。</p>
+<p>把自行车停在路边，紫蝴蝶陪着秦波一起从半开的铁门进了院子。</p>
+<p>正对着大门的是一条宽阔笔直的水泥路，在荒凉的景色衬托下这条大路显得尤为空旷。路的两旁是两座破旧的工厂车间。车间大门紧锁，外墙上早年种植的爬山虎也早已没有了绿油油的盎然生机，任由一些枯枝败叶伴随着带有凉意的风阵阵吹过而轻微地摇晃着。</p>
+<p>沿着车间的外墙，秦波好奇地向前走，紫蝴蝶也一直寸步不离在他头顶盘旋着。脚下堆满了当年废弃的机器零件，走到这里可以看见墙边有一只生锈的阀门，再往前两步又是一节残缺破败的铁管。有的部件甚至只露出一半，剩下半截被深深地埋进了土里。这些曾作为工厂生产环节的组成部分的零件，如今就这样七零八落地被遗弃在这里，早已被人遗忘，表面被年复一年的落叶覆盖了厚厚一层。</p>
+<p>他在车间外一扇破旧的窗前停下了脚步，靠近地面的玻璃早已破碎缺失，和里面仅仅隔着一层钢筋防护网。他俯下身，透过这破败的障碍物，将视线投往车间内。只见里面一片凌乱，远处靠近墙角的地方堆满了杂物，正对着窗户肉眼所见的地方还能看到有两台陈旧的机器，隐约还能看到上面厚厚的一层尘土，还有在角落处结成的蜘蛛网。不难看出这里已经停止生产了许久，但是空气中那股厚重的机油味依旧可以清晰的闻到。</p>
+<p>“这就是她当年工作过的地方。”紫蝴蝶不无遗憾地说。</p>
+<p>秦波并没有应声，而是望着远处的两台机器出神。此时他的眼前仿佛不再有凌乱的杂物，而是出现了一个年轻的身影在机器前俯身忙碌，伴随着车间内浓重的机油味道和嘈杂的噪音，正在一丝不苟的仔细操作着。那娴熟的动作也不知她重复了多少次，做了多少年。</p>
+<p>直到这身影逐渐模糊逐渐消失在眼前，半响过后，秦波才缓缓直起身，此时的他不禁长吁一口气。</p>
+<p>从车间出来，秦波看到前面有一栋四层高的小楼，就沿着大路继续往前走。</p>
+<p>小楼门口先是三层台阶，台阶原本有棱角的边缘早已被磨损得圆钝。台阶上是一对厚重的木门，昔日鲜亮的红色油漆早已皲裂、剥落。秦波推门而入，伴随着木门的开关“吱呀”一声悠长的声响在四周散开。</p>
+<p>进门首先是一个陈旧的大厅，正上方悬着一盏庞大的吊灯，乳白色的灯罩在岁月的洗礼下已变得昏黄。穿过大厅，两侧延伸出幽深的走廊，走廊两侧房门紧闭。楼内的墙面充满了那个年代特有的印记：下半截刷着约半人高的墨绿色墙裙，如今漆面斑驳，大片地卷翘脱落，露出下方粗糙的底面；上半截则是普通的白灰墙，同样布满时间的沧桑，往往一抬头就能在高处看见不知何时浸出的黄渍与水痕。</p>
+<p>正对进门处，一道水磨石楼梯通往楼上，表面早已被岁月磨去了光泽，透着一股布满灰尘的黯淡。秦波踏上楼梯，脚步声在空荡荡楼里产生轻微的回响，反而衬得四下愈加寂静。楼内走廊显得格外空旷，两侧的房间大多门窗洞开。他信步向前，进入了一间房门打开的房间。</p>
+<p>房间里空无一物，除了靠窗处摆着一张木质办公桌与一把配套的椅子。桌椅颜色暗沉，表面布满灰尘，透过窗户洒入室内的阳光正好将桌面照成了亮与暗的两片。墙壁上空荡荡的，唯有一幅中国地图挂在正中间的位置，边缘早已卷曲，上面的色彩褪得几乎只剩模糊的轮廓，和那段热血沸腾的岁月本身一样，在这房间里悄然褪了色，只剩一个依稀的影子。</p>
+<p>秦波好奇地走近办公桌，注意到了桌面下方虚掩着的抽屉，他轻轻地将抽屉向外拉出一点点，发现了一沓陈旧的稿纸，稿纸抬头那熟悉的“和平机械厂”五个大字正和他在图书馆里看到的一模一样，只不过这一沓稿纸被遗忘在这一方尘土中显得更为陈旧。</p>
+<p>抽屉里还有一只破旧的灰色收音机，秦波拿在手里先掂了掂分量，随后又翻到后面打开后盖，确认里面没有装电池。正好在收音机旁边还放着一包没有拆封的干电池，看了看包装不知道是什么时候生产的，想了想秦波还是把电池拆开包装，塞进了收音机，随即打开收音机的开关，只听“哔——”的一声，收音机上的红色指示灯发出了并不算明亮的光芒，然后收音机里就传出了一阵阵咝咝啦啦的电波噪音。</p>
+<p>没想到这个收音机还能正常打开，秦波有些惊讶，他先抽出了收音机里的天线，又开始转动收音机上的调频旋钮，看着指针在收音机的频段上来回移动，但是收音机的喇叭里传来的始终就只有忽大忽小的噪音。他又尝试着不停变换着天线的角度，但也无济于事。</p>
+<p>这时，一直在身旁默默盘旋的紫蝴蝶，轻柔地煽动着翅膀，静静地落在了收音机的天线上。说来也巧，就在这时，突然收音机里传来了一阵微弱的歌声。秦波很是惊讶，他又轻调几下旋钮，终于可以从收音机里飘扬出来清晰的歌声。</p>
+<p>“是你唱的吗？”秦波笑着问。</p>
+<p>紫蝴蝶没有回答，只听到一阵轻柔的笑声传来，然后它又轻轻地飞离了收音机天线。</p>
+<p>“流水它带走光阴的故事改变了我们，就在那多愁善感而初次回忆的青春……”</p>
+<p>伴随着熟悉又动听的旋律，秦波不舍地放下了收音机，告别了这已被人遗忘的房间，转身向门外走去。还没等他走到门口，只听见那收音机里传来的歌声越来越微弱，直至消失不见。转身一看，收音机上的电源指示灯已经逐渐熄灭。</p>
+<p>“走吧，我们去别的地方看看。”这时紫蝴蝶飞到秦波耳边轻声说道。秦波点点头。</p>
+<p>从楼上下来，秦波和紫蝴蝶先是拐了一个弯，然后穿过两座车间中间的一条小路，接着又向前走去。</p>
+<p>没想到走到这里，眼前出现的是一番别样的光景：原本沧桑的红砖外墙上被各式各样的彩色喷绘填充，整体风格焕然一新。仔细看，这一片画的是由各种齿轮和管道而组成的一片高楼大厦。前方则是由一个齿轮形状的太阳，正在散发着耀眼的光芒，而在下方的树木都是螺栓的形状，花朵则是由螺母和管道的形状绘制的。不同区域的画作题材各异，但都突出了工业的主题，也换发出了十足的活力。</p>
+<p>路旁不时有用废旧金属零件组装而成的雕塑，他们形态各异，或大或小的摆在路边，有的造型是一个充满了科技感的机器人，有的造型是一匹高大的马。这些被遗弃的废铁经过艺术加工后的妙手回春，重新焕发出了新的生机，也成为了别样的风景。</p>
+<p>前方的两座厂房经过改造，也已全新的精神面貌出现在眼前，毫无之前所见的破败感。左边一间被改造成了羽毛球馆，隔着落地的大窗能看见里面全是正在积极运动的人群，无论男女老少，一个个在球场上活力十足，尽情挥拍，羽毛球在场馆明亮的灯光下，在空中画出了一道道美丽的弧线。右边一间被改造成了篮球馆，隔着墙都能听到皮球在地面弹跳碰撞的声音，不时还有一阵阵喝彩呐喊传出。</p>
+<p>再往前看，远处的一段旧铁轨上静静地停放着一节表面光洁的蒸汽机车车头，围在下方不断地有游人打卡拍照，纪念这样一个历史与现代交织的地方。</p>
+<p>“真好啊。”看着原本被人遗忘的老厂房如今一角重新焕发出活力，紫蝴蝶忍不住兴奋地抖动翅膀，轻柔的声音中竟还有一丝颤抖。</p>
+<p>“真美啊。”望着眼前游人如织的场景，秦波不禁感慨，当他见证了这样一个曾经辉煌过的老厂区如今并没有被人遗忘，他也欣慰地笑了。此时他也忍不住掏出手机，留住这完美的一瞬间。</p>
+<p>秦波没注意到的是，此时，他手腕上的那只手表，早已开始了逆时针的走动，变成了一只反方向的钟。</p>
 </article>
 <div class="article-footer">
     <section id="license">
@@ -218,7 +179,7 @@
 
 </div>
 
-<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2025/10/19/%E5%AF%B9%E6%AF%94%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1%E5%92%8C%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E7%9A%84%E4%B8%8D%E5%90%8C/">对比路由策略和策略路由的不同</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2025/10/19/%E6%B5%85%E6%9E%90%E8%B7%AF%E7%94%B1%E7%9A%84%E6%8E%A7%E5%88%B6%E5%B1%82%E9%9D%A2%E4%B8%8E%E8%BD%AC%E5%8F%91%E5%B1%82%E9%9D%A2/">浅析路由的控制层面与转发层面</a></div></section></div>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2025/12/04/hello-world/">Hello World</a></div></section></div>
 
 
 
@@ -228,12 +189,7 @@
 <footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">fcbyoung</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
 </div></footer>
 <div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
-<div class="widgets">
-
-
-
-<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%EF%BC%9A%E7%9B%AE%E7%9A%84%E4%B8%8D%E5%90%8C"><span class="toc-text">1. 核心概念：目的不同</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9C%A8ACL%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%8F%8D%E6%8E%A9%E7%A0%81%EF%BC%9F"><span class="toc-text">2. 为什么在ACL中使用反掩码？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9C%A8OSPF%E5%AE%A3%E5%91%8A%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%8F%8D%E6%8E%A9%E7%A0%81%EF%BC%9F"><span class="toc-text">3. 为什么在OSPF宣告中使用反掩码？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%E5%AF%B9%E6%AF%94"><span class="toc-text">总结对比</span></a></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
-</div></aside><div class='float-panel'>
+</aside><div class='float-panel'>
   <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
   </button>
